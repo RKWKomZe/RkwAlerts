@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2015-08-12T15:13:53Z" product-name="rkw_alerts">
+		<header/>
+		<body>
+
+
+            <!-- tx_rkwalerts_domain_model_pages -->
+            <trans-unit id="tx_rkwalerts_domain_model_pages.tx_rkwalerts_send_status">
+                <source>Alerts Send Status</source>
+                <target>RKW Alerts</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwalerts_domain_model_pages.tx_rkwalerts_send_status.I.sent">
+                <source>Sent</source>
+                <target>versendet</target>
+            </trans-unit>
+
+
+            <!-- tx_rkwprojects_domain_model_projects -->
+            <trans-unit id="tx_rkwprojects_domain_model_projects.tx_rkwalerts_enable_alerts">
+                <source>RKW Alerts</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwprojects_domain_model_projects.tx_rkwalerts_enable_alerts.I.enable">
+                <source>Allow getting RKW Alerts for this project</source>
+                <target>RKW Alerts für dieses Projekt erlauben</target>
+            </trans-unit>
+
+
+            <!-- tx_rkwalerts_domain_model_alerts -->
+			<trans-unit id="tx_rkwalerts_domain_model_alerts">
+				<source>RKW Alerts: Alerts</source>
+                <target>RKW Alerts: Alerts</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwalerts_domain_model_alerts.frontend_user">
+				<source>Frontend User</source>
+                <target>Frontend User</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwalerts_domain_model_alerts.project">
+				<source>Project</source>
+                <target>Thema / Projekt</target>
+			</trans-unit>
+
+
+            <!-- Flexform -->
+            <trans-unit id="flexform.alerts.sheetTitle">
+                <source>Alerts</source>
+                <target>RKW Alerts</target>
+            </trans-unit>
+            <trans-unit id="flexform.alerts.action">
+                <source>Action</source>
+                <target>Aktion</target>
+            </trans-unit>
+            <trans-unit id="flexform.alerts.action.I.new">
+                <source>New</source>
+                <target>Neue Alerts anlegen / Opt-In</target>
+            </trans-unit>
+            <trans-unit id="flexform.alerts.action.I.list">
+                <source>List</source>
+                <target>Meine Alerts anzeigen / löschen</target>
+            </trans-unit>
+            <trans-unit id="flexform.show.listSelect">
+                <source>Show Topic List</source>
+                <target>Themenliste anzeigen</target>
+            </trans-unit>
+
+        </body>
+	</file>
+</xliff>

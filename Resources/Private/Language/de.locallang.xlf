@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2015-08-12T15:13:53Z" product-name="rkw_alerts">
+		<header/>
+		<body>
+			<trans-unit id="tx_rkwalerts_domain_model_alerts">
+				<source>RKW Alerts</source>
+                <target>RKW Alerts</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwalerts_domain_model_alerts.frontend_user">
+				<source>Frontend User</source>
+                <target>Frontend User</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwalerts_domain_model_alerts.topic">
+				<source>Topic</source>
+                <target>Projekt / Thema</target>
+			</trans-unit>
+
+
+            <!-- alertController -->
+            <trans-unit id="alertController.error.not_logged_in">
+                <source>You must be logged in to use this feature.</source>
+                <target>Sie müssen eingeloggt sein, um dieses Feature nutzen zu können.</target>
+            </trans-unit>
+            <trans-unit id="alertController.error.no_valid_email">
+                <source>Please enter a valid username.</source>
+                <target>Da ist etwas schief gelaufen. Bitte geben Sie eine gültige E-Mailadresse ein.</target>
+            </trans-unit>
+            <trans-unit id="alertController.error.email_already_in_use">
+                <source>The given E-mail is already used by another user.</source>
+                <target>Hm, die gewünschte E-Mailadresse wird bereits von einem anderen Nutzer verwendet. Bitte geben Sie eine andere E-Mailadresse an.</target>
+            </trans-unit>
+            <trans-unit id="alertController.message.alert_created">
+                <source>Alert successfully created.</source>
+                <target>Woohoo! Der RKW Alert wurde angelegt.</target>
+            </trans-unit>
+            <trans-unit id="alertController.message.something_went_wrong">
+				<source>Something went wrong.</source>
+				<target>Da stimmt etwas nicht! Die gewünschte Aktion kann leider nicht ausgeführt werden.</target>
+			</trans-unit>
+            <trans-unit id="alertController.message.alert_already_exists">
+                <source>Alert already exists.</source>
+                <target>Der RKW Alert existiert bereits. Das Thema scheint also sehr interessant zu sein ;-)</target>
+            </trans-unit>
+            <trans-unit id="alertController.message.alert_deleted">
+                <source>Alert successfully deleted.</source>
+                <target>Der RKW Alert wurde gelöscht.</target>
+            </trans-unit>
+            <trans-unit id="alertController.message.alert_canceled">
+                <source>Alert creation was canceled.</source>
+                <target>Schade, dass Sie es sich anders überlegt haben. Der RKW Alert wurde gelöscht.</target>
+            </trans-unit>
+            <trans-unit id="alertController.error.alert_error">
+                <source>An error occurred. Please try again.</source>
+                <target>Upps, da ist wohl etwas schief gelaufen. Haben Sie den RKW Alert möglicherweise bereits bestätigt?</target>
+            </trans-unit>
+            <trans-unit id="alertController.message.alert_created_email">
+                <source>An e-mail has been send to you. Please click the link in the e-mail to confirm your request.</source>
+                <target>Fast geschafft! Eine E-Mail mit einem Bestätigungslink ist auf dem Weg zu Ihnen. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie Ihren Spam-Filter. Selbstverständlich steht Ihnen aber auch unser Support bei Problemen jederzeit gerne zur Verfügung.</target>
+            </trans-unit>
+            <trans-unit id="alertController.error.accept_terms">
+                <source>You have to accept our terms and conditions to activate alerts.</source>
+                <target>Das muss leider sein: Bitte akzeptieren Sie unsere Nutzungsbedingungen, um RKW Alerts nutzen zu können.</target>
+            </trans-unit>
+
+
+            <!-- Templates/Alerts/New.html-->
+            <trans-unit id="templates_alerts_new.labelCreateNew">
+                <source>Create Alert</source>
+                <target>Auf dem Laufenden bleiben</target>
+            </trans-unit>
+
+
+              <!-- Templates/Alerts/List.html-->
+            <trans-unit id="templates_alert_list.headline">
+                <source>Your active Alerts</source>
+                <target>Ihre aktiven RKW Alerts</target>
+            </trans-unit>
+            <trans-unit id="templates_alert_list.description">
+                <source>Here you can see all your active Alerts.</source>
+                <target>Hier finden Sie alle Ihre aktiven RKW Alerts.</target>
+            </trans-unit>
+            <trans-unit id="templates_alert_list.labelDelete">
+                <source>Delete</source>
+                <target>Löschen</target>
+            </trans-unit>
+            <trans-unit id="templates_alert_list.noAlertsAvailable">
+                <source>No alerts configured at the moment.</source>
+                <target>Derzeit haben Sie keine RKW Alerts angelegt.</target>
+            </trans-unit>
+
+
+            <!-- Templates/Alerts/Deleteconfirm.html-->
+            <trans-unit id="templates_alert_deleteConfirm.headline">
+                <source>Delete Alert</source>
+                <target>RKW Alert löschen</target>
+            </trans-unit>
+            <trans-unit id="templates_alert_deleteConfirm.description">
+                <source>Do you really want to delete the Alert for topic "%s"?</source>
+                <target>Sind Sie sicher, dass Sie den RKW Alert zum Thema "%s" löschen möchten?</target>
+            </trans-unit>
+            <trans-unit id="templates_alert_deleteConfirm.labelYes">
+                <source>Yes, do it</source>
+                <target>Ja, bitte löschen</target>
+            </trans-unit>
+            <trans-unit id="templates_alert_deleteConfirm.labelNo">
+                <source>No, keep it</source>
+                <target>Nein, doch nicht</target>
+            </trans-unit>
+
+
+            <!-- Partials/Alerts/New.html-->
+            <trans-unit id="partials_alerts_new.introduction">
+                <source><![CDATA[Always be up-to-date with RKW Alerts for topic "<strong>%s</strong>".]]></source>
+                <target><![CDATA[Mit unseren RKW Alerts bleiben Sie immer auf dem Laufenden. Wir informieren Sie automatisch und kostenlos, sobald es etwas Neues zum Thema "<strong>%s</strong>" auf unserer Website gibt.]]></target>
+            </trans-unit>
+            <trans-unit id="partials_alerts_new.introductionSelect">
+                <source><![CDATA[Always be up-to-date with RKW Alerts for your topic.]]></source>
+                <target><![CDATA[Mit unseren RKW Alerts bleiben Sie immer auf dem Laufenden. Wir informieren Sie automatisch und kostenlos, sobald es etwas Neues zu Ihrem Wunschthema auf unserer Website gibt.]]></target>
+            </trans-unit>
+            <trans-unit id="partials_alerts_new.introductionNotLoggedIn">
+                <source>All you need is an E-mail-address and 10 seconds of time.</source>
+                <target>Alles, was Sie dafür brauchen, ist eine E-Mail-Adresse und 10 Sekunden Zeit.</target>
+            </trans-unit>
+            <trans-unit id="partials_alerts_new.introductionLoggedIn">
+                <source>You're just one click away:</source>
+                <target>Sie brauchen dafür nur einen Klick:</target>
+            </trans-unit>
+            <trans-unit id="partials_alerts_new.labelUsername">
+                <source>E-Mail</source>
+                <target>Ihre E-Mail-Adresse</target>
+            </trans-unit>
+            <trans-unit id="partials_alerts_new.alertAlreadyExists">
+                <source>Alert for topic "%s" is active.</source>
+                <target>Sie haben bereits RKW Alerts für dieses Thema aktiviert.</target>
+            </trans-unit>
+            <trans-unit id="partials_alerts_new.alertAlreadyExistsLabel">
+                <source>Click here to change settings.</source>
+                <target>Klicken Sie hier, um die Einstellungen zu ändern.</target>
+            </trans-unit>
+            <trans-unit id="partials_alerts_new.terms">
+                <source>I accept the terms and conditions.</source>
+                <target>Ich akzeptiere die Nutzungsbedingungen.</target>
+            </trans-unit>
+            <trans-unit id="partials_alerts_new.labelTopic">
+                <source>Topic</source>
+                <target>Thema</target>
+            </trans-unit>
+
+
+            <!-- Email- Subjects -->
+            <trans-unit id="rkwMailService.optInAlertUser.subject">
+                <source>Confirmation for RKW Alerts</source>
+                <target>Bestätigungslink für RKW Alerts</target>
+            </trans-unit>
+            <trans-unit id="rkwMailService.cancelAllUser.subject">
+                <source>Your RKW Alerts have been canceled</source>
+                <target>Ihre RKW Alerts wurden deaktiviert</target>
+            </trans-unit>
+            <trans-unit id="rkwMailService.sendAlert.subject">
+                <source>New RKW Alert for topic %s</source>
+                <target>RKW Alert zum Thema "%s"</target>
+            </trans-unit>
+            <trans-unit id="rkwMailService.sendAlert.subjectDefault">
+                <source>New RKW Alert for topic "%s"</source>
+                <target>Neuer RKW Alert zum Thema "%s"</target>
+            </trans-unit>
+
+
+            <!-- Templates/Email/OptInAlertUser.html -->
+            <trans-unit id="templates_email_optInAlertUser.headline">
+                <source>Hello,</source>
+                <target>Hallo,</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optInAlertUser.text1">
+                <source>thank you for your interest in RKW Alerts for the topic "%s".</source>
+                <target>wir freuen uns, dass Sie unsere RKW Alerts zum Thema "%s" erhalten möchten.</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optInAlertUser.textOptIn">
+                <source>Click here to confirm your request:</source>
+                <target>Bitte klicken Sie hier, um die RKW Alerts zu aktivieren. Wenn Sie bisher nicht als Nutzer registriert sind, wird automatisch ein kostenloser Account erstellt. Das Passwort erhalten Sie in einer weiteren E-Mail zugesendet.</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optInAlertUser.textOptInLinkLabel">
+                <source>Yes, send me alerts</source>
+                <target>Ja, ich möchte RKW Alerts zu diesem Thema erhalten</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optInAlertUser.textOptOut">
+                <source>Click here to cancel your request:</source>
+                <target>Sie haben es sich anders überlegt oder haben die RKW Alerts gar nicht selbst angefragt? Klicken Sie einfach hier, um alle Daten zu löschen:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optInAlertUser.textOptOutLinkLabel">
+                <source>No, thank you</source>
+                <target>Nein, ich möchte keine RKW Alerts zu diesem Thema erhalten</target>
+            </trans-unit>
+
+            <!-- Templates/Email/CancelAllUser.html -->
+            <trans-unit id="templates_email_cancelAllUser.headline">
+                <source>Hello %s %s,</source>
+                <target>Hallo %s %s,</target>
+            </trans-unit>
+            <trans-unit id="templates_email_cancelAllUser.text1">
+                <source>the following RKW Alerts have been deactivated now:</source>
+                <target>schade, dass Sie uns verlassen. Die folgenden RKW Alerts wurden soeben wunschgemäß deaktiviert:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_cancelAllUser.text2">
+                <source>You will receive no more RKW Alerts.</source>
+                <target>Sie werden künftig keine RKW Alerts mehr von uns erhalten. Selbstverständlich können Sie sich aber jederzeit erneut für RKW Alerts registrieren.</target>
+            </trans-unit>
+
+
+            <!-- Templates/Email/Alert.html -->
+            <trans-unit id="templates_email_alert.headline">
+                <source>Hello,</source>
+                <target>Hallo,</target>
+            </trans-unit>
+            <trans-unit id="templates_email_alert.text1">
+                <source>there are new contents on the topic "%s" available.</source>
+                <target>es gibt neue Inhalte zum Thema "%s".</target>
+            </trans-unit>
+            <trans-unit id="templates_email_alert.linkLabel">
+                <source>Click here to see the contents</source>
+                <target>Klicken Sie hier, um die Inhalte zu sehen</target>
+            </trans-unit>
+            <trans-unit id="templates_email_alert.text2">
+                <source>You get this E-mail because you activated alerts for this topic.</source>
+                <target>Sie erhalten diese E-Mail, weil Sie RKW Alerts für dieses Thema aktiviert haben.</target>
+            </trans-unit>
+            <trans-unit id="templates_email_alert.loginLinkLabel">
+                <source>Log in here to adjust settings or cancel alerts.</source>
+                <target>Loggen Sie sich hier ein, um die Einstellungen zu ändern, oder die RKW Alerts abzubestellen</target>
+            </trans-unit>
+        </body>
+
+	</file>
+</xliff>

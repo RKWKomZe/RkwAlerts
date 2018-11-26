@@ -1,0 +1,45 @@
+
+<f:layout name="Default" />
+
+This Template is responsible for creating a table of domain objects.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        List.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="main">
+
+	<h2><f:translate key="templates_alert_list.headline" /></h2>
+
+	<f:flashMessages renderMode="div" />
+
+	<p><f:translate key="templates_alert_list.description" /></p>
+
+	<f:if condition="{alerts}" >
+		<f:then>
+			<table>
+				<f:for each="{alerts}" as="alert" iteration="iterator">
+					<f:if condition="{alert.project}">
+						<tr>
+							<td>
+								<strong>{alert.project.shortName}</strong>
+								<br />
+								<f:link.action action="deleteconfirm" arguments="{alert : alert}" class="button secondary">
+									<span><f:translate key="templates_alert_list.labelDelete" /></span>
+								</f:link.action>
+							</td>
+						</tr>
+					</f:if>
+				</f:for>
+			</table>
+		</f:then>
+		<f:else>
+			<p class="text-message"><f:translate key="templates_alert_list.noAlertsAvailable" /></p>
+		</f:else>
+	</f:if>
+</f:section>

@@ -1,0 +1,36 @@
+{
+    "name": "rkw/rkw-alerts",
+    "type": "typo3-cms-extension",
+    "description": "Sends e-mail-alerts for news in projects",
+    "homepage": "https://www.rkw-kompetenzzentrum.de",
+    "license": ["GPL-2.0+"],
+    "keywords": ["TYPO3 CMS", "RKW", "Alerts"],
+    "support": {
+        "email": "developer@steffenkroggel.de"
+    },
+    "authors": [
+        {
+            "name": "Steffen Kroggel",
+            "email": "developer@steffenkroggel.de",
+            "homepage": "http://www.steffenkroggel.de",
+            "role": "Developer"
+        },
+    ],
+    "require": {
+        "typo3/cms-core": "^7.6.0 || ^8.7.0",
+        "rkw/rkw-basics": "~7.6.10", // >=7.6.10 <7.6.99
+        "rkw/rkw-mailer": "~7.6.10", // >=7.6.10 <7.6.99
+        "rkw/rkw-registration": "~7.6.10", // >=7.6.10 <7.6.99
+		"rkw/rkw-projects": "~7.6.10" // >=7.6.10 <7.6.99
+    },
+    "autoload": {
+        "psr-4": {
+            "RKW\\RkwAlerts\\": "Classes/"
+        }
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "rkw_alerts"
+        }
+    }
+}
