@@ -12,7 +12,7 @@ if (!defined('TYPO3_MODE')) {
 	),
 	// non-cacheable actions
 	array(
-		'Alerts' => 'new, list, newInit, newAjax, create, delete, deleteconfirm, optIn',
+		'Alerts' => 'new, list, newAjax, create, delete, deleteconfirm, optIn',
 	)
 );
 
