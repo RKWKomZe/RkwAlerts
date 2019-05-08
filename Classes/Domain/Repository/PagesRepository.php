@@ -41,10 +41,17 @@ class PagesRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $result = $this->createQuery();
         $result->getQuerySettings()->setRespectStoragePage(false);
+
+        $whereClauseForEnableFields = QueryTypo3::getWhereClauseForEnableFields('pages');
+        if ($GLOBALS['BE_USER']->user) {
+            //  exclude hidden, if BackendUser is logged in
+            $whereClauseForEnableFields = str_replace(' AND pages.hidden=0', '', $whereClauseForEnableFields);
+        }
+
         $result->statement('SELECT * FROM pages
             WHERE uid = ' . intval($uid) .
             QueryTypo3::getWhereClauseForVersioning('pages') .
-            QueryTypo3::getWhereClauseForEnableFields('pages')
+            $whereClauseForEnableFields
         );
 
         return $result->execute()->getFirst();
