@@ -49,6 +49,10 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
+
+        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, 'Alert for ' . $frontendUser->getUid() . ' with email ' . $frontendUser->getEmail());
+        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, print_r($settings, true));
+        
         if ($settings['view']['templateRootPath']) {
 
             /** @var \RKW\RkwMailer\Service\MailService $mailService */
@@ -130,6 +134,17 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService->send();
         }
 
+    }
+
+
+    /**
+     * Returns logger instance
+     *
+     * @return \TYPO3\CMS\Core\Log\Logger
+     */
+    protected function getLogger()
+    {
+        return\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
     }
 
 
