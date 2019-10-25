@@ -10,6 +10,12 @@ if (!defined('TYPO3_MODE')) {
 );
 
 //=================================================================
+// Add Tables
+//=================================================================
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_rkwalerts_domain_model_alerts', 'EXT:rkw_alerts/Resources/Private/Language/locallang_csh_tx_rkwalerts_domain_model_alerts.xlf');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_rkwalerts_domain_model_alerts');
+
+//=================================================================
 // Add Flexform
 //=================================================================
 $extensionName = strtolower(\TYPO3\CMS\Core\Utility\GeneralUtility::underscoredToUpperCamelCase($_EXTKEY));

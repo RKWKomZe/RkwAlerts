@@ -1,12 +1,6 @@
 <?php
-if (!defined ('TYPO3_MODE')) {
-	die ('Access denied.');
-}
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_rkwalerts_domain_model_alerts', 'EXT:rkw_alerts/Resources/Private/Language/locallang_csh_tx_rkwalerts_domain_model_alerts.xlf');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_rkwalerts_domain_model_alerts');
-$GLOBALS['TCA']['tx_rkwalerts_domain_model_alerts'] = array(
-	'ctrl' => array(
+return [
+	'ctrl' => [
 		'title'	=> 'LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:tx_rkwalerts_domain_model_alerts',
 		'label' => 'frontend_user',
 		'label_alt' => 'project',
@@ -20,90 +14,88 @@ $GLOBALS['TCA']['tx_rkwalerts_domain_model_alerts'] = array(
 		'transOrigPointerField' => 'l10n_parent',
 		'transOrigDiffSourceField' => 'l10n_diffsource',
 
-		'enablecolumns' => array(
+		'enablecolumns' => [
 
-		),
+		],
 		'searchFields' => 'frontend_user,topic,',
 		'iconfile' => 'EXT:rkw_alerts/Resources/Public/Icons/tx_rkwalerts_domain_model_alerts.gif'
-	),
-	'interface' => array(
+	],
+	'interface' => [
 		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, frontend_user, project',
-	),
-	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, frontend_user, project, '),
-	),
-	'palettes' => array(
-		'1' => array('showitem' => ''),
-	),
-	'columns' => array(
+	],
+	'types' => [
+		'1' => ['showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, frontend_user, project, ']
+	],
+	'palettes' => [
+		'1' => ['showitem' => '']
+	],
+	'columns' => [
 	
-		'sys_language_uid' => array(
+		'sys_language_uid' => [
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
-			'config' => array(
+			'config' => [
 				'type' => 'select',
 				'renderType' => 'selectSingle',
 				'foreign_table' => 'sys_language',
 				'foreign_table_where' => 'ORDER BY sys_language.title',
-				'items' => array(
-					array('LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages', -1),
-					array('LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0)
-				),
-			),
-		),
-		'l10n_parent' => array(
+				'items' => [
+					['LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages', -1],
+					['LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0]
+				]
+			]
+		],
+		'l10n_parent' => [
 			'displayCond' => 'FIELD:sys_language_uid:>:0',
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
-			'config' => array(
+			'config' => [
 				'type' => 'select',
 				'renderType' => 'selectSingle',
-				'items' => array(
-					array('', 0),
-				),
+				'items' => [
+					['', 0]
+				],
 				'foreign_table' => 'tx_rkwalerts_domain_model_alerts',
 				'foreign_table_where' => 'AND tx_rkwalerts_domain_model_alerts.pid=###CURRENT_PID### AND tx_rkwalerts_domain_model_alerts.sys_language_uid IN (-1,0)',
-			),
-		),
-		'l10n_diffsource' => array(
-			'config' => array(
+			],
+		],
+		'l10n_diffsource' => [
+			'config' => [
 				'type' => 'passthrough',
-			),
-		),
+			]
+		],
 
-		't3ver_label' => array(
+		't3ver_label' => [
 			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.versionLabel',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-			)
-		),
-
-		'frontend_user' => array(
+			],
+		],
+		'frontend_user' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:tx_rkwalerts_domain_model_alerts.frontend_user',
-			'config' => array(
+			'config' => [
 				'type' => 'select',
 				'renderType' => 'selectSingle',
 				'foreign_table' => 'fe_users',
                 'foreign_table_where' => 'AND fe_users.disable = 0 ORDER BY username ASC',
                 'minitems' => 1,
 				'maxitems' => 1,
-            ),
-		),
-		'project' => array(
+            ]
+		],
+		'project' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:tx_rkwalerts_domain_model_alerts.project',
-			'config' => array(
+			'config' => [
 				'type' => 'select',
 				'renderType' => 'selectSingle',
 				'foreign_table' => 'tx_rkwprojects_domain_model_projects',
                 'foreign_table_where' => 'AND tx_rkwprojects_domain_model_projects.hidden = 0 AND tx_rkwprojects_domain_model_projects.deleted = 0 ORDER BY tx_rkwprojects_domain_model_projects.name ASC',
 				'minitems' => 1,
 				'maxitems' => 1,
-			),
-		),
-		
-	),
-);
+			]
+		]
+	]
+];
