@@ -1,34 +1,6 @@
 
-plugin.tx_rkwalerts {
-	view {
-		# cat=plugin.tx_rkwalerts/file; type=string; label=Path to template root (FE)
-		templateRootPath = EXT:rkw_alerts/Resources/Private/Templates/
-		# cat=plugin.tx_rkwalerts/file; type=string; label=Path to template partials (FE)
-		partialRootPath = EXT:rkw_alerts/Resources/Private/Partials/
-		# cat=plugin.tx_rkwalerts/file; type=string; label=Path to template layouts (FE)
-		layoutRootPath = EXT:rkw_alerts/Resources/Private/Layouts/
-	}
-	persistence {
-		# cat=plugin.tx_rkwalerts//a; type=string; label=Default storage PID
-		storagePid =
-	}
-	settings {
+# !!! DEPRECATED – only for compatibility reasons !!!
+# We're moving from ".ts" and ".txt" to ".typoscript".
+# @see: https://docs.typo3.org/c/typo3/cms-core/master/en-us/Changelog/8.7.x/Feature-78161-IntroduceTypoScriptFileExtension.html
 
-		# cat=plugin.tx_rkwalerts/a; type=boolean; label=Include jQuery?
-		includeJQuery = 0
-
-		# cat=plugin.tx_rkwalerts//a; type=integer; label=Pid of search mask for link in email
-		searchPid =
-
-		# cat=plugin.tx_rkwalerts//a; type=integer; label=Pid of login mask
-		loginPid =
-
-		# cat=plugin.tx_rkwalerts//a; type=integer; label=Pid of terms & conditions
-		termsPid =
-
-		# cat=plugin.tx_rkwalerts//a; type=integer; label=Pid list plugin
-		listPid =
-	}
-}
-
-module.tx_rkwalerts < plugin.tx_rkwalerts
+<INCLUDE_TYPOSCRIPT: source="FILE:./constants.typoscript">
