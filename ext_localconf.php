@@ -69,7 +69,6 @@ call_user_func(
         //=================================================================
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'RKW\\RkwAlerts\\Controller\\SendCommandController';
 
-
         //=================================================================
         // Register Logger
         //=================================================================
