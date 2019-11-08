@@ -14,7 +14,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 <f:section name="main">
 
-	<f:flashMessages renderMode="div" />
+	<f:render partial="FlashMessages" arguments="{_all}" />
 	<f:render partial="FormErrors" arguments="{object:Alert}" />
 
 	<f:if condition="{selectFromList}">
