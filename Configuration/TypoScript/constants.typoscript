@@ -1,0 +1,34 @@
+
+plugin.tx_rkwalerts {
+	view {
+		# cat=plugin.tx_rkwalerts/file; type=string; label=Path to template root (FE)
+		templateRootPath = EXT:rkw_alerts/Resources/Private/Templates/
+		# cat=plugin.tx_rkwalerts/file; type=string; label=Path to template partials (FE)
+		partialRootPath = EXT:rkw_alerts/Resources/Private/Partials/
+		# cat=plugin.tx_rkwalerts/file; type=string; label=Path to template layouts (FE)
+		layoutRootPath = EXT:rkw_alerts/Resources/Private/Layouts/
+	}
+	persistence {
+		# cat=plugin.tx_rkwalerts//a; type=string; label=Default storage PID
+		storagePid =
+	}
+	settings {
+
+		# cat=plugin.tx_rkwalerts/a; type=boolean; label=Include jQuery?
+		includeJQuery = 0
+
+		# cat=plugin.tx_rkwalerts//a; type=integer; label=Pid of search mask for link in email
+		searchPid =
+
+		# cat=plugin.tx_rkwalerts//a; type=integer; label=Pid of login mask
+		loginPid =
+
+		# cat=plugin.tx_rkwalerts//a; type=integer; label=Pid of terms & conditions
+		termsPid =
+
+		# cat=plugin.tx_rkwalerts//a; type=integer; label=Pid list plugin
+		listPid =
+	}
+}
+
+module.tx_rkwalerts < plugin.tx_rkwalerts

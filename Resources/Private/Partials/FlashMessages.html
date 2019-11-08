@@ -1,0 +1,15 @@
+<f:flashMessages as="flashMessages">
+    <f:for each="{flashMessages}" as="flashMessage">
+        <div class="typo3-messages">
+            <div class="alert alert-{flashMessage.class}">
+                <div class="media">
+                    <div class="media-body">
+                        <div class="alert-message">
+                            <f:format.raw>{flashMessage.message}</f:format.raw>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </f:for>
+</f:flashMessages>

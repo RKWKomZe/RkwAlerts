@@ -16,7 +16,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 	<h2><f:translate key="templates_alert_list.headline" /></h2>
 
-	<f:flashMessages renderMode="div" />
+	<f:render partial="FlashMessages" arguments="{_all}" />
 
 	<p><f:translate key="templates_alert_list.description" /></p>
 
