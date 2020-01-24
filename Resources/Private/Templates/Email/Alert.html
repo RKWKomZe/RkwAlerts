@@ -10,12 +10,12 @@
 
 <vh:frontend.translate key="templates_email_alert.linkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>:
 
-<vh:frontend.replaceLinksRedirect queueRecipient="{queueRecipient}" queueMail="{queueMail}" isPlaintext="TRUE"><vh:frontend.link noCacheHash="TRUE" absolute="TRUE" pageUid="{searchPid}" additionalParams="{tx_rkwrelated_morecontent: {filter: { project : alert.project.uid}}}" /></vh:frontend.replaceLinksRedirect>
+<vh:frontend.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}" isPlaintext="TRUE"><vh:frontend.link noCacheHash="TRUE" absolute="TRUE" pageUid="{searchPid}" additionalParams="{tx_rkwrelated_morecontent: {filter: { project : alert.project.uid}}}" /></vh:frontend.replace.redirectLinks>
 
 <vh:frontend.translate key="templates_email_alert.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}" />
 
 <vh:frontend.translate key="templates_email_alert.loginLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>:
-<vh:frontend.replaceLinksRedirect queueRecipient="{queueRecipient}" queueMail="{queueMail}" isPlaintext="TRUE"><vh:frontend.link absolute="TRUE" pageUid="{loginPid}" /></vh:frontend.replaceLinksRedirect>
+<vh:frontend.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}" isPlaintext="TRUE"><vh:frontend.link absolute="TRUE" pageUid="{loginPid}" /></vh:frontend.replace.redirectLinks>
 </f:section>
 
 <!-- HTML -->
@@ -23,7 +23,7 @@
 	<h1><vh:frontend.translate key="templates_email_alert.headline" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" /></h1>
 	<p><vh:frontend.translate key="templates_email_alert.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}"/></p>
 
-	<vh:frontend.replaceLinksRedirect queueRecipient="{queueRecipient}" queueMail="{queueMail}" >
+	<vh:frontend.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}" >
 	<p>
 		<a href="<vh:frontend.link noCacheHash='TRUE' absolute='TRUE' pageUid='{searchPid}' additionalParams='{tx_rkwrelated_morecontent: {filter: { project : alert.project.uid}}}' />"><vh:frontend.translate key="templates_email_alert.linkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/></a>
 	</p>
@@ -31,6 +31,6 @@
 	<p>
 		<a href="<vh:frontend.link absolute='TRUE' pageUid='{loginPid}' />"><vh:frontend.translate key="templates_email_alert.loginLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/></a>
 	</p>
-	</vh:frontend.replaceLinksRedirect>
+	</vh:frontend.replace.redirectLinks>
 
 </f:section>
