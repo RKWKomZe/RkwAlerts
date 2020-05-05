@@ -25,5 +25,6 @@ $tempPagesColumns = [
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('pages', $tempPagesColumns);
 
 // Add field to the existing palette
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette('pages', 'tx_rkwbasics_extended','tx_rkwalerts_send_status', 'after:tx_rkwsearch_no_search');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette('pages', 'tx_rkwbasics_extended','tx_rkwalerts_send_status');
+
 
