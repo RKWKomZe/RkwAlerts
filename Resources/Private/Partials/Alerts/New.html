@@ -23,7 +23,7 @@
 	<span class="checkbox">
 		<label>
 			<f:form.checkbox name="privacy" value="1" />
-			<f:format.raw><rkwRegistration:privacyText /></f:format.raw>
+			<rkwRegistration:privacyText />
 		</label>
 	</span>
 </f:section>
@@ -47,14 +47,18 @@
 <!-- Default introduction message  -->
 <f:section name="IntroductionMessage">
 	<p>
-		<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introduction" arguments="{0 : project.name}" />
-		&nbsp;<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introductionNotLoggedIn"  />
+		<f:format.raw>
+			<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introduction" arguments="{0 : project.name}" />
+			&nbsp;<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introductionNotLoggedIn"  />
+		</f:format.raw>
 	</p>
 </f:section>
 <f:section name="IntroductionMessageSelect">
 	<p>
-		<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introductionSelect" />
-		&nbsp;<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introductionNotLoggedIn"  />
+		<f:format.raw>
+			<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introductionSelect" />
+			&nbsp;<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introductionNotLoggedIn"  />
+		</f:format.raw>
 	</p>
 </f:section>
 
@@ -63,14 +67,18 @@
 <!-- Introduction message for logged in users -->
 <f:section name="IntroductionMessageLoggedIn">
 	<p>
-		<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introduction" arguments="{0 : project.name}" />
-		&nbsp;<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introductionLoggedIn"  />
+		<f:format.raw>
+			<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introduction" arguments="{0 : project.name}" />
+			&nbsp;<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introductionLoggedIn"  />
+		</f:format.raw>
 	</p>
 </f:section>
 <f:section name="IntroductionMessageSelectLoggedIn">
 	<p>
-		<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introductionSelect" />
-		&nbsp;<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introductionLoggedIn" />
+		<f:format.raw>
+			<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introductionSelect" />
+			&nbsp;<f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.introductionLoggedIn" />
+		</f:format.raw>
 	</p>
 </f:section>
 
@@ -78,6 +86,6 @@
 
 <!-- Message if an alert has already been created -->
 <f:section name="AlreadyExistingMessage">
-	<p class="text-message"><f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.alertAlreadyExists" arguments="{0 : project.name}"/></p>
+	<p class="text-message"><f:format.raw><f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.alertAlreadyExists" arguments="{0 : project.name}"/></f:format.raw></p>
 	<p><f:link.page pageUid="{listPid}" target="_blank"><f:translate key="LLL:EXT:rkw_alerts/Resources/Private/Language/locallang.xlf:partials_alerts_new.alertAlreadyExistsLabel"/></f:link.page></p>
 </f:section>
