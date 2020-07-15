@@ -64,15 +64,6 @@ return [
 				'type' => 'passthrough',
 			]
 		],
-
-		't3ver_label' => [
-			'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.versionLabel',
-			'config' => [
-				'type' => 'input',
-				'size' => 30,
-				'max' => 255,
-			],
-		],
 		'frontend_user' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:tx_rkwalerts_domain_model_alerts.frontend_user',
