@@ -42,6 +42,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function optInAlertUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, \RKW\RkwRegistration\Domain\Model\Registration $registration = null)
     {
@@ -50,10 +51,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
 
-        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, 'Alert for ' . $frontendUser->getUid() . ' with email ' . $frontendUser->getEmail());
-        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, print_r($settings, true));
-        
-        if ($settings['view']['templateRootPath']) {
+        if ($settings['view']['templateRootPaths']) {
 
             /** @var \RKW\RkwMailer\Service\MailService $mailService */
             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
@@ -72,15 +70,19 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             ));
 
             $mailService->getQueueMail()->setSubject(
-                \RKW\RkwMailer\Helper\FrontendLocalization::translate(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
                     'rkwMailService.optInAlertUser.subject',
                     'rkw_alerts',
                     null,
                     $frontendUser->getTxRkwregistrationLanguageKey()
                 )
             );
-            $mailService->getQueueMail()->setPlaintextTemplate($settings['view']['templateRootPath'] . 'Email/OptInAlertUser');
-            $mailService->getQueueMail()->setHtmlTemplate($settings['view']['templateRootPath'] . 'Email/OptInAlertUser');
+
+            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
+            $mailService->getQueueMail()->addPartialPaths($settings['view']['partialRootPaths']);
+
+            $mailService->getQueueMail()->setPlaintextTemplate('Email/OptInAlertUser');
+            $mailService->getQueueMail()->setHtmlTemplate('Email/OptInAlertUser');
             $mailService->send();
         }
 
@@ -99,6 +101,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function cancelAllUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, $alerts)
     {
@@ -106,7 +109,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
-        if ($settings['view']['templateRootPath']) {
+        if ($settings['view']['templateRootPaths']) {
 
             /** @var \RKW\RkwMailer\Service\MailService $mailService */
             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
@@ -122,15 +125,19 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             ));
 
             $mailService->getQueueMail()->setSubject(
-                \RKW\RkwMailer\Helper\FrontendLocalization::translate(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
                     'rkwMailService.cancelAllUser.subject',
                     'rkw_alerts',
                     null,
                     $frontendUser->getTxRkwregistrationLanguageKey()
                 )
             );
-            $mailService->getQueueMail()->setPlaintextTemplate($settings['view']['templateRootPath'] . 'Email/CancelAllUser');
-            $mailService->getQueueMail()->setHtmlTemplate($settings['view']['templateRootPath'] . 'Email/CancelAllUser');
+
+            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
+            $mailService->getQueueMail()->addPartialPaths($settings['view']['partialRootPaths']);
+
+            $mailService->getQueueMail()->setPlaintextTemplate('Email/CancelAllUser');
+            $mailService->getQueueMail()->setHtmlTemplate('Email/CancelAllUser');
             $mailService->send();
         }
 
@@ -153,12 +160,10 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      *
      * @param string $which Which type of settings will be loaded
      * @return array
-     *  @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
     {
-
         return Common::getTyposcriptConfiguration('Rkwalerts', $which);
-        //===
     }
 }
