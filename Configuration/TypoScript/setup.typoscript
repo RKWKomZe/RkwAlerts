@@ -45,11 +45,22 @@ config.tx_extbase{
 }
 
 plugin.tx_rkwalerts {
-	view {
-		templateRootPath = {$plugin.tx_rkwalerts.view.templateRootPath}
-		partialRootPath = {$plugin.tx_rkwalerts.view.partialRootPath}
-		layoutRootPath = {$plugin.tx_rkwalerts.view.layoutRootPath}
-	}
+
+    view {
+        layoutRootPaths {
+            0 = EXT:rkw_alerts/Resources/Private/Layouts/
+            1 = {$plugin.tx_rkwalerts.view.layoutRootPath}
+        }
+        templateRootPaths {
+            0 = EXT:rkw_alerts/Resources/Private/Templates/
+            1 = {$plugin.tx_rkwalerts.view.templateRootPath}
+        }
+        partialRootPaths {
+            0 = EXT:rkw_alerts/Resources/Private/Partials/
+            1 = {$plugin.tx_rkwalerts.view.partialRootPath}
+        }
+    }
+
 	persistence {
 		storagePid = {$plugin.tx_rkwalerts.persistence.storagePid}
 	}
@@ -70,7 +81,7 @@ plugin.tx_rkwalerts {
 		linkSortingSortAscending = 0
 
 		# Additional filter field for selection of pages, only integer fields allowed! (default: crdate)
-		filterField =
+		filterField = crdate
 
 		# Time in seconds from now since creation, matching against the field defined in filterField (default: 432000 = 5 days)
 		timeSinceCreation = 432000
