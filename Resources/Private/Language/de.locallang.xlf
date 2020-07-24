@@ -32,7 +32,7 @@
             </trans-unit>
             <trans-unit id="alertController.message.alert_created">
                 <source>Alert successfully created.</source>
-                <target>Woohoo! Der RKW Alert wurde angelegt.</target>
+                <target>Wohoo! Der RKW Alert wurde angelegt.</target>
             </trans-unit>
             <trans-unit id="alertController.message.something_went_wrong">
 				<source>Something went wrong.</source>
