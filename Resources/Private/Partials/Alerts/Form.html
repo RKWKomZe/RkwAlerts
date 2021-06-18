@@ -1,0 +1,68 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
+	xmlns:rkwAjax="http://typo3.org/ns/RKW/RkwAjax/ViewHelpers"
+	data-namespace-typo3-fluid="true">
+
+	<f:form action="create" name="newAlert" object="{newAlert}">
+		<f:form.hidden property="project" value="{project}"/>
+
+		<rkwAjax:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="2">
+
+			<f:comment><!-- Check if form is to be displayed --></f:comment>
+			<f:if condition="{displayForm}">
+				<div class="flex-container">
+					<div class="flex-basis-8 full-width-medium">
+						<div class="form">
+							<f:if condition="{frontendUser}">
+								<f:then>
+									<input type="hidden" name="email" value="{frontendUser.email}"  />
+								</f:then>
+								<f:else>
+									<div class="form__field width50">
+										<label for="email"><f:translate key="partials_alerts_form.labelEmail" /></label>
+										<input type="email" name="email" id="email" value="{email}" aria-required="true" autocomplete="email" />
+									</div>
+								</f:else>
+							</f:if>
+
+							<div class="form__approval">
+								<f:if condition="{frontendUser}">
+									<f:then>
+										<div class="form__field">
+											<f:form.checkbox name="privacy" value="1" id="privacy" class="checkbox" />
+											<label for="privacy" class="checkbox-label">
+												<rkwRegistration:privacyText textVersion="defaultAlternative" />
+											</label>
+										</div>
+									</f:then>
+									<f:else>
+										<div class="form__field">
+											<f:form.checkbox name="terms" value="1" id="terms" class="checkbox" />
+											<label for="terms" class="checkbox-label">
+												<f:link.page pageUid="{termsPid}" target="_blank">
+													<f:translate key="partials_alerts_form.terms" />
+												</f:link.page>
+											</label>
+										</div>
+										<div class="form__field">
+											<f:form.checkbox name="privacy" value="1" id="privacy" class="checkbox" />
+											<label for="privacy" class="checkbox-label">
+												<rkwRegistration:privacyText />
+											</label>
+										</div>
+									</f:else>
+								</f:if>
+
+								<div class="form__field flex space-start full-width-narrow">
+									<button class="btn btn--primary full-width-narrow">
+										<f:translate key="partials_alerts_form.labelCreateNew" />
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</f:if>
+		</rkwAjax:ajaxWrapper>
+	</f:form>
+</html>

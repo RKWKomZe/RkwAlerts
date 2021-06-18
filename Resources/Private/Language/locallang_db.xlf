@@ -24,7 +24,7 @@
 
             <!-- tx_rkwalerts_domain_model_alerts -->
 			<trans-unit id="tx_rkwalerts_domain_model_alerts">
-				<source>RKW Alerts: Alerts</source>
+				<source>RKW Alerts: Alert</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwalerts_domain_model_alerts.frontend_user">
 				<source>Frontend User</source>

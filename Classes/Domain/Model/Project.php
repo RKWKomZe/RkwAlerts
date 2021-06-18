@@ -16,31 +16,30 @@ namespace RKW\RkwAlerts\Domain\Model;
  */
 
 /**
- * Class Projects
+ * Class Project
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Projects extends \RKW\RkwProjects\Domain\Model\Projects
+class Project extends \RKW\RkwProjects\Domain\Model\Projects
 {
-
 
     /**
      * txRkwalertsEnableAlerts
      *
-     * @var integer
+     * @var bool
      */
-    protected $txRkwalertsEnableAlerts = 0;
+    protected $txRkwalertsEnableAlerts = false;
 
 
     /**
      * Returns the txRkwalertsEnableAlerts
      *
-     * @return integer
+     * @return bool
      */
-    public function getTxRkwalertsEnableAlerts()
+    public function getTxRkwalertsEnableAlerts(): bool
     {
         return $this->txRkwalertsEnableAlerts;
     }
@@ -48,10 +47,10 @@ class Projects extends \RKW\RkwProjects\Domain\Model\Projects
     /**
      * Sets the txRkwalertsEnableAlerts
      *
-     * @param integer $txRkwalertsEnableAlerts
+     * @param bool $txRkwalertsEnableAlerts
      * @return void
      */
-    public function setTxRkwalertsEnableAlerts($txRkwalertsEnableAlerts)
+    public function setTxRkwalertsEnableAlerts(bool $txRkwalertsEnableAlerts): void
     {
         $this->txRkwalertsEnableAlerts = $txRkwalertsEnableAlerts;
     }

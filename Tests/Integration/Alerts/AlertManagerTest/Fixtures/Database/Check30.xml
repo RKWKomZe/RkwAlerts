@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <pages>
+        <uid>30</uid>
+        <pid>1</pid>
+        <title>Test 10</title>
+        <tx_rkwbasics_teaser_text />
+        <tx_rkwbasics_information />
+        <doktype>1</doktype>
+        <perms_everybody>15</perms_everybody>
+        <tx_rkwprojects_project_uid>30</tx_rkwprojects_project_uid>
+    </pages>
+
+    <tx_rkwprojects_domain_model_projects>
+        <uid>30</uid>
+        <pid>1</pid>
+        <name>Testprojekt Long</name>
+        <short_name>Testprojekt Short</short_name>
+        <tx_rkwalerts_enable_alerts>1</tx_rkwalerts_enable_alerts>
+    </tx_rkwprojects_domain_model_projects>
+
+</dataset>

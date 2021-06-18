@@ -16,14 +16,14 @@ namespace RKW\RkwAlerts\Domain\Model;
  */
 
 /**
- * Class Alerts
+ * Class Alert
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Alerts extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
 
     /**
@@ -36,7 +36,7 @@ class Alerts extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * project
      *
-     * @var \RKW\RkwAlerts\Domain\Model\Projects
+     * @var \RKW\RkwAlerts\Domain\Model\Project
      */
     protected $project = null;
 
@@ -46,7 +46,7 @@ class Alerts extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      */
-    public function getFrontendUser()
+    public function getFrontendUser(): \RKW\RkwRegistration\Domain\Model\FrontendUser
     {
         return $this->frontendUser;
     }
@@ -57,7 +57,7 @@ class Alerts extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return void
      */
-    public function setFrontendUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
+    public function setFrontendUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser): void
     {
         $this->frontendUser = $frontendUser;
     }
@@ -65,9 +65,9 @@ class Alerts extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the project
      *
-     * @return \RKW\RkwAlerts\Domain\Model\Projects $project
+     * @return \RKW\RkwAlerts\Domain\Model\Project $project
      */
-    public function getProject()
+    public function getProject(): \RKW\RkwAlerts\Domain\Model\Project
     {
         return $this->project;
     }
@@ -75,10 +75,10 @@ class Alerts extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the project
      *
-     * @param \RKW\RkwAlerts\Domain\Model\Projects $project
+     * @param \RKW\RkwAlerts\Domain\Model\Project $project
      * @return void
      */
-    public function setProject(\RKW\RkwAlerts\Domain\Model\Projects $project)
+    public function setProject(\RKW\RkwAlerts\Domain\Model\Project $project): void
     {
         $this->project = $project;
     }

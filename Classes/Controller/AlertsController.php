@@ -14,6 +14,7 @@ namespace RKW\RkwAlerts\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+
 /**
  * Class AlertsController
  *
@@ -22,7 +23,7 @@ namespace RKW\RkwAlerts\Controller;
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AlertsController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class AlertsController extends \RKW\RkwAjax\Controller\AjaxAbstractController
 {
 
 
@@ -46,27 +47,36 @@ class AlertsController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     /**
      * alertsRepository
      *
-     * @var \RKW\RkwAlerts\Domain\Repository\AlertsRepository
+     * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
      * @inject
      */
-    protected $alertsRepository = null;
+    protected $alertRepository = null;
 
 
     /**
      * pagesRepository
      *
-     * @var \RKW\RkwAlerts\Domain\Repository\PagesRepository
+     * @var \RKW\RkwAlerts\Domain\Repository\PageRepository
      * @inject
      */
-    protected $pagesRepository;
+    protected $pageRepository;
 
     /**
      * projectsRepository
      *
-     * @var \RKW\RkwAlerts\Domain\Repository\ProjectsRepository
+     * @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository
      * @inject
      */
-    protected $projectsRepository = null;
+    protected $projectRepository = null;
+
+
+    /**
+     * alertsManager
+     *
+     * @var \RKW\RkwAlerts\Alerts\AlertManager
+     * @inject
+     */
+    protected $alertManager = null;
 
 
     /**
@@ -138,208 +148,72 @@ class AlertsController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     }
 
 
-    /**
-     * action newInit - only loads basic template for logged out users
+      /**
+     * action new
      *
-     * @param \RKW\RkwAlerts\Domain\Model\Alerts $newAlert
-     * @ignorevalidation $newAlert
-     * @return void
-     */
-    public function newInitAction(\RKW\RkwAlerts\Domain\Model\Alerts $newAlert = null)
-    {
-        $project = null;
-        $projectList = array();
-        if (
-            (
-                ($this->settings['show']['listSelect'])
-                && ($projectList = $this->projectsRepository->findByTxRkwalertsEnableAlerts(1))
-                && ($projectList = $projectList->toArray())
-            )
-            || (
-                ($page = $this->pagesRepository->findByUid(intval($GLOBALS['TSFE']->id)))
-                && ($page instanceOf \RKW\RkwAlerts\Domain\Model\Pages)
-                && ($projectTemp = $page->getTxRkwprojectsProjectUid())
-                && ($project = $this->projectsRepository->findByIdentifier($projectTemp->getUid()))
-                && ($project->getTxRkwAlertsEnableAlerts())
-            )
-        ) {
-
-            $this->view->assignMultiple(
-                array(
-                    'newAlert'       => $newAlert,
-                    'termsPid'       => intval($this->settings['termsPid']),
-                    'listPid'        => intval($this->settings['listPid']),
-                    'pageUid'        => intval($GLOBALS['TSFE']->id),
-                    'languageUid'    => intval($GLOBALS['TSFE']->sys_language_uid),
-                    'project'        => $project,
-                    'projectList'    => $projectList,
-                    'selectFromList' => intval($this->settings['show']['listSelect']),
-                )
-            );
-        }
-    }
-
-
-    /**
-     * action newAjax - via AJAX we check if the user is logged in and replace the basic form if needed
-     *
-     * @param \RKW\RkwAlerts\Domain\Model\Alerts $newAlert
-     * @ignorevalidation $newAlert
-     * @return void
-     */
-    public function newAjaxAction(\RKW\RkwAlerts\Domain\Model\Alerts $newAlert = null)
-    {
-        // get JSON helper
-        /** @var \RKW\RkwBasics\Helper\Json $jsonHelper */
-        $jsonHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwBasics\\Helper\\Json');
-
-        $project = null;
-        $projectList = array();
-        if (
-            (
-                ($page = $this->pagesRepository->findByUid(intval($GLOBALS['TSFE']->id)))
-                && ($page instanceOf \RKW\RkwAlerts\Domain\Model\Pages)
-                && ($projectTemp = $page->getTxRkwprojectsProjectUid())
-                && ($project = $this->projectsRepository->findByIdentifier($projectTemp->getUid()))
-                && ($project->getTxRkwAlertsEnableAlerts())
-            )
-            || (
-
-                ($projectList = $this->projectsRepository->findByTxRkwalertsEnableAlerts(1))
-                && ($projectList = $projectList->toArray())
-            )
-        ) {
-
-            // check if user is logged in
-            if ($this->getFrontendUser()) {
-
-                $replacements = array(
-                    'newAlert'       => $newAlert,
-                    'listPid'        => intval($this->settings['listPid']),
-                    'project'        => $project,
-                    'projectList'    => $projectList,
-                    'selectFromList' => $projectList ? true : false,
-                );
-
-                // if he is logged in, we change the message accordingly
-                // but only if he is not an Social Media- Idiot!
-                if (\RKW\RkwRegistration\Tools\Registration::validEmail($this->getFrontendUser())) {
-                    $jsonHelper->setHtml(
-                        'rkw-alerts-introduction',
-                        $replacements,
-                        'replace',
-                        'Ajax/New/MessageLoggedIn.html'
-                    );
-                }
-
-                // if user is logged in, we also check if he already has an alert like that
-                if ($project) {
-
-                    /** @var \RKW\RkwAlerts\Domain\Model\Alerts $tempNewAlert */
-                    $tempNewAlert = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwAlerts\\Domain\\Model\\Alerts');
-                    $tempNewAlert->setFrontendUser($this->getFrontendUser());
-                    $tempNewAlert->setProject($project);
-                    if ($this->alertsRepository->findExistingAlert($tempNewAlert)) {
-                        $jsonHelper->setHtml(
-                            'rkw-alerts-form',
-                            $replacements,
-                            'replace',
-                            'Ajax/New/AlertExists.html'
-                        );
-                    } else {
-
-                        if (\RKW\RkwRegistration\Tools\Registration::validEmail($this->getFrontendUser())) {
-                            $jsonHelper->setHtml(
-                                'rkw-alerts-form-inner',
-                                $replacements,
-                                'replace',
-                                ''
-                            );
-                        }
-                    }
-                } else {
-
-                    if (\RKW\RkwRegistration\Tools\Registration::validEmail($this->getFrontendUser())) {
-                        $jsonHelper->setHtml(
-                            'rkw-order-container',
-                            $replacements,
-                            'replace',
-                            ''
-                        );
-                    }
-                }
-            }
-        }
-
-
-        print (string)$jsonHelper;
-        exit();
-        //===
-    }
-
-
-    /**
-     * action new - this is used in login-section to select an alert out of a given list
-     *
-     * @param \RKW\RkwAlerts\Domain\Model\Alerts $newAlert
+     * @param \RKW\RkwAlerts\Domain\Model\Alert $newAlert
      * @ignorevalidation $newAlert
      * @param string $email
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      */
-    public function newAction(\RKW\RkwAlerts\Domain\Model\Alerts $newAlert = null, $email = null)
+    public function newAction(\RKW\RkwAlerts\Domain\Model\Alert $newAlert = null, $email = null): void
     {
-        $project = null;
-        $projectList = array();
-        if (
-            (
-                ($this->settings['show']['listSelect'])
-                && ($projectList = $this->projectsRepository->findByTxRkwalertsEnableAlerts(1))
-                && ($projectList = $projectList->toArray())
-            )
-            || (
-                ($page = $this->pagesRepository->findByUid(intval($GLOBALS['TSFE']->id)))
-                && ($page instanceOf \RKW\RkwAlerts\Domain\Model\Pages)
-                && ($projectTemp = $page->getTxRkwprojectsProjectUid())
-                && ($project = $this->projectsRepository->findByIdentifier($projectTemp->getUid()))
-                && ($project->getTxRkwAlertsEnableAlerts())
-            )
-        ) {
 
-            // if user is logged in, we check if he already has an alert like that
-            // but this only matters in non-list mode!
-            $showNew = true;
-            if (
-                ($this->getFrontendUser())
-                && ($project)
-            ) {
 
-                /** @var \RKW\RkwAlerts\Domain\Model\Alerts $tempNewAlert */
-                $tempNewAlert = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwAlerts\\Domain\\Model\\Alerts');
-                $tempNewAlert->setFrontendUser($this->getFrontendUser());
-                $tempNewAlert->setProject($project);
-                if ($this->alertsRepository->findExistingAlert($tempNewAlert)) {
-                    $showNew = false;
+        /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
+        $project = $this->alertManager->getSubscribableProjectByPageUid(intval($GLOBALS['TSFE']->id));
+        if ($project) {
+
+
+            // ajax-call: do personalization
+            if ($this->ajaxHelper->getIsAjaxCall()) {
+
+                // check if alert already exists when user is logged in
+                /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser */
+                if (
+                    ($frontendUser = $this->getFrontendUser())
+                    && ($this->alertManager->hasFeUserSubscribedToProject($frontendUser, $project))
+                ) {
+                    $this->view->assignMultiple(
+                        [
+                            'project'           => $project,
+                            'frontendUser'      => $this->getFrontendUser(),
+                        ]
+                    );
+
+                } else {
+                    $this->view->assignMultiple(
+                        [
+                            'newAlert'          => $newAlert,
+                            'termsPid'          => intval($this->settings['termsPid']),
+                            'project'           => $project,
+                            'frontendUser'      => $this->getFrontendUser(),
+                            'email'             => $email,
+                            'displayForm'       => true
+                        ]
+                    );
                 }
+
+
+            // normal call: display simple form
+            } else {
+
+                $this->view->assignMultiple(
+                    [
+                        'newAlert' => $newAlert,
+                        'termsPid' => intval($this->settings['termsPid']),
+                        'project'  => $project,
+                        'displayForm'       => true
+                    ]
+                );
             }
 
-            $replacements = array(
-                'showNew'           => $showNew,
-                'newAlert'          => $newAlert,
-                'validFrontendUser' => \RKW\RkwRegistration\Tools\Registration::validEmail($this->getFrontendUser()),
-                'termsPid'          => intval($this->settings['termsPid']),
-                'listPid'           => intval($this->settings['listPid']),
-                'email'             => $email,
-                'project'           => $project,
-                'projectList'       => $projectList,
-                'selectFromList'    => intval($this->settings['show']['listSelect']),
-            );
-
-
-            $this->view->assignMultiple(
-                $replacements
-            );
         }
+
+
     }
+
 
 
     /**
@@ -793,6 +667,9 @@ class AlertsController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     protected function getFrontendUserId()
     {
+
+return 2;
+
         // is $GLOBALS set?
         if (
             ($GLOBALS['TSFE'])

@@ -5,21 +5,28 @@ config.tx_extbase{
     persistence{
         classes{
 
-			\RKW\RkwProjects\Domain\Model\Pages {
+			\RKW\RkwProjects\Domain\Model\Page {
 				subclasses {
-					Tx_RkwAlerts_Pages = RKW\RkwAlerts\Domain\Model\Pages
+					Tx_RkwAlerts_Page = RKW\RkwAlerts\Domain\Model\Pages
 
 				}
 			}
 
-			\RKW\RkwProjects\Domain\Model\Projects {
+			\RKW\RkwProjects\Domain\Model\Project {
 				subclasses {
-					Tx_RkwAlerts_Projects = RKW\RkwAlerts\Domain\Model\Projects
+					Tx_RkwAlerts_Project = RKW\RkwAlerts\Domain\Model\Projects
 				}
 
 			}
 
-            RKW\RkwAlerts\Domain\Model\Projects {
+			# Keep backward-compatibility
+			RKW\RkwAlerts\Domain\Model\Alert {
+                mapping {
+                    tableName = tx_rkwalerts_domain_model_alerts
+                }
+            }
+
+            RKW\RkwAlerts\Domain\Model\Project {
  				mapping {
                     tableName = tx_rkwprojects_domain_model_projects
 
@@ -30,7 +37,7 @@ config.tx_extbase{
                 }
             }
 
-            RKW\RkwAlerts\Domain\Model\Pages {
+            RKW\RkwAlerts\Domain\Model\Page {
                 mapping {
                     tableName = pages
 

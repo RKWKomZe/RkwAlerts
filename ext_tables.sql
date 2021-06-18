@@ -1,6 +1,7 @@
 #
 # Table structure for table 'tx_rkwalerts_domain_model_alerts'
 #
+
 CREATE TABLE tx_rkwalerts_domain_model_alerts (
 
 	uid int(11) NOT NULL auto_increment,

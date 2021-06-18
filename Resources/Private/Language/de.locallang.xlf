@@ -64,12 +64,6 @@
             </trans-unit>
 
 
-            <!-- Templates/Alerts/New.html-->
-            <trans-unit id="templates_alerts_new.labelCreateNew">
-                <source>Create Alert</source>
-                <target>Auf dem Laufenden bleiben</target>
-            </trans-unit>
-
 
               <!-- Templates/Alerts/List.html-->
             <trans-unit id="templates_alert_list.headline">
@@ -109,39 +103,54 @@
             </trans-unit>
 
 
-            <!-- Partials/Alerts/New.html-->
-            <trans-unit id="partials_alerts_new.introduction">
-                <source><![CDATA[Always be up-to-date with RKW Alerts for topic "<strong>%s</strong>".]]></source>
-                <target><![CDATA[Mit unseren RKW Alerts bleiben Sie immer auf dem Laufenden. Wir informieren Sie automatisch und kostenlos, sobald es etwas Neues zum Thema "<strong>%s</strong>" auf unserer Website gibt.]]></target>
+
+            <!-- Partials/Alerts/Introduction.html-->
+            <trans-unit id="partials_alerts_introduction.headline">
+                <source>Stay tuned!</source>
+                <target>Bleiben Sie auf dem Laufenden!</target>
             </trans-unit>
-            <trans-unit id="partials_alerts_new.introductionSelect">
-                <source><![CDATA[Always be up-to-date with RKW Alerts for your topic.]]></source>
-                <target><![CDATA[Mit unseren RKW Alerts bleiben Sie immer auf dem Laufenden. Wir informieren Sie automatisch und kostenlos, sobald es etwas Neues zu Ihrem Wunschthema auf unserer Website gibt.]]></target>
+            <trans-unit id="partials_alerts_introduction.text1">
+                <source><![CDATA[Always be up-to-date with RKW Alerts for project "<strong>%s</strong>".]]></source>
+                <target><![CDATA[Mit unseren RKW Alerts bleiben Sie immer auf dem Laufenden. Wir informieren Sie automatisch und kostenlos, sobald es etwas Neues zum Projekt "<strong>%s</strong>" auf unserer Website gibt.]]></target>
             </trans-unit>
-            <trans-unit id="partials_alerts_new.introductionNotLoggedIn">
+            <trans-unit id="partials_alerts_introduction.text1_exists">
+                <source><![CDATA[Alert for project "<strong>%s</strong>" is active.]]></source>
+                <target><![CDATA[Sie haben bereits RKW Alerts für das Projekt "<strong>%s</strong>" aktiviert.]]></target>
+            </trans-unit>
+            <trans-unit id="partials_alerts_introduction.text2">
                 <source>All you need is an E-mail-address and 10 seconds of time.</source>
                 <target>Alles, was Sie dafür brauchen, ist eine E-Mail-Adresse und 10 Sekunden Zeit.</target>
             </trans-unit>
-            <trans-unit id="partials_alerts_new.introductionLoggedIn">
+            <trans-unit id="partials_alerts_introduction.text2_loggedIn">
                 <source>You're just one click away:</source>
-                <target>Sie brauchen dafür nur einen Klick:</target>
+                <target>Sie brauchen dafür nur zwei Klicks:</target>
             </trans-unit>
-            <trans-unit id="partials_alerts_new.labelUsername">
-                <source>E-Mail</source>
-                <target>Ihre E-Mail-Adresse</target>
-            </trans-unit>
-            <trans-unit id="partials_alerts_new.alertAlreadyExists">
-                <source>Alert for topic "%s" is active.</source>
-                <target>Sie haben bereits RKW Alerts für dieses Thema aktiviert.</target>
-            </trans-unit>
-            <trans-unit id="partials_alerts_new.alertAlreadyExistsLabel">
+            <trans-unit id="partials_alerts_introduction.text2_exists">
                 <source>Click here to change settings.</source>
                 <target>Klicken Sie hier, um die Einstellungen zu ändern.</target>
             </trans-unit>
-            <trans-unit id="partials_alerts_new.terms">
+
+
+            <!-- Partials/Alerts/Form.html-->
+            <trans-unit id="partials_alerts_form.labelEmail">
+                <source>E-Mail</source>
+                <target>Ihre E-Mail-Adresse</target>
+            </trans-unit>
+            <trans-unit id="partials_alerts_form.terms">
                 <source>I accept the terms and conditions.</source>
                 <target>Ich akzeptiere die Nutzungsbedingungen.</target>
             </trans-unit>
+            <trans-unit id="partials_alerts_form.labelCreateNew">
+                <source>Create Alert</source>
+                <target>Auf dem Laufenden bleiben</target>
+            </trans-unit>
+
+
+
+            <!-- Partials/Alerts/New.html-->
+
+
+
             <trans-unit id="partials_alerts_new.labelTopic">
                 <source>Topic</source>
                 <target>Thema</target>

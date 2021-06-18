@@ -16,36 +16,43 @@ namespace RKW\RkwAlerts\Domain\Repository;
  */
 
 /**
- * Class AlertsRepository
+ * Class AlertRepository
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AlertsRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 
 
     /**
-     * findExistingAlert
+     * findOneByFrontendUserAndProject
      * finds alert by frontendUser and project
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwAlerts\Domain\Model\Project $project
+     * @return object
      */
-    public function findExistingAlert(\RKW\RkwAlerts\Domain\Model\Alerts $alert)
+    public function findOneByFrontendUserAndProject(
+        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
+        \RKW\RkwAlerts\Domain\Model\Project $project
+    )
     {
-
         $query = $this->createQuery();
-
         return $query
             ->matching(
                 $query->logicalAnd(
-                    $query->equals('frontendUser', $alert->getFrontendUser()->getUid()),
-                    $query->equals('project', $alert->getProject()->getUid())
+                    $query->equals('frontendUser',$frontendUser->getUid()),
+                    $query->equals('project', $project->getUid())
                 )
             )
-            ->execute()->count();
-        //===
+            ->execute()->getFirst();
     }
+
+
+
 
 
     /**

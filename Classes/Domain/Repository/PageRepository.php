@@ -18,14 +18,14 @@ use RKW\RkwBasics\Helper\QueryTypo3;
  */
 
 /**
- * Class PagesRepository
+ * Class PageRepository
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class PagesRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 
 

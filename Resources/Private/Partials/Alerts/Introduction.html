@@ -1,0 +1,41 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	xmlns:rkwAjax="http://typo3.org/ns/RKW/RkwAjax/ViewHelpers"
+	data-namespace-typo3-fluid="true">
+
+	<h3><f:translate key="partials_alerts_introduction.headline" /></h3>
+	<rkwAjax:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="1">
+		<div>
+			<p>
+				<f:comment><!-- Check if form is to be displayed --></f:comment>
+				<f:if condition="{displayForm}">
+					<f:then>
+						<f:format.raw>
+							<f:translate key="partials_alerts_introduction.text1" arguments="{0 : project.name}" />
+
+							<f:comment><!-- Check if user is logged in --></f:comment>
+							<f:if condition="{frontendUser}">
+								<f:then>
+									<f:translate key="partials_alerts_introduction.text2_loggedIn"  />
+								</f:then>
+								<f:else>
+									<f:translate key="partials_alerts_introduction.text2"  />
+								</f:else>
+							</f:if>
+						</f:format.raw>
+					</f:then>
+
+					<f:comment><!-- if user has already subscribed --></f:comment>
+					<f:else>
+						<f:format.raw>
+							<f:translate key="partials_alerts_introduction.text1_exists" arguments="{0 : project.name}" />
+						</f:format.raw>
+						<f:link.page pageUid="{listPid}" target="_blank">
+							<f:translate key="partials_alerts_introduction.text2_exists"/>
+						</f:link.page>
+					</f:else>
+				</f:if>
+			</p>
+		</div>
+	</rkwAjax:ajaxWrapper>
+
+</html>

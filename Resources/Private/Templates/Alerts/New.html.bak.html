@@ -1,0 +1,103 @@
+{namespace rkwRegistration=RKW\RkwRegistration\ViewHelpers}
+<f:layout name="Default" />
+
+This template displays a NEW form for the current domain object.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        New.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="Default">
+
+	<f:render partial="FlashMessages" arguments="{_all}" />
+	<f:render partial="FormErrors" arguments="{object:Alert}" />
+
+	<f:if condition="{selectFromList}">
+		<f:then>
+			<f:if condition="{projectList}">
+				<f:render section="InnerPart" arguments="{_all}" />
+			</f:if>
+		</f:then>
+		<f:else>
+			<f:if condition="{project}" >
+				<f:render section="InnerPart" arguments="{_all}"/>
+			</f:if>
+		</f:else>
+
+	</f:if>
+
+</f:section>
+
+<!-- InnerPart -->
+<f:section name="InnerPart">
+	<f:form action="create" name="newAlert" object="{newAlert}" class="form-fields">
+
+		<f:if condition="{validFrontendUser} == 1">
+			<f:then>
+				<f:if condition="{selectFromList}">
+					<f:then>
+						<f:render partial="Alerts/New" section="IntroductionMessageSelectLoggedIn" arguments="{_all}"/>
+					</f:then>
+					<f:else>
+						<f:render partial="Alerts/New" section="IntroductionMessageLoggedIn" arguments="{_all}"/>
+					</f:else>
+				</f:if>
+			</f:then>
+			<f:else>
+				<f:if condition="{selectFromList}">
+					<f:then>
+						<f:render partial="Alerts/New" section="IntroductionMessageSelect" arguments="{_all}"/>
+					</f:then>
+					<f:else>
+						<f:render partial="Alerts/New" section="IntroductionMessage" arguments="{_all}"/>
+					</f:else>
+				</f:if>
+			</f:else>
+		</f:if>
+
+      	<f:if condition="{showNew}" >
+			<f:then>
+                <div class="v320-1-of-2">
+                    <f:if condition="{selectFromList}" >
+                        <f:then>
+                            <f:render partial="Alerts/New" section="SelectForm" arguments="{_all}"/>
+                        </f:then>
+                        <f:else>
+                            <f:form.hidden property="project" value="{project}"/>
+                        </f:else>
+                    </f:if>
+
+                    <f:if condition="{validFrontendUser} == 0">
+						<f:then>
+							<div>
+								<f:render partial="Alerts/New" section="CreateForm" arguments="{_all}"/>
+							</div>
+						</f:then>
+                        <f:else>
+							<span class="checkbox">
+								<label>
+									<f:form.checkbox name="privacy" value="1" />
+									<rkwRegistration:privacyText />
+								</label>
+							</span>
+						</f:else>
+                    </f:if>
+
+                    <button type="submit" class="button">
+                        <span><f:translate key="templates_alerts_new.labelCreateNew" /></span>
+                    </button>
+                </div>
+			</f:then>
+			<f:else>
+				<f:render partial="Alerts/New" section="AlreadyExistingMessage" arguments="{_all}" />
+			</f:else>
+		</f:if>
+
+	</f:form>
+
+</f:section>

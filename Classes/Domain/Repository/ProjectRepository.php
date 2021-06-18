@@ -16,14 +16,14 @@ namespace RKW\RkwAlerts\Domain\Repository;
  */
 
 /**
- * Class ProjectsRepository
+ * Class ProjectRepository
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ProjectsRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class ProjectRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 
 
