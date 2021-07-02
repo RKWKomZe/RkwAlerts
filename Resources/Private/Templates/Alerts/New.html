@@ -5,19 +5,24 @@
 
 	<f:section name="Default">
 
+
 		<f:if condition="{project}" >
 
 			<f:comment><!-- Ajax-Call for logged in users. But only do an ajax-call if fe-cookie is set. --></f:comment>
 			<template class="ajax" id="tx-rkwalerts-ajax"></template>
-			<script type="text/javascript">
-				var txRkwRegistrationAjaxUrl = "{f:uri.action(action:'new', absolute:'1', additionalParams:'{rkw_ajax : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1,2\\\'}\'}') -> f:format.raw()}";
-				if (document.cookie.split(';').some((item) => item.trim().startsWith('fe_typo_user='))) {
-					document.getElementById('tx-rkwalerts-ajax').setAttribute('data-ajax-url', txRkwRegistrationAjaxUrl);
-				}
-			</script>
+			<f:if condition="! {ajaxHelper.isPostCall}">
+				<script type="text/javascript">
+					var txRkwRegistrationAjaxUrl = "{f:uri.action(action:'new', absolute:'1', additionalParams:'{rkw_ajax : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1,2\\\'}\'}') -> f:format.raw()}";
+					if (document.cookie.split(';').some((item) => item.trim().startsWith('fe_typo_user='))) {
+						document.getElementById('tx-rkwalerts-ajax').setAttribute('data-ajax-url', txRkwRegistrationAjaxUrl);
+					}
+				</script>
+			</f:if>
 
 			<f:comment><!-- Contents --></f:comment>
-			<f:render partial="Alerts/Introduction" arguments="{_all}"/>
+			<f:render partial="Alerts/Introduction" section="Headline" arguments="{_all}"/>
+			<f:render partial="FlashMessages" arguments="{_all}" />
+			<f:render partial="Alerts/Introduction" section="Body" arguments="{_all}"/>
 			<f:render partial="Alerts/Form" arguments="{_all}"/>
 		</f:if>
 

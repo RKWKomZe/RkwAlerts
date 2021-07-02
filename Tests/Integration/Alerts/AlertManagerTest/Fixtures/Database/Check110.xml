@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <fe_users>
+        <uid>110</uid>
+        <pid>0</pid>
+        <username>testen@test.de</username>
+        <email>teste-email@test.de</email>
+    </fe_users>
+
+    <tx_rkwprojects_domain_model_projects>
+        <uid>110</uid>
+        <pid>1</pid>
+        <short_name>Testprojekt Short</short_name>
+        <tx_rkwalerts_enable_alerts>1</tx_rkwalerts_enable_alerts>
+    </tx_rkwprojects_domain_model_projects>
+
+</dataset>

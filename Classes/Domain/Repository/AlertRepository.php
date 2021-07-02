@@ -29,7 +29,7 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * findOneByFrontendUserAndProject
-     * finds alert by frontendUser and project
+     * find one alert by frontendUser and project
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param \RKW\RkwAlerts\Domain\Model\Project $project
@@ -56,7 +56,7 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
 
     /**
-     * Find all alerts  that have been updated recently
+     * Find all alerts by frontend-user
      * Used by delete Signal-Slot
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
@@ -74,6 +74,5 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         );
 
         return $query->execute();
-        //===
     }
 }

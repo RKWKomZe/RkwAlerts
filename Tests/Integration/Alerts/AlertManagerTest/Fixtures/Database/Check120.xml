@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+
+    <tx_rkwprojects_domain_model_projects>
+        <uid>120</uid>
+        <pid>1</pid>
+        <short_name>Testprojekt Short</short_name>
+        <tx_rkwalerts_enable_alerts>1</tx_rkwalerts_enable_alerts>
+    </tx_rkwprojects_domain_model_projects>
+
+</dataset>

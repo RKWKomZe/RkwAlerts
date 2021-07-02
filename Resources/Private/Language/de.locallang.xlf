@@ -17,11 +17,91 @@
 			</trans-unit>
 
 
+
+			<!-- alertManager-->
+            <trans-unit id="alertManager.error.acceptTerms">
+                <source>Sorry, this has to be done: Please accept our terms of use to enjoy RKW Alerts.</source>
+                <target>Das muss leider sein: Bitte akzeptieren Sie unsere Nutzungsbedingungen, um RKW Alerts nutzen zu können.</target>
+            </trans-unit>
+            <trans-unit id="alertManager.error.acceptPrivacy">
+                <source>The protection of your data is important to us. Therefore we ask you to agree to the storage of your personal data.</source>
+   				<target>Der Schutz Ihrer Daten ist uns wichtig. Daher bitten wir Sie, der Speicherung Ihrer persönlichen Daten zuzustimmen.</target>
+            </trans-unit>
+            <trans-unit id="alertManager.error.invalidEmail">
+                <source>Something went wrong. Please enter a valid e-mail address.</source>
+                <target>Da ist etwas schief gelaufen. Bitte geben Sie eine gültige E-Mailadresse ein.</target>
+            </trans-unit>
+            <trans-unit id="alertManager.error.projectInvalid">
+                <source>Something went wrong. The selected project seems to be not (anymore) activated for RKW Alerts.</source>
+                <target>Da ist etwas schief gelaufen. Das gewählte Projekt scheint nicht (mehr) für RKW Alerts aktiviert zu sein.</target>
+            </trans-unit>
+            <trans-unit id="alertManager.error.alreadySubscribed">
+                <source>Something went wrong. Is it possible that you have already subscribed to RKW Alerts for this project?</source>
+                <target>Da ist etwas schief gelaufen. Kann es sein, dass Sie RKW Alerts für dieses Projekt schon abonniert haben?</target>
+            </trans-unit>
+            <trans-unit id="alertManager.error.frontendUserNotPersisted">
+                <source><![CDATA[Something went wrong. The user account passed doesn't seem to exist yet. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+                <target><![CDATA[Da ist etwas schief gelaufen. Der übergebene Nutzer-Account scheint noch gar nicht zu existieren. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="alertManager.error.frontendUserNotPersisted">
+                <source><![CDATA[Something went wrong. The user account passed doesn't seem to exist yet. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+                <target><![CDATA[Da ist etwas schief gelaufen. Der übergebene Nutzer-Account scheint noch gar nicht zu existieren. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="alertManager.error.frontendUserInvalid">
+                <source><![CDATA[Something has gone wrong. The RKW alert does not appear to belong to the current user. Please contact our <a href="mailto:service@rkw.de">support</a>.]]></source>
+                <target><![CDATA[Da ist etwas schief gelaufen. Der RKW Alert scheint nicht zum aktuellen Nutzer zu gehören. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="alertManager.error.frontendUserMissing">
+                <source><![CDATA[Something went wrong. No user account was passed. Please contact our <a href="mailto:service@rkw.de">support</a>.]]>.</source>
+                <target><![CDATA[Da ist etwas schief gelaufen. Es wurde kein Nutzer-Account übergeben. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="alertManager.error.frontendUserNotLoggedIn">
+                <source><![CDATA[Something went wrong. You must be logged in to perform this action. Please contact our <a href="mailto:service@rkw.de">support</a>.]]>.</source>
+                <target><![CDATA[Da ist etwas schief gelaufen. Sie müssen eingeloggt sein, um diese Aktion durchführen zu können. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="alertManager.error.alertAlreadyPersisted">
+                <source><![CDATA[Something went wrong. The RKW Alert that was passed in seems to already exist. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+                <target><![CDATA[Da ist etwas schief gelaufen. Der übergebene RKW Alert scheint schon zu existieren. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="alertManager.error.alertNotPersisted">
+                <source><![CDATA[Something went wrong. The RKW Alert that was passed in does not exist. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+                <target><![CDATA[Da ist etwas schief gelaufen. Der übergebene RKW Alert scheint nicht zu existieren. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+
+
+
             <!-- alertController -->
-            <trans-unit id="alertController.error.not_logged_in">
+            <trans-unit id="alertManager.error.create">
+                <source><![CDATA[Something went wrong. The RKW Alert could not be created. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+                <target><![CDATA[Da ist etwas schief gelaufen. Der RKW Alert konnte nicht angelegt werden. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="alertController.message.create_1">
+                <source>Woohoo! Alert successfully created.</source>
+                <target>Woohoo! Der RKW Alert wurde angelegt.</target>
+            </trans-unit>
+            <trans-unit id="alertController.message.create_2">
+                <source>An e-mail has been send to you. Please click the link in the e-mail to confirm your request.</source>
+                <target><![CDATA[Fast geschafft! Eine E-Mail mit einem Bestätigungslink ist auf dem Weg zu Ihnen. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie Ihren Spam-Filter. Selbstverständlich steht Ihnen aber auch unser <a href="mailto:service@rkw.de">Support</a> bei Problemen jederzeit gerne zur Verfügung.]]></target>
+            </trans-unit>
+            <trans-unit id="alertController.message.create_3">
+                <source>Too bad you changed your mind. The RKW alert has been deleted.</source>
+                <target>Schade, dass Sie es sich anders überlegt haben. Der RKW Alert wurde gelöscht.</target>
+            </trans-unit>
+            <trans-unit id="alertController.error.notLoggedIn">
                 <source>You must be logged in to use this feature.</source>
                 <target>Sie müssen eingeloggt sein, um dieses Feature nutzen zu können.</target>
             </trans-unit>
+            <trans-unit id="alertController.error.delete">
+                <source><![CDATA[Something went wrong. The RKW Alert could not be deleted. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+                <target><![CDATA[Da ist etwas schief gelaufen. Der RKW Alert konnte nicht gelöscht werden. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="alertController.message.delete">
+                <source>Woohoo! Alert successfully deleted.</source>
+                <target>Woohoo! Der RKW Alert wurde erfolgreich gelöscht.</target>
+            </trans-unit>
+
+
+
             <trans-unit id="alertController.error.no_valid_email">
                 <source>Please enter a valid username.</source>
                 <target>Da ist etwas schief gelaufen. Bitte geben Sie eine gültige E-Mailadresse ein.</target>
@@ -30,10 +110,8 @@
                 <source>The given E-mail is already used by another user.</source>
                 <target>Hm, die gewünschte E-Mailadresse wird bereits von einem anderen Nutzer verwendet. Bitte geben Sie eine andere E-Mailadresse an.</target>
             </trans-unit>
-            <trans-unit id="alertController.message.alert_created">
-                <source>Alert successfully created.</source>
-                <target>Woohoo! Der RKW Alert wurde angelegt.</target>
-            </trans-unit>
+
+
             <trans-unit id="alertController.message.something_went_wrong">
 				<source>Something went wrong.</source>
 				<target>Da stimmt etwas nicht! Die gewünschte Aktion kann leider nicht ausgeführt werden.</target>
@@ -42,10 +120,7 @@
                 <source>Alert already exists.</source>
                 <target>Der RKW Alert existiert bereits. Das Thema scheint also sehr interessant zu sein ;-)</target>
             </trans-unit>
-            <trans-unit id="alertController.message.alert_deleted">
-                <source>Alert successfully deleted.</source>
-                <target>Der RKW Alert wurde gelöscht.</target>
-            </trans-unit>
+
             <trans-unit id="alertController.message.alert_canceled">
                 <source>Alert creation was canceled.</source>
                 <target>Schade, dass Sie es sich anders überlegt haben. Der RKW Alert wurde gelöscht.</target>

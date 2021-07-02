@@ -46,7 +46,7 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      */
-    public function getFrontendUser(): \RKW\RkwRegistration\Domain\Model\FrontendUser
+    public function getFrontendUser()
     {
         return $this->frontendUser;
     }
@@ -67,7 +67,7 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return \RKW\RkwAlerts\Domain\Model\Project $project
      */
-    public function getProject(): \RKW\RkwAlerts\Domain\Model\Project
+    public function getProject()
     {
         return $this->project;
     }

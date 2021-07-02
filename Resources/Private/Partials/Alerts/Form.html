@@ -3,7 +3,7 @@
 	xmlns:rkwAjax="http://typo3.org/ns/RKW/RkwAjax/ViewHelpers"
 	data-namespace-typo3-fluid="true">
 
-	<f:form action="create" name="newAlert" object="{newAlert}">
+	<f:form action="create" name="alert" object="{alert}">
 		<f:form.hidden property="project" value="{project}"/>
 
 		<rkwAjax:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="2">
@@ -14,13 +14,10 @@
 					<div class="flex-basis-8 full-width-medium">
 						<div class="form">
 							<f:if condition="{frontendUser}">
-								<f:then>
-									<input type="hidden" name="email" value="{frontendUser.email}"  />
-								</f:then>
 								<f:else>
 									<div class="form__field width50">
 										<label for="email"><f:translate key="partials_alerts_form.labelEmail" /></label>
-										<input type="email" name="email" id="email" value="{email}" aria-required="true" autocomplete="email" />
+										<f:form.textfield type="email" name="email" id="email" value="{email}" additionalAttributes="{autocomplete: 'email', aria-required: 'true'}" />
 									</div>
 								</f:else>
 							</f:if>
@@ -29,7 +26,7 @@
 								<f:if condition="{frontendUser}">
 									<f:then>
 										<div class="form__field">
-											<f:form.checkbox name="privacy" value="1" id="privacy" class="checkbox" />
+											<f:form.checkbox name="privacy" value="1" id="privacy" class="checkbox" checked="{privacy}" />
 											<label for="privacy" class="checkbox-label">
 												<rkwRegistration:privacyText textVersion="defaultAlternative" />
 											</label>
@@ -37,7 +34,7 @@
 									</f:then>
 									<f:else>
 										<div class="form__field">
-											<f:form.checkbox name="terms" value="1" id="terms" class="checkbox" />
+											<f:form.checkbox name="terms" value="1" id="terms" class="checkbox" checked="{terms}" />
 											<label for="terms" class="checkbox-label">
 												<f:link.page pageUid="{termsPid}" target="_blank">
 													<f:translate key="partials_alerts_form.terms" />
@@ -45,7 +42,7 @@
 											</label>
 										</div>
 										<div class="form__field">
-											<f:form.checkbox name="privacy" value="1" id="privacy" class="checkbox" />
+											<f:form.checkbox name="privacy" value="1" id="privacy" class="checkbox" checked="{privacy}" />
 											<label for="privacy" class="checkbox-label">
 												<rkwRegistration:privacyText />
 											</label>
@@ -54,7 +51,7 @@
 								</f:if>
 
 								<div class="form__field flex space-start full-width-narrow">
-									<button class="btn btn--primary full-width-narrow">
+									<button class="btn btn--primary full-width-narrow" name="alerts-submit">
 										<f:translate key="partials_alerts_form.labelCreateNew" />
 									</button>
 								</div>
