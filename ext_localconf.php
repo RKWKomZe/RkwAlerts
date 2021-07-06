@@ -53,7 +53,7 @@ call_user_func(
             'RKW\\RkwRegistration\\Tools\\Registration',
             \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_DELETING_USER,
             'RKW\\RkwAlerts\\Alerts\\AlertManager',
-            'deleteAllAlertsByFrontendEndUser'
+            'deleteAlertsByFrontendEndUser'
         );
 
         $signalSlotDispatcher->connect(

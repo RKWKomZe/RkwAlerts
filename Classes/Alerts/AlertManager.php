@@ -588,12 +588,12 @@ class AlertManager
 
 
     /**
-     * deleteAllAlertsByFrontendEndUser
+     * deleteAlertsByFrontendEndUser
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return bool
      */
-    public function deleteAllAlertsByFrontendEndUser (
+    public function deleteAlertsByFrontendEndUser (
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
     ): bool
     {

@@ -1316,7 +1316,7 @@ class AlertManagerTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function deleteAllAlertsByFrontendEndUserReturnsFalseOnEmptyList ()
+    public function deleteAlertsByFrontendEndUserReturnsFalseOnEmptyList ()
     {
 
         /**
@@ -1333,7 +1333,7 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(260);
 
-        $result = $this->subject->deleteAllAlertsByFrontendEndUser($frontendUser);
+        $result = $this->subject->deleteAlertsByFrontendEndUser($frontendUser);
         static::assertFalse($result);
 
     }
@@ -1342,7 +1342,7 @@ class AlertManagerTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function deleteAllAlertsByFrontendEndUserReturnsTrue ()
+    public function deleteAlertsByFrontendEndUserReturnsTrue ()
     {
 
         /**
@@ -1363,7 +1363,7 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(270);
 
-        $result = $this->subject->deleteAllAlertsByFrontendEndUser($frontendUser);
+        $result = $this->subject->deleteAlertsByFrontendEndUser($frontendUser);
         static::assertTrue($result);
 
         $alertDb = $this->alertRepository->findByIdentifier(270);

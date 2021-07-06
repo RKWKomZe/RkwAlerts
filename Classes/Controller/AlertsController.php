@@ -57,23 +57,6 @@ class AlertsController extends \RKW\RkwAjax\Controller\AjaxAbstractController
 
 
     /**
-     * pagesRepository
-     *
-     * @var \RKW\RkwAlerts\Domain\Repository\PageRepository
-     * @inject
-     */
-    protected $pageRepository;
-
-    /**
-     * projectsRepository
-     *
-     * @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository
-     * @inject
-     */
-    protected $projectRepository = null;
-
-
-    /**
      * alertsManager
      *
      * @var \RKW\RkwAlerts\Alerts\AlertManager
@@ -86,14 +69,6 @@ class AlertsController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * @var \TYPO3\CMS\Core\Log\Logger
      */
     protected $logger;
-
-
-    /**
-     * Signal name for use in ext_localconf.php
-     *
-     * @const string
-     */
-    const SIGNAL_AFTER_ALERTS_CANCELED_USER = 'afterAlertsCanceledUser';
 
 
     /**
@@ -142,7 +117,7 @@ class AlertsController extends \RKW\RkwAjax\Controller\AjaxAbstractController
             $displayForm = true;
 
             // Important security measure because of Varnish:
-            // only set individual params if the form was submitted OR it was loaded via AJAX!
+            // only set individual params if the form was submitted OR if it was loaded via AJAX!
             if (
                 ($this->ajaxHelper->getIsPostCall())
                 || ($this->ajaxHelper->getIsAjaxCall())
