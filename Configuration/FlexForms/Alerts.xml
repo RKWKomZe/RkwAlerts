@@ -15,16 +15,17 @@
                                 <items>
                                     <numIndex index="0">
                                         <numIndex index="0">LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:flexform.alerts.action.I.new</numIndex>
-                                        <numIndex index="1">Alerts->newInit;Alerts->newAjax;Alerts->new;Alerts->create;Alerts->optIn;Alerts->index</numIndex>
+                                        <numIndex index="1">Alert->new;Alert->create;Alert->optIn</numIndex>
                                     </numIndex>
                                     <numIndex index="1">
                                         <numIndex index="0">LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:flexform.alerts.action.I.list</numIndex>
-                                        <numIndex index="1">Alerts->list;Alerts->delete;Alerts->deleteconfirm;Alerts->index</numIndex>
+                                        <numIndex index="1">Alert->list;Alert->delete;Alert->deleteconfirm</numIndex>
                                     </numIndex>
                                 </items>
                             </config>
                         </TCEforms>
                     </switchableControllerActions>
+                    <!--
                     <settings.show.listSelect>
                         <TCEforms>
                             <label>LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:flexform.show.listSelect</label>
@@ -32,7 +33,7 @@
                                 <type>check</type>
                             </config>
                         </TCEforms>
-                    </settings.show.listSelect>
+                    </settings.show.listSelect> -->
                 </el>
             </ROOT>
         </sDEF>

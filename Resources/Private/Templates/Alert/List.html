@@ -1,0 +1,43 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	data-namespace-typo3-fluid="true">
+
+	<f:layout name="MeinRKW" />
+
+	<f:section name="Default">
+
+		<h3><f:translate key="templates_alert_list.headline" /></h3>
+
+		<f:render partial="FlashMessages" arguments="{_all}" />
+
+		<p><f:translate key="templates_alert_list.description" /></p>
+
+		<f:if condition="{alerts}" >
+			<f:then>
+				<table class="responsive-table responsive-table--background" >
+				<f:for each="{alerts}" as="alert" iteration="iterator">
+						<f:if condition="{alert.project}">
+							<tr>
+								<td>
+									<h3 class="h4">{alert.project.shortName}</h3>
+									<p>{alert.project.name}</p>
+									<div class="btn-list">
+										<f:link.action action="deleteconfirm" arguments="{alert : alert}" class="btn btn--primary">
+											<f:translate key="templates_alert_list.labelDelete" />
+										</f:link.action>
+									</div>
+								</td>
+							</tr>
+						</f:if>
+					</f:for>
+				</table>
+			</f:then>
+			<f:else>
+				<div class="system-message" role="alert">
+					<div class="system-message__item system-message__item--alert-danger">
+						<f:translate key="templates_alert_list.noAlertsAvailable" />
+					</div>
+				</div>
+			</f:else>
+		</f:if>
+	</f:section>
+</html>
