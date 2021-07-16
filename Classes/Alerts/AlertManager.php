@@ -16,7 +16,11 @@ namespace RKW\RkwAlerts\Alerts;
  */
 
 use RKW\RkwAlerts\Exception;
+use RKW\RkwBasics\Utility\FrontendLocalizationUtility;
+use RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwMailer\Service\MailService;
 use RKW\RkwRegistration\Tools\Registration;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Class AlertManager
@@ -126,15 +130,14 @@ class AlertManager
     }
 
 
-
     /**
-     * Checks if frontend user has subscribed the given project
+     * Checks if frontend user has subscribed to the given project
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param \RKW\RkwAlerts\Domain\Model\Project $project
      * @return bool
      */
-    public function hasFrontendUserSubscribedProject (
+    public function hasFrontendUserSubscribedToProject (
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
         \RKW\RkwAlerts\Domain\Model\Project $project
     ): bool {
@@ -152,12 +155,12 @@ class AlertManager
 
 
     /**
-     * Gets the active alerts from the given list
+     * Gets the enabled alerts from the given list
      *
      * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts
      * @return array
      */
-    public function getActiveAlerts (
+    public function filterListBySubscribableProjects (
         \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts
     ): array {
 
@@ -243,7 +246,7 @@ class AlertManager
         ) {
 
             // check if subscription exists already
-            if ($this->hasFrontendUserSubscribedProject($frontendUser, $alert->getProject())) {
+            if ($this->hasFrontendUserSubscribedToProject($frontendUser, $alert->getProject())) {
                 throw new Exception('alertManager.error.alreadySubscribed');
             }
 
@@ -377,7 +380,7 @@ class AlertManager
         }
 
         // check if subscription exists already
-        if ($this->hasFrontendUserSubscribedProject($frontendUser, $alert->getProject())) {
+        if ($this->hasFrontendUserSubscribedToProject($frontendUser, $alert->getProject())) {
             throw new Exception('alertManager.error.alreadySubscribed');
         }
 
@@ -423,9 +426,7 @@ class AlertManager
         }
 
         return false;
-
     }
-
 
 
     /**
@@ -615,7 +616,7 @@ class AlertManager
                     self::SIGNAL_AFTER_ALERT_DELETED_ALL,
                     [
                         $frontendUser,
-                        $alerts
+                        $alerts,
                     ]
                 );
 
@@ -648,6 +649,198 @@ class AlertManager
     }
 
 
+
+    /**
+     * Gets an associative array with the projects to notify
+     * and the pages to link to
+     *
+     * @param string $filterField
+     * @param integer $timeSinceCreation
+     * @return array
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     */
+    public function getPagesAndProjectsToNotify(
+        $filterField,
+        $timeSinceCreation = 432000
+    ): array
+    {
+        $result = [];
+
+        if ($pages = $this->pageRepository->findAllToNotify($filterField, $timeSinceCreation)) {
+
+            /**  @var \RKW\RkwAlerts\Domain\Model\Page $page */
+            foreach ($pages as $page) {
+
+                $projectId = $page->getTxRkwprojectsProjectUid()->getUid();
+                if (! isset($result[$projectId])) {
+
+                    /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
+                    $project = $this->projectRepository->findByIdentifier($page->getTxRkwprojectsProjectUid()->getUid());
+                    $result[$projectId] = [
+                        'project' => $project,
+                        'pages' => [
+                            $page,
+                        ],
+                    ];
+
+                } else {
+                    $result[$projectId]['pages'][] = $page;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * Sends the notifications
+     *
+     * @param string $filterField
+     * @param integer $timeSinceCreation
+     * @return int
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     */
+    public function sendNotification(
+        $filterField,
+        $timeSinceCreation = 432000
+    ): int
+    {
+
+
+        // load projects to notify
+        $recipientCountGlobal = 0;
+        if ($results = $this->getPagesAndProjectsToNotify($filterField, $timeSinceCreation)) {
+
+            // get configuration
+            $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+
+            // build e-mails per project
+            foreach ($results as $projectId => $subArray) {
+
+                // check of basic information!
+                /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
+                if (
+                    ($project = $subArray['project'])
+                    && ($pages = $subArray['pages'])
+                ) {
+
+                    // find all alerts for project
+                    /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
+                    if ($alerts = $this->alertRepository->findByProject($projectId)) {
+
+                        try {
+
+                            /** @var \RKW\RkwMailer\Service\MailService $mailService */
+                            $mailService = GeneralUtility::makeInstance(MailService::class);
+
+                            // set recipients
+                            /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */
+                            foreach ($alerts as $alert) {
+
+                                // check if FE-User exists
+                                if (
+                                    ($frontendUser = $alert->getFrontendUser())
+                                    && ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser)
+                                ) {
+
+                                    $mailService->setTo(
+                                        $frontendUser,
+                                        array(
+                                            'marker'  => array(
+                                                'alert'        => $alert,
+                                                'frontendUser' => $frontendUser,
+                                                'loginPid'     => intval($settings['settings']['loginPid']),
+                                                'pages'        => $pages
+                                            ),
+                                            'subject' => FrontendLocalizationUtility::translate(
+                                                'rkwMailService.sendAlert.subject',
+                                                'rkw_alerts',
+                                                array($project->getName()),
+                                                $frontendUser->getTxRkwregistrationLanguageKey() ? $frontendUser->getTxRkwregistrationLanguageKey() : 'default'
+                                            ),
+                                        )
+                                    );
+                                }
+                            }
+
+                            // set default subject
+                            $mailService->getQueueMail()->setSubject(
+                                FrontendLocalizationUtility::translate(
+                                    'rkwMailService.sendAlert.subjectDefault',
+                                    'rkw_alerts',
+                                    array($project->getName()),
+                                    $settings['settings']['defaultLanguageKey'] ? $settings['settings']['defaultLanguageKey'] : 'default'
+                                )
+                            );
+
+                            // send mail
+                            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
+                            $mailService->getQueueMail()->addPartialPaths($settings['view']['partialRootPaths']);
+                            $mailService->getQueueMail()->setPlaintextTemplate('Email/Alert');
+                            $mailService->getQueueMail()->setHtmlTemplate('Email/Alert');
+                            $mailService->getQueueMail()->setType(2);
+
+                            if ($recipientCount = count($mailService->getTo())) {
+
+                                $recipientCountGlobal += $recipientCount;
+                                $mailService->send();
+                                $this->getLogger()->log(
+                                    \TYPO3\CMS\Core\Log\LogLevel::INFO,
+                                    sprintf(
+                                        'Successfully sent alert notification for project with id %s with %s recipients.',
+                                        $projectId,
+                                        $recipientCount
+                                    )
+                                );
+                            }
+
+                        } catch (\Exception $e) {
+
+                            // log error
+                            $this->getLogger()->log(
+                                \TYPO3\CMS\Core\Log\LogLevel::ERROR,
+                                sprintf(
+                                    'Error while trying to send an alert notification for project with uid %s: %s',
+                                    $projectId,
+                                    $e->getMessage()
+                                )
+                            );
+                        }
+                    }
+
+                    // no matter what happens: mark pages as sent
+                    /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
+                    foreach ($pages as $page) {
+                        $page->setTxRkwalertsSendStatus(1);
+                        $this->pageRepository->update($page);
+                    }
+
+                    // persist
+                    $this->persistenceManager->persistAll();
+                }
+            }
+
+            $this->getLogger()->log(
+                \TYPO3\CMS\Core\Log\LogLevel::INFO,
+                sprintf(
+                    'Successfully created %s alert notifications.',
+                    count($results)
+                )
+            );
+
+        } else {
+            $this->getLogger()->log(
+                \TYPO3\CMS\Core\Log\LogLevel::INFO,
+                sprintf('No alert notifications have been created.')
+            );
+        }
+
+        return $recipientCountGlobal;
+    }
+
+
     /**
      * Returns logger instance
      *
@@ -663,5 +856,17 @@ class AlertManager
         return $this->logger;
     }
 
+
+    /**
+     * Returns TYPO3 settings
+     *
+     * @param string $which Which type of settings will be loaded
+     * @return array
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
+    {
+        return GeneralUtility::getTyposcriptConfiguration('Rkwalerts', $which);
+    }
 
 }

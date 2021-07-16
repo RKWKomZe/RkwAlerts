@@ -5,7 +5,6 @@
 
 	<f:section name="Default">
 
-
 		<f:if condition="{project}" >
 
 			<f:comment><!-- Ajax-Call for logged in users. But only do an ajax-call if fe-cookie is set. --></f:comment>
@@ -20,10 +19,10 @@
 			</f:if>
 
 			<f:comment><!-- Contents --></f:comment>
-			<f:render partial="Alerts/Introduction" section="Headline" arguments="{_all}"/>
+			<f:render partial="Alert/Introduction" section="Headline" arguments="{_all}"/>
 			<f:render partial="FlashMessages" arguments="{_all}" />
-			<f:render partial="Alerts/Introduction" section="Body" arguments="{_all}"/>
-			<f:render partial="Alerts/Form" arguments="{_all}"/>
+			<f:render partial="Alert/Introduction" section="Body" arguments="{_all}"/>
+			<f:render partial="Alert/Form" arguments="{_all}"/>
 		</f:if>
 
 	</f:section>

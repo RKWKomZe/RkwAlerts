@@ -5,9 +5,13 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
 use RKW\RkwAlerts\Alerts\AlertManager;
 use RKW\RkwAlerts\Domain\Model\Alert;
+use RKW\RkwAlerts\Domain\Model\Page;
+use RKW\RkwAlerts\Domain\Model\Project;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
 use RKW\RkwAlerts\Domain\Repository\PageRepository;
 use RKW\RkwAlerts\Domain\Repository\ProjectRepository;
+use RKW\RkwMailer\Domain\Repository\QueueMailRepository;
+use RKW\RkwMailer\Domain\Repository\QueueRecipientRepository;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\Registration;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
@@ -92,6 +96,16 @@ class AlertManagerTest extends FunctionalTestCase
     private $registrationRepository;
 
     /**
+     * @var \RKW\RkwMailer\Domain\Repository\QueueMailRepository
+     */
+    private $queueMailRepository;
+
+    /**
+     * @var \RKW\RkwMailer\Domain\Repository\QueueRecipientRepository
+     */
+    private $queueRecipientRepository;
+
+    /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
      */
     private $persistenceManager;
@@ -146,6 +160,8 @@ class AlertManagerTest extends FunctionalTestCase
         $this->pageRepository = $this->objectManager->get(PageRepository::class);
         $this->projectRepository = $this->objectManager->get(ProjectRepository::class);
         $this->registrationRepository = $this->objectManager->get(RegistrationRepository::class);
+        $this->queueMailRepository = $this->objectManager->get(QueueMailRepository::class);
+        $this->queueRecipientRepository = $this->objectManager->get(QueueRecipientRepository::class);
 
     }
 
@@ -242,7 +258,7 @@ class AlertManagerTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function hasFrontendUserSubscribedProjectReturnsFalseIfFeUserNotPersisted ()
+    public function hasFrontendUserSubscribedToProjectReturnsFalseIfFeUserNotPersisted ()
     {
 
         /**
@@ -261,14 +277,14 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
         $project = $this->projectRepository->findByIdentifier(40);
 
-        self::assertFalse( $this->subject->hasFrontendUserSubscribedProject($feUser, $project));
+        self::assertFalse( $this->subject->hasFrontendUserSubscribedToProject($feUser, $project));
     }
 
     /**
      * @test
      * @throws \Exception
      */
-    public function hasFrontendUserSubscribedProjectReturnsFalseIfProjectNotPersisted ()
+    public function hasFrontendUserSubscribedToProjectReturnsFalseIfProjectNotPersisted ()
     {
 
         /**
@@ -288,7 +304,7 @@ class AlertManagerTest extends FunctionalTestCase
         $project = $this->objectManager->get(\RKW\RkwAlerts\Domain\Model\Project::class);
         $project->setTxRkwalertsEnableAlerts(true);
 
-        self::assertFalse( $this->subject->hasFrontendUserSubscribedProject($feUser, $project));
+        self::assertFalse( $this->subject->hasFrontendUserSubscribedToProject($feUser, $project));
     }
 
 
@@ -296,7 +312,7 @@ class AlertManagerTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function hasFrontendUserSubscribedProjectReturnsTrueIfAlreadySubscribed ()
+    public function hasFrontendUserSubscribedToProjectReturnsTrueIfAlreadySubscribed ()
     {
 
         /**
@@ -316,7 +332,7 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
         $project = $this->projectRepository->findByIdentifier(60);
 
-        self::assertTrue( $this->subject->hasFrontendUserSubscribedProject($feUser, $project));
+        self::assertTrue( $this->subject->hasFrontendUserSubscribedToProject($feUser, $project));
     }
 
     //=============================================
@@ -1385,7 +1401,7 @@ class AlertManagerTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function getActiveAlertsReturnsEmptyArrayOnEmptyList ()
+    public function filterListBySubscribableProjectsReturnsEmptyArrayOnEmptyList ()
     {
 
         /**
@@ -1402,7 +1418,7 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts */
         $alerts = $this->alertRepository->findAll();
 
-        $result = $this->subject->getActiveAlerts($alerts);
+        $result = $this->subject->filterListBySubscribableProjects($alerts);
         static::assertInternalType('array', $result);
         static::assertCount(0, $result);
 
@@ -1412,7 +1428,7 @@ class AlertManagerTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function getActiveAlertsReturnsActiveAlertsOnly ()
+    public function filterListBySubscribableProjectsReturnsActiveAlertsOnly ()
     {
 
         /**
@@ -1433,12 +1449,607 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts */
         $alerts = $this->alertRepository->findAll();
 
-        $result = $this->subject->getActiveAlerts($alerts);
+        $result = $this->subject->filterListBySubscribableProjects($alerts);
         static::assertInternalType('array', $result);
         static::assertCount(1, $result);
         static::assertEquals(280, $result[0]->getUid());
 
 
+    }
+
+    //=============================================
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function getPagesAndProjectsToNotifyReturnsValidDoktypesOnly ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are two pages with doktype 1 and one page with doktype 2
+         * Given no alert has been sent for this pages, yet
+         * Given the pages belong to the same project
+         * Given that project is subscribable
+         * Given the pages were created 2 days before
+         * Given we search for pages that were created during the last 5 days
+         * When I call the method
+         * Then an array is returned
+         * Then the array contains one key
+         * Then the first key contains a sub-array 'pages'
+         * Then the first key contains a sub-array 'project'
+         * Then the 'project'-sub-array contains one project-object
+         * Then the 'pages'-sub-array contains two page-objects
+         * Then the two page objects have the doktype 1
+
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check300.xml');
+
+        // set date accordingly for our check
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        $timeNow = time();
+        foreach ($pages as $page) {
+            $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
+            $this->pageRepository->update($page);
+        }
+
+        $this->persistenceManager->persistAll();
+
+        // now do the check
+        $result = $this->subject->getPagesAndProjectsToNotify('crdate', 432000);
+        static::assertInternalType('array', $result);
+        static::assertCount(1, $result);
+
+        $subArray = current($result);
+        static::assertInstanceOf(Project::class, $subArray['project']);
+
+        static::assertCount(2, $subArray['pages']);
+        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
+        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
+
+        /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
+        $page = $subArray['pages'][0];
+        static::assertEquals(1, $page->getDoktype());
+
+        $page = $subArray['pages'][1];
+        static::assertEquals(1, $page->getDoktype());
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function getPagesAndProjectsToNotifyReturnsNonNotifiedPagesOnly ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are three pages with doktype 1
+         * Given no alert has been sent for two of the pages, yet
+         * Given an alert has been sent for one of the pages
+         * Given the pages belong to the same project
+         * Given that project is subscribable
+         * Given the pages were created 2 days before
+         * Given we search for pages that were created during the last 5 days
+         * When I call the method
+         * Then an array is returned
+         * Then the array contains one key with an array, which again has two keys
+         * Then the first key 'pages' is a sub-array
+         * Then the second key 'project' contains one project-object
+         * Then the 'pages'-sub-array contains two page-objects
+         * Then the two page objects have not been used for alert-notification, yet
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check310.xml');
+
+        // set date accordingly for our check
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        $timeNow = time();
+        foreach ($pages as $page) {
+            $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
+            $this->pageRepository->update($page);
+        }
+
+        $this->persistenceManager->persistAll();
+
+        // now do the check
+        $result = $this->subject->getPagesAndProjectsToNotify('crdate', 432000);
+        static::assertInternalType('array', $result);
+        static::assertCount(1, $result);
+
+        $subArray = current($result);
+        static::assertInstanceOf(Project::class, $subArray['project']);
+
+        static::assertCount(2, $subArray['pages']);
+        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
+        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
+
+        /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
+        $page = $subArray['pages'][0];
+        static::assertEquals(0, $page->getTxRkwalertsSendStatus());
+
+        $page = $subArray['pages'][1];
+        static::assertEquals(0, $page->getTxRkwalertsSendStatus());
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function getPagesAndProjectsToNotifyReturnsSubscribableProjectsOnly ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are three pages with doktype 1
+         * Given no alert has been sent for the pages, yet
+         * Given two pages belong to the same project
+         * Given that project is subscribable
+         * Given one page belongs to another project
+         * Given that project is not subscribable
+         * Given the pages were created 2 days before
+         * Given we search for pages that were created during the last 5 days
+         * When I call the method
+         * Then an array is returned
+         * Then the array contains one key with an array, which again has two keys
+         * Then the first key 'pages' is a sub-array
+         * Then the second key 'project' contains one project-object
+         * Then the 'pages'-sub-array contains two page-objects
+         * Then the two page objects belong to the subscribable project
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check320.xml');
+
+        // set date accordingly for our check
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        $timeNow = time();
+        foreach ($pages as $page) {
+            $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
+            $this->pageRepository->update($page);
+        }
+
+        $this->persistenceManager->persistAll();
+
+        // now do the check
+        $result = $this->subject->getPagesAndProjectsToNotify('crdate', 432000);
+        static::assertInternalType('array', $result);
+        static::assertCount(1, $result);
+
+        $subArray = current($result);
+        static::assertInstanceOf(Project::class, $subArray['project']);
+
+        static::assertCount(2, $subArray['pages']);
+        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
+        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
+
+        /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
+        $page = $subArray['pages'][0];
+        static::assertEquals(320, $page->getTxRkwprojectsProjectUid()->getUid());
+
+        $page = $subArray['pages'][1];
+        static::assertEquals(320, $page->getTxRkwprojectsProjectUid()->getUid());
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function getPagesAndProjectsToNotifyReturnsPagesInGivenTimeframeOnly ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are three pages with doktype 1
+         * Given no alert has been sent for the pages, yet
+         * Given all pages belong to the same project
+         * Given that project is subscribable
+         * Given two of pages were created 2 days before
+         * Given one of the pages was created 6 days before
+         * Given we search for pages that were created during the last 5 days
+         * When I call the method
+         * Then an array is returned
+         * Then the array contains one key with an array, which again has two keys
+         * Then the first key 'pages' is a sub-array
+         * Then the second key 'project' contains one project-object
+         * Then the 'pages'-sub-array contains two page-objects
+         * Then the two page objects have been created two days before
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check330.xml');
+
+        // set date accordingly for our check
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        $cnt = 0;
+        $timeNow = time();
+        foreach ($pages as $page) {
+            if ($cnt == 0) {
+                $page->setCrdate($timeNow - (6 * 60 * 60 * 24));
+            } else {
+                $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
+            }
+            $this->pageRepository->update($page);
+            $cnt++;
+        }
+
+        $this->persistenceManager->persistAll();
+
+        // now do the check
+        $result = $this->subject->getPagesAndProjectsToNotify('crdate', 432000);
+        static::assertInternalType('array', $result);
+        static::assertCount(1, $result);
+
+        $subArray = current($result);
+        static::assertInstanceOf(Project::class, $subArray['project']);
+
+        static::assertCount(2, $subArray['pages']);
+        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
+        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
+
+        /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
+        $page = $subArray['pages'][0];
+        static::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getCrdate());
+
+        $page = $subArray['pages'][1];
+        static::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getCrdate());
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function getPagesAndProjectsToNotifyReturnsPagesInGivenTimeframeOnlyWithCustomField ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are three pages with doktype 1
+         * Given no alert has been sent for the pages, yet
+         * Given all pages belong to the same project
+         * Given that project is subscribable
+         * Given all of the pages were created 6 days before
+         * Given two of pages have a date set to 2 days before in a custom field
+         * Given one of pages have a date set to 2 days before in a custom field
+         * Given we search for pages that were created during the last 5 days
+         * When I call the method
+         * Then an array is returned
+         * Then the array contains one key with an array, which again has two keys
+         * Then the first key 'pages' is a sub-array
+         * Then the second key 'project' contains one project-object
+         * Then the 'pages'-sub-array contains two page-objects
+         * Then the two page objects have been created two days before
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check340.xml');
+
+        // set date accordingly for our check
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        $cnt = 0;
+        $timeNow = time();
+        foreach ($pages as $page) {
+            if ($cnt == 0) {
+                $page->setLastUpdated($timeNow - (6 * 60 * 60 * 24));
+
+            } else {
+                $page->setLastUpdated($timeNow - (2 * 60 * 60 * 24));
+            }
+            $page->setCrdate($timeNow - (6 * 60 * 60 * 24));
+            $this->pageRepository->update($page);
+            $cnt++;
+        }
+
+        $this->persistenceManager->persistAll();
+
+        // now do the check
+        $result = $this->subject->getPagesAndProjectsToNotify('lastUpdated', 432000);
+        static::assertInternalType('array', $result);
+        static::assertCount(1, $result);
+
+        $subArray = current($result);
+        static::assertInstanceOf(Project::class, $subArray['project']);
+
+        static::assertCount(2, $subArray['pages']);
+        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
+        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
+
+        /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
+        $page = $subArray['pages'][0];
+        static::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getLastUpdated());
+
+        $page = $subArray['pages'][1];
+        static::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getLastUpdated());
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function getPagesAndProjectsToNotifyReturnsPagesGroupedByProject ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are five pages with doktype 1
+         * Given no alert has been sent for the pages, yet
+         * Given two pages belong to the same project
+         * Given that project is subscribable
+         * Given three pages belongs to another project
+         * Given that project is subscribable
+         * Given all pages were created 2 days before
+         * Given we search for pages that were created during the last 5 days
+         * When I call the method
+         * Then an array is returned
+         * Then the array contains two key with one array each, which again has two keys
+         * Then the first key 'pages' is a sub-array
+         * Then the second key 'project' contains one project-object
+         * Then the first 'pages'-sub-array contains two page-objects
+         * Then the second 'pages'-sub-array contains three page-objects
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check350.xml');
+
+        // set date accordingly for our check
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        $timeNow = time();
+        foreach ($pages as $page) {
+            $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
+            $this->pageRepository->update($page);
+        }
+
+        $this->persistenceManager->persistAll();
+
+        // now do the check
+        $result = $this->subject->getPagesAndProjectsToNotify('crdate', 432000);
+        static::assertInternalType('array', $result);
+        static::assertCount(2, $result);
+
+        $subArray = current($result);
+        static::assertInstanceOf(Project::class, $subArray['project']);
+
+        static::assertCount(2, $subArray['pages']);
+        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
+        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
+
+        next($result);
+        $subArray = current($result);
+        static::assertInstanceOf(Project::class, $subArray['project']);
+
+        static::assertCount(3, $subArray['pages']);
+        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
+        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
+        static::assertInstanceOf(Page::class, $subArray['pages'][2]);
+
+    }
+
+    //=============================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function sendNotificationChecksForCurrentContents ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are no new pages to notify about
+         * When I call the method
+         * Then zero is returned
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check360.xml');
+
+        $result = $this->subject->sendNotification('crdate', 432000);
+        static::assertEquals(0, $result);
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function sendNotificationChecksForSubscriptionsButMarksPagesAsDone ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are two pages to notify about
+         * Given the pages belong to a notifiable project
+         * Given there are no subscriptions for the given project
+         * When I call the method
+         * Then the relevant pages are marked as sent
+         * Then zero is returned
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check360.xml');
+
+        // set date accordingly for our check
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        $timeNow = time();
+        foreach ($pages as $page) {
+            $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
+            $this->pageRepository->update($page);
+        }
+
+        $this->persistenceManager->persistAll();
+
+        // now do the check
+        $result = $this->subject->sendNotification('crdate', 432000);
+        static::assertEquals(0, $result);
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function sendNotificationSendsMailsToExistentUsersOnlyAndMarksPagesAsDone ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are two pages to notify about
+         * Given the pages belong to a notifiable project
+         * Given there are three subscriptions to this project
+         * Given one of the subscriptions belongs to a deleted frontend-user
+         * When I call the method
+         * Then the relevant pages are marked as sent
+         * Then two is returned
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check370.xml');
+
+        // set date accordingly for our check
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        $timeNow = time();
+        foreach ($pages as $page) {
+            $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
+            $this->pageRepository->update($page);
+        }
+
+        $this->persistenceManager->persistAll();
+
+        // now do the check
+        $result = $this->subject->sendNotification('crdate', 432000);
+        static::assertEquals(2, $result);
+
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        foreach ($pages as $page) {
+            static::assertEquals(1, $page->getTxRkwalertsSendStatus());
+        }
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function sendNotificationSendsMailsForMultipleProjectsAndMarksPagesAsDone ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are five pages to notify about
+         * Given there are two notifiable project
+         * Given three pages belong to notifiable project A
+         * Given two pages belong to notifiable project B
+         * Given there are two subscriptions to project A
+         * Given there are four subscriptions to the project B
+         * When I call the method
+         * Then the relevant pages are marked as sent
+         * Then six is returned
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check380.xml');
+
+        // set date accordingly for our check
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        $timeNow = time();
+        foreach ($pages as $page) {
+            $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
+            $this->pageRepository->update($page);
+        }
+
+        $this->persistenceManager->persistAll();
+
+        // now do the check
+        $result = $this->subject->sendNotification('crdate', 432000);
+        static::assertEquals(6, $result);
+
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        foreach ($pages as $page) {
+            static::assertEquals(1, $page->getTxRkwalertsSendStatus());
+        }
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function sendNotificationCreatesMailsPerProjectWithLinkList ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are five pages to notify about
+         * Given there are two notifiable project
+         * Given three pages belong to notifiable project A
+         * Given two pages belong to notifiable project B
+         * Given there are two subscriptions to project A
+         * Given there are four subscriptions to the project B
+         * When I call the method
+         * Then the relevant pages are marked as sent
+         * Then one email is prepared for project A
+         * Then this email has two recipients
+         * Then one email is prepared for project B
+         * Then this email has four recipients
+         * Then six is returned
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check380.xml');
+
+        // set date accordingly for our check
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        $timeNow = time();
+        foreach ($pages as $page) {
+            $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
+            $this->pageRepository->update($page);
+        }
+
+        $this->persistenceManager->persistAll();
+
+        // now do the check
+        $result = $this->subject->sendNotification('crdate', 432000);
+        static::assertEquals(6, $result);
+
+        $queueMails = $this->queueMailRepository->findAll()->toArray();
+        static::assertCount(2, $queueMails);
+
+        $queueRecipients = $this->queueRecipientRepository->findByQueueMail($queueMails[0]);
+        static::assertCount(2, $queueRecipients);
+
+        $queueRecipients = $this->queueRecipientRepository->findByQueueMail($queueMails[1]);
+        static::assertCount(4, $queueRecipients);
     }
 
     //=============================================

@@ -10,7 +10,7 @@
 				<source>Frontend User</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwalerts_domain_model_alerts.topic">
-				<source>Topic</source>
+				<source>Project</source>
 			</trans-unit>
 
             <!-- alertController -->
@@ -49,12 +49,6 @@
             </trans-unit>
 
 
-            <!-- Templates/Alerts/New.html-->
-            <trans-unit id="templates_alerts_new.labelCreateNew">
-                <source>Create Alert</source>
-            </trans-unit>
-
-
             <!-- Templates/Alerts/List.html-->
             <trans-unit id="templates_alert_list.headline">
                 <source>Your active Alerts</source>
@@ -70,13 +64,12 @@
             </trans-unit>
 
 
-
             <!-- Templates/Alerts/Deleteconfirm.html-->
             <trans-unit id="templates_alert_deleteConfirm.headline">
                 <source>Delete Alert</source>
             </trans-unit>
             <trans-unit id="templates_alert_deleteConfirm.description">
-                <source>Do you really want to delete the Alert for topic "%s"?</source>
+                <source>Do you really want to delete the Alert for project "%s"?</source>
             </trans-unit>
             <trans-unit id="templates_alert_deleteConfirm.labelYes">
                 <source>Yes, do it</source>
@@ -88,10 +81,10 @@
 
             <!-- Partials/Alerts/New.html-->
             <trans-unit id="partials_alerts_new.introduction">
-                <source><![CDATA[Always be up-to-date with RKW Alerts for topic "<strong>%s</strong>".]]></source>
+                <source><![CDATA[Always be up-to-date with RKW Alerts for project "<strong>%s</strong>".]]></source>
             </trans-unit>
             <trans-unit id="partials_alerts_new.introductionSelect">
-                <source><![CDATA[Always be up-to-date with RKW Alerts for your topic.]]></source>
+                <source><![CDATA[Always be up-to-date with RKW Alerts for your project.]]></source>
             </trans-unit>
             <trans-unit id="partials_alerts_new.introductionNotLoggedIn">
                 <source>All you need is an E-mail-address and 10 seconds of time.</source>
@@ -103,16 +96,13 @@
                 <source>E-Mail</source>
             </trans-unit>
             <trans-unit id="partials_alerts_new.alertAlreadyExists">
-                <source>Alert for topic "%s" is active.</source>
+                <source>Alert for project "%s" is active.</source>
             </trans-unit>
             <trans-unit id="partials_alerts_new.alertAlreadyExistsLabel">
                 <source>Click here to change settings.</source>
             </trans-unit>
             <trans-unit id="partials_alerts_new.terms">
                 <source>I accept the terms and conditions.</source>
-            </trans-unit>
-            <trans-unit id="partials_alerts_new.labelTopic">
-                <source>Topic</source>
             </trans-unit>
 
 
@@ -125,10 +115,10 @@
                 <source>Your RKW Alerts have been canceled</source>
             </trans-unit>
             <trans-unit id="rkwMailService.sendAlert.subject">
-                <source>New RKW Alert for topic "%s"</source>
+                <source>New RKW Alert for project "%s"</source>
             </trans-unit>
             <trans-unit id="rkwMailService.sendAlert.subjectDefault">
-                <source>New RKW Alert for topic "%s"</source>
+                <source>New RKW Alert for project "%s"</source>
             </trans-unit>
 
 
@@ -138,7 +128,7 @@
                 <source>Hello,</source>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.text1">
-                <source>thank you for your interest in RKW Alerts for the following topic:</source>
+                <source>thank you for your interest in RKW Alerts for the following project:</source>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptIn">
                 <source>Click here to confirm your request:</source>
@@ -171,19 +161,23 @@
                 <source>Hello,</source>
             </trans-unit>
             <trans-unit id="templates_email_alert.text1">
-                <source>there are new contents on the topic "%s" available.</source>
+                <source>there are new contents on the project "%s" available.</source>
             </trans-unit>
             <trans-unit id="templates_email_alert.linkLabel">
                 <source>Click here to see the contents</source>
             </trans-unit>
             <trans-unit id="templates_email_alert.text2">
-                <source>You get this E-mail because you activated alerts for this topic.</source>
+                <source>You get this E-mail because you activated alerts for this project.</source>
             </trans-unit>
             <trans-unit id="templates_email_alert.loginLinkLabel">
                 <source>Log in here to adjust settings or cancel alerts.</source>
             </trans-unit>
 
-		</body>
+            <!-- Partials/Email/LinkList.html -->
+            <trans-unit id="partials_email_linkList.readMore">
+                <source>read more</source>
+            </trans-unit>
 
+		</body>
 	</file>
 </xliff>

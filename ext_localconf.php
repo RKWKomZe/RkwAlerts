@@ -12,11 +12,11 @@ call_user_func(
             'RKW.' . $extKey,
             'Rkwalerts',
             array(
-                'Alerts' => 'index, list, newInit, newAjax, create, delete, deleteconfirm, optIn',
+                'Alert' => 'index, list, newInit, newAjax, create, delete, deleteconfirm, optIn',
             ),
             // non-cacheable actions
             array(
-                'Alerts' => 'new, list, newAjax, create, delete, deleteconfirm, optIn',
+                'Alert' => 'new, list, newAjax, create, delete, deleteconfirm, optIn',
             )
         );
 
@@ -57,7 +57,7 @@ call_user_func(
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwAlerts\\Controller\\AlertsController',
+            'RKW\\RkwAlerts\\Controller\\AlertController',
             \RKW\RkwAlerts\Alerts\AlertManager::SIGNAL_AFTER_ALERT_DELETED_ALL,
             'RKW\\RkwAlerts\\Service\\RkwMailService',
             'cancelAllUser'

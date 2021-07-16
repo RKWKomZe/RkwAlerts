@@ -12,8 +12,8 @@
                 <target>Frontend User</target>
 			</trans-unit>
 			<trans-unit id="tx_rkwalerts_domain_model_alerts.topic">
-				<source>Topic</source>
-                <target>Projekt / Thema</target>
+				<source>Project</source>
+                <target>Projekt</target>
 			</trans-unit>
 
 
@@ -118,7 +118,7 @@
 			</trans-unit>
             <trans-unit id="alertController.message.alert_already_exists">
                 <source>Alert already exists.</source>
-                <target>Der RKW Alert existiert bereits. Das Thema scheint also sehr interessant zu sein ;-)</target>
+                <target>Der RKW Alert existiert bereits. Das Projekt scheint also sehr interessant zu sein ;-)</target>
             </trans-unit>
 
             <trans-unit id="alertController.message.alert_canceled">
@@ -166,7 +166,7 @@
             </trans-unit>
             <trans-unit id="templates_alert_deleteConfirm.description">
                 <source>Do you really want to delete the Alert for topic "%s"?</source>
-                <target>Sind Sie sicher, dass Sie den RKW Alert zum Thema "%s" löschen möchten?</target>
+                <target>Sind Sie sicher, dass Sie den RKW Alert zum Projekt "%s" löschen möchten?</target>
             </trans-unit>
             <trans-unit id="templates_alert_deleteConfirm.labelYes">
                 <source>Yes, do it</source>
@@ -222,16 +222,6 @@
 
 
 
-            <!-- Partials/Alerts/New.html-->
-
-
-
-            <trans-unit id="partials_alerts_new.labelTopic">
-                <source>Topic</source>
-                <target>Thema</target>
-            </trans-unit>
-
-
             <!-- Email- Subjects -->
             <trans-unit id="rkwMailService.optInAlertUser.subject">
                 <source>Confirmation for RKW Alerts</source>
@@ -242,12 +232,12 @@
                 <target>Ihre RKW Alerts wurden deaktiviert</target>
             </trans-unit>
             <trans-unit id="rkwMailService.sendAlert.subject">
-                <source>New RKW Alert for topic %s</source>
-                <target>RKW Alert zum Thema "%s"</target>
+                <source>New RKW Alert for project %s</source>
+                <target>RKW Alert zum Projekt "%s"</target>
             </trans-unit>
             <trans-unit id="rkwMailService.sendAlert.subjectDefault">
-                <source>New RKW Alert for topic "%s"</source>
-                <target>Neuer RKW Alert zum Thema "%s"</target>
+                <source>New RKW Alert for project "%s"</source>
+                <target>Neuer RKW Alert zum Projekt "%s"</target>
             </trans-unit>
 
 
@@ -257,8 +247,8 @@
                 <target>Hallo,</target>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.text1">
-                <source>thank you for your interest in RKW Alerts for the topic "%s".</source>
-                <target>wir freuen uns, dass Sie unsere RKW Alerts zum Thema "%s" erhalten möchten.</target>
+                <source>thank you for your interest in RKW Alerts for the project "%s".</source>
+                <target>wir freuen uns, dass Sie unsere RKW Alerts zum Projekt "%s" erhalten möchten.</target>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptIn">
                 <source>Click here to confirm your request:</source>
@@ -266,7 +256,7 @@
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptInLinkLabel">
                 <source>Yes, send me alerts</source>
-                <target>Ja, ich möchte RKW Alerts zu diesem Thema erhalten</target>
+                <target>Ja, ich möchte RKW Alerts zu diesem Projekt erhalten</target>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptOut">
                 <source>Click here to cancel your request:</source>
@@ -274,8 +264,9 @@
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptOutLinkLabel">
                 <source>No, thank you</source>
-                <target>Nein, ich möchte keine RKW Alerts zu diesem Thema erhalten</target>
+                <target>Nein, ich möchte keine RKW Alerts zu diesem Projekt erhalten</target>
             </trans-unit>
+
 
             <!-- Templates/Email/CancelAllUser.html -->
             <trans-unit id="templates_email_cancelAllUser.headline">
@@ -298,21 +289,29 @@
                 <target>Hallo,</target>
             </trans-unit>
             <trans-unit id="templates_email_alert.text1">
-                <source>there are new contents on the topic "%s" available.</source>
-                <target>es gibt neue Inhalte zum Thema "%s".</target>
+                <source>there are new contents on the project "%s" available:</source>
+                <target>es gibt neue Inhalte zum Projekt "%s":</target>
             </trans-unit>
             <trans-unit id="templates_email_alert.linkLabel">
                 <source>Click here to see the contents</source>
                 <target>Klicken Sie hier, um die Inhalte zu sehen</target>
             </trans-unit>
             <trans-unit id="templates_email_alert.text2">
-                <source>You get this E-mail because you activated alerts for this topic.</source>
-                <target>Sie erhalten diese E-Mail, weil Sie RKW Alerts für dieses Thema aktiviert haben.</target>
+                <source>You get this E-mail because you activated alerts for this project.</source>
+                <target>Sie erhalten diese E-Mail, weil Sie RKW Alerts für dieses Projekt aktiviert haben.</target>
             </trans-unit>
             <trans-unit id="templates_email_alert.loginLinkLabel">
                 <source>Log in here to adjust settings or cancel alerts.</source>
                 <target>Loggen Sie sich hier ein, um die Einstellungen zu ändern, oder die RKW Alerts abzubestellen</target>
             </trans-unit>
+
+
+            <!-- Partials/Email/LinkList.html -->
+            <trans-unit id="partials_email_linkList.readMore">
+                <source>read more</source>
+                <target>mehr lesen</target>
+            </trans-unit>
+
         </body>
 
 	</file>

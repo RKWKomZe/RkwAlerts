@@ -15,18 +15,17 @@ namespace RKW\RkwAlerts\Controller;
  */
 
 use RKW\RkwRegistration\Tools\Registration;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
- * Class AlertsController
+ * Class AlertController
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AlertsController extends \RKW\RkwAjax\Controller\AjaxAbstractController
+class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
 {
 
 
@@ -85,7 +84,7 @@ class AlertsController extends \RKW\RkwAjax\Controller\AjaxAbstractController
             // list all active alerts only!
             $this->view->assign(
                 'alerts',
-                $this->alertManager->getActiveAlerts($alerts)
+                $this->alertManager->filterListBySubscribableProjects($alerts)
             );
         }
     }
@@ -127,7 +126,7 @@ class AlertsController extends \RKW\RkwAjax\Controller\AjaxAbstractController
                 /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser */
                 if (
                     ($frontendUser)
-                    && ($this->alertManager->hasFrontendUserSubscribedProject($frontendUser, $project))
+                    && ($this->alertManager->hasFrontendUserSubscribedToProject($frontendUser, $project))
                 ) {
                     $displayForm = false;
                 }
@@ -135,7 +134,6 @@ class AlertsController extends \RKW\RkwAjax\Controller\AjaxAbstractController
                 $this->view->assignMultiple(
                     [
                         'alert'             => $alert,
-                        'termsPid'          => intval($this->settings['termsPid']),
                         'frontendUser'      => $frontendUser,
                         'project'           => $project,
                         'email'             => $email,
@@ -152,7 +150,6 @@ class AlertsController extends \RKW\RkwAjax\Controller\AjaxAbstractController
                 $this->view->assignMultiple(
                     [
                         'alert'             => $alert,
-                        'termsPid'          => intval($this->settings['termsPid']),
                         'project'           => $project,
                         'displayForm'       => $displayForm,
                     ]

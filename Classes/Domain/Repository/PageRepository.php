@@ -27,14 +27,18 @@ use RKW\RkwBasics\Helper\QueryTypo3;
  */
 class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
-
+    /**
+     * @var \TYPO3\CMS\Core\Log\Logger
+     */
+    protected $logger;
 
     /**
      * findByUid
      * finds page by uid
      *
-     * @return \RKW\RkwAlerts\Domain\Model\Pages
+     * @return \RKW\RkwAlerts\Domain\Model\Page
      * @throws \TYPO3\CMS\Core\Type\Exception\InvalidEnumerationValueException
+     * @deprecated since version 8.7, will be removed in version 9.5
      */
     public function findByUid($uid)
     {
@@ -53,34 +57,63 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
 
     /**
-     * findAllByTxRkwalertsSendStatus
-     * finds all pages by alert-send status
+     * findAllToNotify
+     *
+     * finds all pages to notify
      *
      * @param string $filterField
      * @param integer $timeSinceCreation
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     * @throws \TYPO3\CMS\Core\Type\Exception\InvalidEnumerationValueException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findByTxRkwalertsSendStatusAndProject($filterField = 'crdate', $timeSinceCreation = 432000)
+    public function findAllToNotify($filterField, $timeSinceCreation = 432000)
     {
 
-        $additionalWhere = '';
-        if ($filterField) {
-            $additionalWhere = ' AND ' . preg_replace('/[^a-z0-9_\-]+/i', '', $filterField) . ' >= ' . (time() - intval($timeSinceCreation));
+        # Clean filter field and check it against TCA
+        $filterField = preg_replace('/[^a-z0-9_\-]+/i', '', $filterField);
+        if (
+            (!$filterField)
+            || (! $GLOBALS['TCA']['pages']['columns'][$filterField])
+        ) {
+            $filterField = 'crdate';
         }
 
-        $result = $this->createQuery();
-        $result->getQuerySettings()->setRespectStoragePage(false);
-        $result->statement('SELECT * FROM pages
-            WHERE tx_rkwalerts_send_status = 0 AND tx_rkwbasics_department > 0' . $additionalWhere .
-            QueryTypo3::getWhereClauseForVersioning('pages') .
-            QueryTypo3::getWhereClauseForEnableFields('pages')
+        $this->getLogger()->log(
+            \TYPO3\CMS\Core\Log\LogLevel::DEBUG,
+            sprintf(
+                'Using database field %s for filtering.',
+                $filterField
+            )
         );
 
-        return $result->execute();
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $query->matching(
+            $query->logicalAnd(
+                $query->equals('doktype', 1),
+                $query->equals('txRkwalertsSendStatus', 0),
+                $query->greaterThanOrEqual($filterField, (time() - intval($timeSinceCreation))),
+                $query->greaterThan('txRkwprojectsProjectUid', 0),
+                $query->equals('txRkwprojectsProjectUid.txRkwalertsEnableAlerts', 1)
+            )
+        );
 
-        //===
+        return $query->execute();
     }
 
 
+    /**
+     * Returns logger instance
+     *
+     * @return \TYPO3\CMS\Core\Log\Logger
+     */
+    protected function getLogger()
+    {
+
+        if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {
+            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+        }
+
+        return $this->logger;
+    }
 }
