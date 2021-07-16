@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <tx_rkwprojects_domain_model_projects>
+        <uid>330</uid>
+        <pid>1</pid>
+        <short_name>Testprojekt Short</short_name>
+        <tx_rkwalerts_enable_alerts>1</tx_rkwalerts_enable_alerts>
+    </tx_rkwprojects_domain_model_projects>
+
+    <pages>
+        <uid>330</uid>
+        <pid>1</pid>
+        <title>Page</title>
+        <doktype>1</doktype>
+        <crdate>1400</crdate>
+        <tx_rkwalerts_send_status>0</tx_rkwalerts_send_status>
+        <tx_rkwprojects_project_uid>330</tx_rkwprojects_project_uid>
+    </pages>
+    <pages>
+        <uid>331</uid>
+        <pid>1</pid>
+        <title>Page</title>
+        <doktype>1</doktype>
+        <crdate>1400</crdate>
+        <tx_rkwalerts_send_status>0</tx_rkwalerts_send_status>
+        <tx_rkwprojects_project_uid>330</tx_rkwprojects_project_uid>
+    </pages>
+    <pages>
+        <uid>332</uid>
+        <pid>1</pid>
+        <title>Page</title>
+        <doktype>1</doktype>
+        <crdate>1400</crdate>
+        <tx_rkwalerts_send_status>0</tx_rkwalerts_send_status>
+        <tx_rkwprojects_project_uid>330</tx_rkwprojects_project_uid>
+    </pages>
+</dataset>

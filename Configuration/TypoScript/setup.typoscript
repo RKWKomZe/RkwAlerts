@@ -7,19 +7,26 @@ config.tx_extbase{
 
 			\RKW\RkwProjects\Domain\Model\Pages {
 				subclasses {
-					Tx_RkwAlerts_Pages = RKW\RkwAlerts\Domain\Model\Pages
+					Tx_RkwAlerts_Page = RKW\RkwAlerts\Domain\Model\Page
 
 				}
 			}
 
 			\RKW\RkwProjects\Domain\Model\Projects {
 				subclasses {
-					Tx_RkwAlerts_Projects = RKW\RkwAlerts\Domain\Model\Projects
+					Tx_RkwAlerts_Project = RKW\RkwAlerts\Domain\Model\Project
 				}
 
 			}
 
-            RKW\RkwAlerts\Domain\Model\Projects {
+			# Keep backward-compatibility
+			RKW\RkwAlerts\Domain\Model\Alert {
+                mapping {
+                    tableName = tx_rkwalerts_domain_model_alerts
+                }
+            }
+
+            RKW\RkwAlerts\Domain\Model\Project {
  				mapping {
                     tableName = tx_rkwprojects_domain_model_projects
 
@@ -30,7 +37,7 @@ config.tx_extbase{
                 }
             }
 
-            RKW\RkwAlerts\Domain\Model\Pages {
+            RKW\RkwAlerts\Domain\Model\Page {
                 mapping {
                     tableName = pages
 
@@ -80,60 +87,9 @@ plugin.tx_rkwalerts {
 		linkSortingField = tstamp
 		linkSortingSortAscending = 0
 
-		# Additional filter field for selection of pages, only integer fields allowed! (default: crdate)
-		filterField = crdate
-
-		# Time in seconds from now since creation, matching against the field defined in filterField (default: 432000 = 5 days)
-		timeSinceCreation = 432000
-
 		# default language key for alert-mail subject
 		defaultLanguageKey = de
-
 	}
 }
+
 module.tx_rkwalerts < plugin.tx_rkwalerts
-
-
-# Add jquery if not disabled
-[globalVar = LIT:1 = {$plugin.tx_rkwalerts.settings.includeJQuery}]
-	page.includeJSFooterlibs.jquery         = EXT:rkw_alerts/Resources/Public/Scripts/jquery-1.11.1.min.js
-[global]
-
-page.includeJSFooter.rkwAlertsScript     = EXT:rkw_alerts/Resources/Public/Scripts/rkw_alerts.js
-
-
-
-txRkwAlertsJson = PAGE
-txRkwAlertsJson {
-	typeNum = 1446640418
-	config {
-		disableAllHeaderCode = 1
-		xhtml_cleaning = 0
-		admPanel = 0
-		debug = 0
-		no_cache = 0
-		additionalHeaders.10.header = Content-type:application/json
-	}
-
-	20 = USER_INT
-	20 {
-
-		userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
-		vendorName = RKW
-    	extensionName = RkwAlerts
-    	pluginName = Rkwalerts
-    	controller = Alerts
-		switchableControllerActions {
-
-			# Again: Controller-Name and Action
-			Alerts {
-				1 = newAjax
-			}
-		}
-
-    	settings =< plugin.tx_rkwalerts.settings
-    	persistence =< plugin.tx_rkwalerts.persistence
-    	view =< plugin.tx_rkwalerts.view
-	}
-}
-

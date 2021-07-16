@@ -12,11 +12,11 @@ call_user_func(
             'RKW.' . $extKey,
             'Rkwalerts',
             array(
-                'Alerts' => 'index, list, newInit, newAjax, create, delete, deleteconfirm, optIn',
+                'Alert' => 'index, list, newInit, newAjax, create, delete, deleteconfirm, optIn',
             ),
             // non-cacheable actions
             array(
-                'Alerts' => 'new, list, newAjax, create, delete, deleteconfirm, optIn',
+                'Alert' => 'new, list, newAjax, create, delete, deleteconfirm, optIn',
             )
         );
 
@@ -45,20 +45,20 @@ call_user_func(
         $signalSlotDispatcher->connect(
             'RKW\\RkwRegistration\\Tools\\Registration',
             \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_USER_REGISTER_GRANT . 'RkwAlerts',
-            'RKW\\RkwAlerts\\Controller\\AlertsController',
-            'createAlert'
+            'RKW\\RkwAlerts\\Alerts\\AlertManager',
+            'saveAlertByRegistration'
         );
 
         $signalSlotDispatcher->connect(
             'RKW\\RkwRegistration\\Tools\\Registration',
             \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_DELETING_USER,
-            'RKW\\RkwAlerts\\Controller\\AlertsController',
-            'removeAllOfUserSignalSlot'
+            'RKW\\RkwAlerts\\Alerts\\AlertManager',
+            'deleteAlertsByFrontendEndUser'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwAlerts\\Controller\\AlertsController',
-            \RKW\RkwAlerts\Controller\AlertsController::SIGNAL_AFTER_ALERTS_CANCELED_USER,
+            'RKW\\RkwAlerts\\Controller\\AlertController',
+            \RKW\RkwAlerts\Alerts\AlertManager::SIGNAL_AFTER_ALERT_DELETED_ALL,
             'RKW\\RkwAlerts\\Service\\RkwMailService',
             'cancelAllUser'
         );

@@ -1,36 +1,38 @@
-{namespace vh=RKW\RkwMailer\ViewHelpers}
-<f:layout name="Email/{mailType}" />
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	xmlns:rkwMailer="http://typo3.org/ns/RKW/RkwMailer/ViewHelpers"
+	data-namespace-typo3-fluid="true">
+
+	<f:layout name="Email/{mailType}" />
 
 
-<!-- PLAINTEXT -->
-<f:section name="Plaintext">
-<vh:frontend.translate key="templates_email_alert.headline" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" />
+	<!-- PLAINTEXT -->
+	<f:section name="Plaintext"><rkwMailer:plaintextLineBreaks>
+		<rkwMailer:frontend.translate key="templates_email_alert.headline" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" />
+		\n\n
+		<rkwMailer:frontend.translate key="templates_email_alert.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}" />
+		\n\n
 
-<vh:frontend.translate key="templates_email_alert.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}" />
+		<f:render partial="Email/LinkList" section="Plaintext" arguments="{_all}"/>
+		\n\n
+		<rkwMailer:frontend.translate key="templates_email_alert.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}" />
+		\n\n
+		<rkwMailer:frontend.translate key="templates_email_alert.loginLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>:\n
+		<rkwMailer:frontend.link absolute="true" pageUid="{loginPid}" noCacheHash="true" />
+</rkwMailer:plaintextLineBreaks></f:section>
 
-<vh:frontend.translate key="templates_email_alert.linkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>:
+	<!-- HTML -->
+	<f:section name="Html">
+		<h1><rkwMailer:frontend.translate key="templates_email_alert.headline" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" /></h1>
+		<p><rkwMailer:frontend.translate key="templates_email_alert.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}"/></p>
 
-<vh:frontend.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}" isPlaintext="TRUE"><vh:frontend.link noCacheHash="TRUE" absolute="TRUE" pageUid="{searchPid}" additionalParams="{tx_rkwrelated_morecontent: {filter: { project : alert.project.uid}}}" /></vh:frontend.replace.redirectLinks>
+		<f:render partial="Email/LinkList" section="Html" arguments="{_all}"/>
 
-<vh:frontend.translate key="templates_email_alert.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}" />
+		<p style="padding-top:16px;" class="footer">
+			<rkwMailer:frontend.translate key="templates_email_alert.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}"/><br>
+			<a href="{rkwMailer:frontend.link(absolute:'true', pageUid:'{loginPid}', noCacheHash:'true')}">
+				<rkwMailer:frontend.translate key="templates_email_alert.loginLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>
+			</a>
+		</p>
 
-<vh:frontend.translate key="templates_email_alert.loginLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>:
-<vh:frontend.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}" isPlaintext="TRUE"><vh:frontend.link absolute="TRUE" pageUid="{loginPid}" /></vh:frontend.replace.redirectLinks>
-</f:section>
-
-<!-- HTML -->
-<f:section name="Html">
-	<h1><vh:frontend.translate key="templates_email_alert.headline" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" /></h1>
-	<p><vh:frontend.translate key="templates_email_alert.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}"/></p>
-
-	<vh:frontend.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}" >
-	<p>
-		<a href="<vh:frontend.link noCacheHash='TRUE' absolute='TRUE' pageUid='{searchPid}' additionalParams='{tx_rkwrelated_morecontent: {filter: { project : alert.project.uid}}}' />"><vh:frontend.translate key="templates_email_alert.linkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/></a>
-	</p>
-	<p><vh:frontend.translate key="templates_email_alert.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}"/></p>
-	<p>
-		<a href="<vh:frontend.link absolute='TRUE' pageUid='{loginPid}' />"><vh:frontend.translate key="templates_email_alert.loginLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/></a>
-	</p>
-	</vh:frontend.replace.redirectLinks>
-
-</f:section>
+	</f:section>
+</html>
