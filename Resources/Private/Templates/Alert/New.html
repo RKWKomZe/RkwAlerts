@@ -7,6 +7,12 @@
 
 		<f:if condition="{project}" >
 
+			<f:comment><!-- Contents --></f:comment>
+			<f:render partial="Alert/Introduction" section="Headline" arguments="{_all}"/>
+			<f:render partial="FlashMessages" arguments="{_all}" />
+			<f:render partial="Alert/Introduction" section="Body" arguments="{_all}"/>
+			<f:render partial="Alert/Form" arguments="{_all}"/>
+
 			<f:comment><!-- Ajax-Call for logged in users. But only do an ajax-call if fe-cookie is set. --></f:comment>
 			<template class="ajax" id="tx-rkwalerts-ajax"></template>
 			<f:if condition="! {ajaxHelper.isPostCall}">
@@ -17,12 +23,6 @@
 					}
 				</script>
 			</f:if>
-
-			<f:comment><!-- Contents --></f:comment>
-			<f:render partial="Alert/Introduction" section="Headline" arguments="{_all}"/>
-			<f:render partial="FlashMessages" arguments="{_all}" />
-			<f:render partial="Alert/Introduction" section="Body" arguments="{_all}"/>
-			<f:render partial="Alert/Form" arguments="{_all}"/>
 		</f:if>
 
 	</f:section>
