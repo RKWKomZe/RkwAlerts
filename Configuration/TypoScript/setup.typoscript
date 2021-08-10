@@ -16,8 +16,13 @@ config.tx_extbase{
 				subclasses {
 					Tx_RkwAlerts_Project = RKW\RkwAlerts\Domain\Model\Project
 				}
-
 			}
+
+            \RKW\RkwRegistration\Domain\Model\FrontendUser {
+                subclasses {
+                    Tx_RkwAlerts_FrontendUser = RKW\RkwAlerts\Domain\Model\FrontendUser
+                }
+            }
 
 			# Keep backward-compatibility
 			RKW\RkwAlerts\Domain\Model\Alert {
@@ -45,6 +50,29 @@ config.tx_extbase{
 					# if we set an value, we filter by it
 					# if we do not set anything, all pages are found
 					recordType =
+                }
+            }
+
+            RKW\RkwAlerts\Domain\Model\FrontendUser {
+                mapping {
+
+                    # tablename
+                    tableName = fe_users
+
+                    # if we set an value, we filter by it
+                    # if do not set anything, all records are found
+                    recordType =
+
+                    # mapping to properties of class
+                    columns {
+                        tstamp.mapOnProperty = tstamp
+                        starttime.mapOnProperty = starttime
+                        endtime.mapOnProperty = endtime
+                        crdate.mapOnProperty = crdate
+                        disable.mapOnProperty = disable
+                        deleted.mapOnProperty = deleted
+                        password.mapOnProperty = password
+                    }
                 }
             }
     	}

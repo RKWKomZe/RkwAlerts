@@ -53,8 +53,6 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
 
 
-
-
     /**
      * Find all alerts by frontend-user
      * Used by delete Signal-Slot
