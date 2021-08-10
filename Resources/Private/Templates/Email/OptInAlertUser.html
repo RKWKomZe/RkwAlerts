@@ -9,10 +9,10 @@
 <vh:frontend.translate key="templates_email_optInAlertUser.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : registration.data.alert.project.name}" />
 
 <vh:frontend.translate key="templates_email_optInAlertUser.textOptIn" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" />
-<vh:frontend.link action="optIn" controller="Alerts" extensionName="rkwAlerts" pluginName="rkwAlerts" absolute="TRUE" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_rkwalerts: {token_yes: tokenYes, user: userSha1}}" section="rkw-alerts" />
+<vh:frontend.link action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="rkwAlerts" absolute="TRUE" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_rkwalerts: {token_yes: tokenYes, user: userSha1}}" section="rkw-alerts" />
 
 <vh:frontend.translate key="templates_email_optInAlertUser.textOptOut" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" />
-<vh:frontend.link action="optIn" controller="Alerts" extensionName="rkwAlerts" pluginName="rkwAlerts" absolute="TRUE" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_rkwalerts: {token_no: tokenNo, user: userSha1}}" section="rkw-alerts" />
+<vh:frontend.link action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="rkwAlerts" absolute="TRUE" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_rkwalerts: {token_no: tokenNo, user: userSha1}}" section="rkw-alerts" />
 </f:section>
 
 <!-- HTML -->
@@ -21,10 +21,10 @@
 	<p><vh:frontend.translate key="templates_email_optInAlertUser.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : registration.data.alert.project.name}"/></p>
 	<p>
 		<vh:frontend.translate key="templates_email_optInAlertUser.textOptIn" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/><br>
-		<a href="<vh:frontend.link action='optIn' controller='Alerts' extensionName='rkwAlerts' pluginName='rkwAlerts' absolute='TRUE' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_rkwalerts: {token_yes: tokenYes, user: userSha1}}' section='rkw-alerts' />"><vh:frontend.translate key="templates_email_optInAlertUser.textOptInLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/></a>
+		<a href="<vh:frontend.link action='optIn' controller='Alert' extensionName='rkwAlerts' pluginName='rkwAlerts' absolute='TRUE' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_rkwalerts: {token_yes: tokenYes, user: userSha1}}' section='rkw-alerts' />"><vh:frontend.translate key="templates_email_optInAlertUser.textOptInLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/></a>
 	</p>
 	<p>
 		<vh:frontend.translate key="templates_email_optInAlertUser.textOptOut" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" /><br>
-		<a href="<vh:frontend.link action='optIn' controller='Alerts' extensionName='rkwAlerts' pluginName='rkwAlerts' absolute='TRUE' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_rkwalerts: {token_no: tokenNo, user: userSha1}}' section='rkw-alerts' />"><vh:frontend.translate key="templates_email_optInAlertUser.textOptOutLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/></a>
+		<a href="<vh:frontend.link action='optIn' controller='Alert' extensionName='rkwAlerts' pluginName='rkwAlerts' absolute='TRUE' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_rkwalerts: {token_no: tokenNo, user: userSha1}}' section='rkw-alerts' />"><vh:frontend.translate key="templates_email_optInAlertUser.textOptOutLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/></a>
 	</p>
 </f:section>

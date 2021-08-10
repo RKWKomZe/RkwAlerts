@@ -15,7 +15,7 @@
                                 <items>
                                     <numIndex index="0">
                                         <numIndex index="0">LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:flexform.alerts.action.I.new</numIndex>
-                                        <numIndex index="1">Alert->new;Alert->create;Alert->optIn</numIndex>
+                                        <numIndex index="1">Alert->new;Alert->newNonCached;Alert->create;Alert->optIn</numIndex>
                                     </numIndex>
                                     <numIndex index="1">
                                         <numIndex index="0">LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:flexform.alerts.action.I.list</numIndex>

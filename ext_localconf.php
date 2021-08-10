@@ -12,11 +12,11 @@ call_user_func(
             'RKW.' . $extKey,
             'Rkwalerts',
             array(
-                'Alert' => 'new, list, create, delete, deleteconfirm, optIn',
+                'Alert' => 'new, newNonCached, list, create, delete, deleteconfirm, optIn',
             ),
             // non-cacheable actions
             array(
-                'Alert' => 'list, create, delete, deleteconfirm, optIn',
+                'Alert' => 'newNonCached, list, create, delete, deleteconfirm, optIn',
             )
         );
 
