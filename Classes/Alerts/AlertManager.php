@@ -435,12 +435,13 @@ class AlertManager
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
-     * @return bool
+     * @return void
+     * @api Used by SignalSlot
      */
     public function saveAlertByRegistration(
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
         \RKW\RkwRegistration\Domain\Model\Registration $registration
-    ): bool {
+    ) {
 
         if (
             ($data = $registration->getData())
@@ -449,13 +450,11 @@ class AlertManager
         ) {
 
             try {
-                return $this->saveAlert($alert, $frontendUser);
+                $this->saveAlert($alert, $frontendUser);
             } catch (\RKW\RkwAlerts\Exception $exception) {
                 // do nothing here
             }
         }
-
-        return false;
     }
 
 
@@ -592,11 +591,12 @@ class AlertManager
      * deleteAlertsByFrontendEndUser
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @return bool
+     * @return void
+     * @api Used by SignalSlot
      */
     public function deleteAlertsByFrontendEndUser (
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-    ): bool
+    )
     {
 
         try {
@@ -606,7 +606,7 @@ class AlertManager
             // delete all alerts of user
             /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts */
             $alerts = $this->alertRepository->findByFrontendUser($frontendUser);
-            $result = $this->deleteAlerts($alerts, $frontendUser, $counter);
+            $this->deleteAlerts($alerts, $frontendUser, $counter);
 
             // send final confirmation mail to user
             if ($counter) {
@@ -629,7 +629,6 @@ class AlertManager
                     )
                 );
 
-                return $result;
             }
 
         } catch (\Exception $e) {
@@ -644,8 +643,6 @@ class AlertManager
                 )
             );
         }
-
-        return false;
     }
 
 
@@ -660,8 +657,8 @@ class AlertManager
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function getPagesAndProjectsToNotify(
-        $filterField,
-        $timeSinceCreation = 432000
+        string $filterField,
+        int $timeSinceCreation = 432000
     ): array
     {
         $result = [];
@@ -703,11 +700,10 @@ class AlertManager
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function sendNotification(
-        $filterField,
-        $timeSinceCreation = 432000
+        string $filterField,
+        int $timeSinceCreation = 432000
     ): int
     {
-
 
         // load projects to notify
         $recipientCountGlobal = 0;

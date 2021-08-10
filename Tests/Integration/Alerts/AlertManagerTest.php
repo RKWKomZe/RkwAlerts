@@ -943,8 +943,7 @@ class AlertManagerTest extends FunctionalTestCase
         $registration = GeneralUtility::makeInstance(Registration::class);
         $registration->setData($data);
 
-        $result = $this->subject->saveAlertByRegistration($frontendUser, $registration);
-        static::assertFalse($result);
+        $this->subject->saveAlertByRegistration($frontendUser, $registration);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
         $dbAlert = $this->alertRepository->findByIdentifier(1);
@@ -981,8 +980,7 @@ class AlertManagerTest extends FunctionalTestCase
         $registration = GeneralUtility::makeInstance(Registration::class);
         $registration->setData($data);
 
-        $result = $this->subject->saveAlertByRegistration($frontendUser, $registration);
-        static::assertFalse($result);
+        $this->subject->saveAlertByRegistration($frontendUser, $registration);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
         $dbAlert = $this->alertRepository->findByIdentifier(1);
@@ -1004,7 +1002,7 @@ class AlertManagerTest extends FunctionalTestCase
          * Given a registration object with alert-object in data-property and alert-key
          * Given the alert has a subscribable project set
          * When I call the method
-         * Then no alert is persisted
+         * Then the alert is persisted
          */
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check220.xml');
@@ -1027,8 +1025,7 @@ class AlertManagerTest extends FunctionalTestCase
         $registration = GeneralUtility::makeInstance(Registration::class);
         $registration->setData($data);
 
-        $result = $this->subject->saveAlertByRegistration($frontendUser, $registration);
-        static::assertTrue($result);
+        $this->subject->saveAlertByRegistration($frontendUser, $registration);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
         $dbAlert = $this->alertRepository->findByIdentifier(1);
@@ -1332,33 +1329,7 @@ class AlertManagerTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function deleteAlertsByFrontendEndUserReturnsFalseOnEmptyList ()
-    {
-
-        /**
-         * Scenario:
-         *
-         * Given a persisted frontend user
-         * Given the frontend user has no alerts subscribed
-         * When I call the method
-         * Then false is returned
-         */
-
-        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check260.xml');
-
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(260);
-
-        $result = $this->subject->deleteAlertsByFrontendEndUser($frontendUser);
-        static::assertFalse($result);
-
-    }
-
-    /**
-     * @test
-     * @throws \Exception
-     */
-    public function deleteAlertsByFrontendEndUserReturnsTrue ()
+    public function deleteAlertsByFrontendEndUserDeletesAlerts ()
     {
 
         /**
@@ -1368,7 +1339,6 @@ class AlertManagerTest extends FunctionalTestCase
          * Given the frontend user has three alerts subscribed
          * Given there is one alerts of another frontend-user
          * When I call the method
-         * Then true is returned
          * Then the three alerts of the given frontend user are deleted
          * Then the one alert that does not belong to the given frontend user is not deleted
          */
@@ -1379,8 +1349,7 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(270);
 
-        $result = $this->subject->deleteAlertsByFrontendEndUser($frontendUser);
-        static::assertTrue($result);
+        $this->subject->deleteAlertsByFrontendEndUser($frontendUser);
 
         $alertDb = $this->alertRepository->findByIdentifier(270);
         static::assertInstanceOf(Alert::class, $alertDb);

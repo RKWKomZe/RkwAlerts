@@ -106,6 +106,48 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
         $terms = null,
         $privacy = null
     ): void {
+        $this->newActionBase($alert, $email, $terms, $privacy);
+    }
+
+
+    /**
+     * action new non-cached
+     * We need this because cached actions do not work with flashMessages
+     * and non-cached do not work with empty-ViewHelper
+     *
+     * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
+     * @param string $email
+     * @param integer $terms
+     * @param integer $privacy
+     * @ignorevalidation $alert
+     * @return void
+     */
+    public function newNonCachedAction(
+        \RKW\RkwAlerts\Domain\Model\Alert $alert = null,
+        $email = null,
+        $terms = null,
+        $privacy = null
+    ): void {
+        $this->newActionBase($alert, $email, $terms, $privacy);
+    }
+
+
+    /**
+     * basic functions for action new
+     *
+     * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
+     * @param string $email
+     * @param integer $terms
+     * @param integer $privacy
+     * @ignorevalidation $alert
+     * @return void
+     */
+    protected function newActionBase (
+        \RKW\RkwAlerts\Domain\Model\Alert $alert = null,
+        $email = null,
+        $terms = null,
+        $privacy = null
+    ): void {
 
         /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
         $project = $this->alertManager->getSubscribableProjectByPageUid(intval($GLOBALS['TSFE']->id));
@@ -143,8 +185,8 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
                     ]
                 );
 
-            // display default values of form.
-            // This way everything can be cached without caching sensitive data.
+                // display default values of form.
+                // This way everything can be cached without caching sensitive data.
             } else {
 
                 $this->view->assignMultiple(
@@ -157,8 +199,6 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
             }
         }
     }
-
-
 
     /**
      * action create
@@ -217,7 +257,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
             );
         }
 
-        $this->redirect('new');
+        $this->redirect('newNonCached');
 
     }
 
@@ -272,7 +312,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
             );
         }
 
-        $this->redirect('new');
+        $this->redirect('newNonCached');
     }
 
 
