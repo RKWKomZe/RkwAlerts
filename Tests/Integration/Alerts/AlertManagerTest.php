@@ -339,6 +339,60 @@ class AlertManagerTest extends FunctionalTestCase
 
     /**
      * @test
+     * @throws \Exception
+     */
+    public function hasEmailSubscribedToProjectReturnsFalseIfProjectNotPersisted ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given an email-address
+         * Given that email-address belongs to a persisted frontend user
+         * Given a non-persisted project
+         * When I call the method
+         * Then false returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check50.xml');
+
+        /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
+        $project = $this->objectManager->get(\RKW\RkwAlerts\Domain\Model\Project::class);
+        $project->setTxRkwalertsEnableAlerts(true);
+
+        self::assertFalse( $this->subject->hasEmailSubscribedToProject('teste-email@test.de', $project));
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function hasEmailSubscribedToProjectReturnsTrueIfAlreadySubscribed ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given an email-address
+         * Given that email-address belongs to a persisted frontend user
+         * Given a persisted project
+         * Given the email-address has already subscribed the project
+         * When I call the method
+         * Then true returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check60.xml');
+
+        /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
+        $project = $this->projectRepository->findByIdentifier(60);
+
+        self::assertTrue( $this->subject->hasEmailSubscribedToProject('teste-email@test.de', $project));
+    }
+
+
+    //=============================================
+
+    /**
+     * @test
      * @throws \RKW\RkwAlerts\Exception
      */
     public function createAlertChecksForTermsIfNotLoggedIn ()
@@ -566,6 +620,46 @@ class AlertManagerTest extends FunctionalTestCase
         $this->subject->createAlert($request,$alert, null, 'valid@email.de', true, true);
 
     }
+
+    /**
+     * @test
+     * @throws \RKW\RkwAlerts\Exception
+     * @throws \Exception
+     */
+    public function createAlertChecksForExistingSubscriptionByEmail ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given I accept the Terms & Conditions
+         * Given I accept the Privacy-Terms
+         * Given I'm logged in
+         * Given the e-mail-address of my login-user is valid
+         * Given I already subscribed to the given project
+         * When I call the method
+         * Then an alreadySubscribed-error is thrown
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check100.xml');
+
+        /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
+        $project = $this->projectRepository->findByIdentifier(100);
+
+        /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */
+        $alert = GeneralUtility::makeInstance(Alert::class);
+        $alert->setProject($project);
+
+        /** @var \TYPO3\CMS\Extbase\Mvc\Request $request */
+        $request = $this->objectManager->get(Request::class);
+
+        static::expectException(\RKW\RkwAlerts\Exception::class);
+        static::expectExceptionMessage('alertManager.error.alreadySubscribed');
+
+        $this->subject->createAlert($request, $alert, null, 'teste-email@test.de', true, true);
+
+    }
+
 
     /**
      * @test
@@ -825,12 +919,13 @@ class AlertManagerTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \RKW\RkwAlerts\Exception
      * @throws \Exception
      */
-    public function saveAlertChecksForExistentSubscription ()
+    public function saveAlertChecksForExistentSubscription()
     {
 
         /**

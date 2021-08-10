@@ -78,8 +78,16 @@ class AlertManager
      * @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository
      * @inject
      */
-    protected $projectRepository = null;
+    protected $projectRepository;
 
+
+    /**
+     * frontendUserRepository
+     *
+     * @var \RKW\RkwAlerts\Domain\Repository\FrontendUserRepository
+     * @inject
+     */
+    protected $frontendUserRepository;
 
     /**
      * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
@@ -145,6 +153,29 @@ class AlertManager
         if (
             ($frontendUser->getUid())
             && ($project->getUid())
+            && ($this->alertRepository->findOneByFrontendUserAndProject($frontendUser, $project))
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if an email-address has subscribed to the given project
+     *
+     * @param string $email
+     * @param \RKW\RkwAlerts\Domain\Model\Project $project
+     * @return bool
+     */
+    public function hasEmailSubscribedToProject (
+       string $email,
+        \RKW\RkwAlerts\Domain\Model\Project $project
+    ): bool {
+
+        if (
+           ($project->getUid())
+            && ($frontendUser = $this->frontendUserRepository->findOneByEmailOrUsername($email))
             && ($this->alertRepository->findOneByFrontendUserAndProject($frontendUser, $project))
         ) {
             return true;
@@ -237,6 +268,13 @@ class AlertManager
             throw new Exception('alertManager.error.projectInvalid');
         }
 
+        // check if subscription exists already based on email
+        if (
+            ($email)
+            && ($this->hasEmailSubscribedToProject($email, $alert->getProject()))
+        ){
+            throw new Exception('alertManager.error.alreadySubscribed');
+        }
 
         //==========================================================
         // check if user is logged in
