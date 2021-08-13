@@ -84,7 +84,7 @@ class AlertManager
     /**
      * frontendUserRepository
      *
-     * @var \RKW\RkwAlerts\Domain\Repository\FrontendUserRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      * @inject
      */
     protected $frontendUserRepository;
@@ -175,7 +175,10 @@ class AlertManager
 
         if (
            ($project->getUid())
-            && ($frontendUser = $this->frontendUserRepository->findOneByEmailOrUsername($email))
+            && (
+                ($frontendUser = $this->frontendUserRepository->findOneByEmail($email))
+                || ($frontendUser = $this->frontendUserRepository->findOneByUsername($email))
+           )
             && ($this->alertRepository->findOneByFrontendUserAndProject($frontendUser, $project))
         ) {
             return true;
@@ -524,7 +527,15 @@ class AlertManager
         }
 
         // check if alert belongs to given user
-        if ($alert->getFrontendUser() !== $frontendUser) {
+        // frontend user may be deleted already at this point, therefore we load the raw data
+        // and compare the uids of the frontend user
+        if (
+            ($alert->getFrontendUser() !== $frontendUser)
+            && (
+                ($alertRaw = $this->alertRepository->findByIdentifierRaw($alert->getUid()))
+                && ($alertRaw['frontend_user'] !== $frontendUser->getUid())
+            )
+        ) {
             throw new Exception('alertManager.error.frontendUserInvalid');
         }
 

@@ -1291,6 +1291,43 @@ class AlertManagerTest extends FunctionalTestCase
 
     }
 
+    /**
+     * @test
+     * @throws \RKW\RkwAlerts\Exception
+     * @throws \Exception
+     */
+    public function deleteAlertDeletesAlertOfValidDeletedFrontendUser ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given a persisted alert
+         * Given a persisted frontend user
+         * Given the alert belongs to the given frontend user
+         * Given the frontend user has been deleted
+         * When I call the method
+         * Then the alert is deleted
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check200.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(200);
+        $this->frontendUserRepository->remove($frontendUser);
+        $this->persistenceManager->persistAll();
+
+        /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */
+        $alert = $this->alertRepository->findByIdentifier(200);
+
+        $result = $this->subject->deleteAlert($alert, $frontendUser);
+        static::assertTrue($result);
+
+        $alertDb = $this->alertRepository->findByIdentifier(200);
+        static::assertEmpty($alertDb);
+
+
+    }
+
     //=============================================
     /**
      * @test

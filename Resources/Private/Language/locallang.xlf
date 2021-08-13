@@ -146,7 +146,7 @@
 
             <!-- Templates/Email/CancelAllUser.html -->
             <trans-unit id="templates_email_cancelAllUser.headline">
-                <source>Hello %s %s,</source>
+                <source>Hello,</source>
             </trans-unit>
             <trans-unit id="templates_email_cancelAllUser.text1">
                 <source>the following RKW Alerts have been deactivated now:</source>

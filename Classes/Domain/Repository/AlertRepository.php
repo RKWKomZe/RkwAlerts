@@ -41,21 +41,21 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     )
     {
         $query = $this->createQuery();
-        return $query
-            ->matching(
-                $query->logicalAnd(
-                    $query->equals('frontendUser',$frontendUser->getUid()),
-                    $query->equals('project', $project->getUid())
-                )
-            )
-            ->execute()->getFirst();
-    }
+        $query->getQuerySettings()->setRespectStoragePage(false);
 
+        $query = $this->createQuery();
+        $query->matching(
+            $query->logicalAnd(
+                $query->equals('frontendUser',$frontendUser->getUid()),
+                $query->equals('project', $project->getUid())
+            )
+        );
+        return $query->execute()->getFirst();
+    }
 
 
     /**
      * Find all alerts by frontend-user
-     * Used by delete Signal-Slot
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
@@ -65,7 +65,6 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
-        $query->getQuerySettings()->setIgnoreEnableFields(true);
 
         $query->matching(
             $query->equals('frontendUser', $frontendUser)
@@ -73,4 +72,26 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         return $query->execute();
     }
+
+
+    /**
+     * Find alert by uid and return raw data
+     *
+     * @param int $uid
+     * @return array
+     */
+    public function findByIdentifierRaw($uid)
+    {
+
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+
+        $query->matching(
+            $query->equals('uid', $uid)
+        );
+
+        $result = $query->execute(true);
+        return $result[0];
+    }
+
 }
