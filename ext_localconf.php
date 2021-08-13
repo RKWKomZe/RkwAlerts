@@ -57,7 +57,7 @@ call_user_func(
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwAlerts\\Controller\\AlertController',
+            'RKW\\RkwAlerts\\Alerts\\AlertManager',
             \RKW\RkwAlerts\Alerts\AlertManager::SIGNAL_AFTER_ALERT_DELETED_ALL,
             'RKW\\RkwAlerts\\Service\\RkwMailService',
             'cancelAllUser'

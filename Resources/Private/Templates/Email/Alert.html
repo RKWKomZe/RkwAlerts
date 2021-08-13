@@ -4,14 +4,12 @@
 
 	<f:layout name="Email/{mailType}" />
 
-
 	<!-- PLAINTEXT -->
 	<f:section name="Plaintext"><rkwMailer:plaintextLineBreaks>
 		<rkwMailer:frontend.translate key="templates_email_alert.headline" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" />
 		\n\n
 		<rkwMailer:frontend.translate key="templates_email_alert.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}" />
 		\n\n
-
 		<f:render partial="Email/LinkList" section="Plaintext" arguments="{_all}"/>
 		\n\n
 		<rkwMailer:frontend.translate key="templates_email_alert.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}" />

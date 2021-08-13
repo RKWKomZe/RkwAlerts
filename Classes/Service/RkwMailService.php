@@ -3,6 +3,7 @@
 namespace RKW\RkwAlerts\Service;
 
 use \RKW\RkwBasics\Helper\Common;
+use RKW\RkwBasics\Utility\GeneralUtility;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /*
@@ -143,18 +144,6 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
 
     }
 
-
-    /**
-     * Returns logger instance
-     *
-     * @return \TYPO3\CMS\Core\Log\Logger
-     */
-    protected function getLogger()
-    {
-        return\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
-    }
-
-
     /**
      * Returns TYPO3 settings
      *
@@ -164,6 +153,6 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      */
     protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
     {
-        return Common::getTyposcriptConfiguration('Rkwalerts', $which);
+        return GeneralUtility::getTyposcriptConfiguration('Rkwalerts', $which);
     }
 }

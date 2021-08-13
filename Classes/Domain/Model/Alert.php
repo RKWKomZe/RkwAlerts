@@ -33,6 +33,7 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $frontendUser = null;
 
+
     /**
      * project
      *
@@ -51,6 +52,7 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->frontendUser;
     }
 
+
     /**
      * Sets the frontendUser
      *
@@ -61,6 +63,7 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->frontendUser = $frontendUser;
     }
+
 
     /**
      * Returns the project
