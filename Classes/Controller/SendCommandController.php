@@ -54,8 +54,14 @@ class SendCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
      * @param string $filterField Field that will be used for filtering pages by their time of creation, only integer fields allowed! (default: lastUpdate)
      * @param int $timeSinceCreation Time in seconds from now since creation, matching against the field defined in filterField (default: 432000 = 5 days)
      * @param int $settingsPid Pid to fetch TypoScript-settings from
+     * @param string $debugMail If set all mails are sent to this email-address
      */
-    public function sendCommand($filterField = 'lastUpdated', $timeSinceCreation = 432000, $settingsPid = 0)
+    public function sendCommand(
+        string $filterField = 'lastUpdated', 
+        int $timeSinceCreation = 432000, 
+        int $settingsPid = 0,
+        string $debugMail = ''
+    )
     {
 
         try {
@@ -64,7 +70,7 @@ class SendCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
             FrontendSimulatorUtility::simulateFrontendEnvironment($settingsPid);
 
             // send alerts
-            $this->alertManager->sendNotification($filterField, $timeSinceCreation);
+            $this->alertManager->sendNotification($filterField, $timeSinceCreation, $debugMail);
 
             // reset frontend
             FrontendSimulatorUtility::resetFrontendEnvironment();

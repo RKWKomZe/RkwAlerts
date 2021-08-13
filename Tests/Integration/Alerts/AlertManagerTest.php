@@ -1593,7 +1593,7 @@ class AlertManagerTest extends FunctionalTestCase
         // set date accordingly for our check
         $pages = $this->pageRepository->findAll();
 
-        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         $timeNow = time();
         foreach ($pages as $page) {
             $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
@@ -1654,7 +1654,7 @@ class AlertManagerTest extends FunctionalTestCase
         // set date accordingly for our check
         $pages = $this->pageRepository->findAll();
 
-        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         $timeNow = time();
         foreach ($pages as $page) {
             $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
@@ -1716,7 +1716,7 @@ class AlertManagerTest extends FunctionalTestCase
         // set date accordingly for our check
         $pages = $this->pageRepository->findAll();
 
-        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         $timeNow = time();
         foreach ($pages as $page) {
             $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
@@ -1777,7 +1777,7 @@ class AlertManagerTest extends FunctionalTestCase
         // set date accordingly for our check
         $pages = $this->pageRepository->findAll();
 
-        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         $cnt = 0;
         $timeNow = time();
         foreach ($pages as $page) {
@@ -1843,7 +1843,7 @@ class AlertManagerTest extends FunctionalTestCase
         // set date accordingly for our check
         $pages = $this->pageRepository->findAll();
 
-        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         $cnt = 0;
         $timeNow = time();
         foreach ($pages as $page) {
@@ -1912,7 +1912,7 @@ class AlertManagerTest extends FunctionalTestCase
         // set date accordingly for our check
         $pages = $this->pageRepository->findAll();
 
-        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         $timeNow = time();
         foreach ($pages as $page) {
             $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
@@ -1973,7 +1973,7 @@ class AlertManagerTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function sendNotificationChecksForSubscriptionsButMarksPagesAsDone ()
+    public function sendNotificationChecksForSubscriptionsAndMarksPagesAsDone ()
     {
 
         /**
@@ -1992,7 +1992,7 @@ class AlertManagerTest extends FunctionalTestCase
         // set date accordingly for our check
         $pages = $this->pageRepository->findAll();
 
-        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         $timeNow = time();
         foreach ($pages as $page) {
             $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
@@ -2032,7 +2032,7 @@ class AlertManagerTest extends FunctionalTestCase
         // set date accordingly for our check
         $pages = $this->pageRepository->findAll();
 
-        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         $timeNow = time();
         foreach ($pages as $page) {
             $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
@@ -2047,7 +2047,7 @@ class AlertManagerTest extends FunctionalTestCase
 
         $pages = $this->pageRepository->findAll();
 
-        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         foreach ($pages as $page) {
             static::assertEquals(1, $page->getTxRkwalertsSendStatus());
         }
@@ -2079,7 +2079,7 @@ class AlertManagerTest extends FunctionalTestCase
         // set date accordingly for our check
         $pages = $this->pageRepository->findAll();
 
-        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         $timeNow = time();
         foreach ($pages as $page) {
             $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
@@ -2094,10 +2094,78 @@ class AlertManagerTest extends FunctionalTestCase
 
         $pages = $this->pageRepository->findAll();
 
-        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         foreach ($pages as $page) {
             static::assertEquals(1, $page->getTxRkwalertsSendStatus());
         }
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function sendNotificationCreatesMailsInDebugMode ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are five pages to notify about
+         * Given there are two notifiable project
+         * Given three pages belong to notifiable project A
+         * Given two pages belong to notifiable project B
+         * Given there are two subscriptions to project A
+         * Given there are four subscriptions to the project B
+         * Given a debug-address is set
+         * When I call the method
+         * Then the relevant pages are not marked as sent
+         * Then one email is prepared for project A
+         * Then this email has one recipient
+         * Then one email is prepared for project B
+         * Then this email has one recipient
+         * Then all emails are sent to the given debug-address
+         * Then two is returned
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check380.xml');
+
+        // set date accordingly for our check
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
+        $timeNow = time();
+        foreach ($pages as $page) {
+            $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
+            $this->pageRepository->update($page);
+        }
+
+        $this->persistenceManager->persistAll();
+
+        // now do the check
+        $result = $this->subject->sendNotification('crdate', 432000, 'debugmode@rkw.de');
+        static::assertEquals(2, $result);
+
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page */
+        foreach ($pages as $page) {
+            static::assertEquals(0, $page->getTxRkwalertsSendStatus());
+        }
+
+        $queueMails = $this->queueMailRepository->findAll()->toArray();
+        static::assertCount(2, $queueMails);
+
+        $queueRecipients = $this->queueRecipientRepository->findByQueueMail($queueMails[0]);
+        static::assertCount(1, $queueRecipients);
+
+        $queueRecipients = $this->queueRecipientRepository->findByQueueMail($queueMails[1]);
+        static::assertCount(1, $queueRecipients);
+
+        $queueRecipients = $this->queueRecipientRepository->findAll();
+        /**  @var  \RKW\RkwMailer\Domain\Model\QueueRecipient $queueRecipient */
+        foreach ($queueRecipients as $queueRecipient) {
+            static::assertEquals('debugmode@rkw.de', $queueRecipient->getEmail());
+        }
+        
     }
 
     /**
@@ -2130,7 +2198,7 @@ class AlertManagerTest extends FunctionalTestCase
         // set date accordingly for our check
         $pages = $this->pageRepository->findAll();
 
-        /**  @var $page \RKW\RkwAlerts\Domain\Model\Page */
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         $timeNow = time();
         foreach ($pages as $page) {
             $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
@@ -2142,6 +2210,11 @@ class AlertManagerTest extends FunctionalTestCase
         // now do the check
         $result = $this->subject->sendNotification('crdate', 432000);
         static::assertEquals(6, $result);
+
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
+        foreach ($pages as $page) {
+            static::assertEquals(1, $page->getTxRkwalertsSendStatus());
+        }
 
         $queueMails = $this->queueMailRepository->findAll()->toArray();
         static::assertCount(2, $queueMails);

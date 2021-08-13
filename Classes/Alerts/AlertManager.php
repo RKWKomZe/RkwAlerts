@@ -744,13 +744,15 @@ class AlertManager
      *
      * @param string $filterField
      * @param integer $timeSinceCreation
+     * @param string $debugMail
      * @return int
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function sendNotification(
         string $filterField,
-        int $timeSinceCreation = 432000
+        int $timeSinceCreation = 432000,
+        string $debugMail = ''
     ): int
     {
 
@@ -790,8 +792,13 @@ class AlertManager
                                     && ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser)
                                 ) {
 
+                                    $recipient = $frontendUser;
+                                    if ($debugMail) {
+                                        $recipient = ['email' => $debugMail];
+                                    }
+                                    
                                     $mailService->setTo(
-                                        $frontendUser,
+                                        $recipient,
                                         array(
                                             'marker'  => array(
                                                 'alert'        => $alert,
@@ -855,15 +862,26 @@ class AlertManager
                         }
                     }
 
-                    // no matter what happens: mark pages as sent
-                    /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
-                    foreach ($pages as $page) {
-                        $page->setTxRkwalertsSendStatus(1);
-                        $this->pageRepository->update($page);
-                    }
+                    if ($debugMail) {
+                        $this->getLogger()->log(
+                            \TYPO3\CMS\Core\Log\LogLevel::WARNING,
+                            sprintf(
+                                'You are running this script in debug-mode. All e-mails are sent to %s. Pages will not be marked as sent.',
+                                $debugMail
+                            )
+                        );
+                        
+                     // no matter what happens: mark pages as sent
+                    } else {
+                        /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
+                        foreach ($pages as $page) {
+                            $page->setTxRkwalertsSendStatus(1);
+                            $this->pageRepository->update($page);
+                        }
 
-                    // persist
-                    $this->persistenceManager->persistAll();
+                        // persist
+                        $this->persistenceManager->persistAll();
+                    }
                 }
             }
 

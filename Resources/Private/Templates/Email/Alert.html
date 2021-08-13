@@ -25,7 +25,7 @@
 
 		<f:render partial="Email/LinkList" section="Html" arguments="{_all}"/>
 
-		<p style="padding-top:16px;" class="footer">
+		<p class="footer">
 			<rkwMailer:frontend.translate key="templates_email_alert.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" arguments="{0 : alert.project.name}"/><br>
 			<a href="{rkwMailer:frontend.link(absolute:'true', pageUid:'{loginPid}', noCacheHash:'true')}">
 				<rkwMailer:frontend.translate key="templates_email_alert.loginLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>
