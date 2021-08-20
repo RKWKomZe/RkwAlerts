@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -1579,13 +1580,13 @@ class AlertManagerTest extends FunctionalTestCase
          * Given we search for pages that were created during the last 5 days
          * When I call the method
          * Then an array is returned
-         * Then the array contains one key
-         * Then the first key contains a sub-array 'pages'
-         * Then the first key contains a sub-array 'project'
-         * Then the 'project'-sub-array contains one project-object
-         * Then the 'pages'-sub-array contains two page-objects
+         * Then the array contains one key, which again contains an array with two keys
+         * Then the first key has the name 'project'
+         * Then the second key has the name 'pages'
+         * Then the 'project'-sub-key contains an instance of Project
+         * Then the 'pages'-sub-key is an instance of ObjectStorage
+         * Then the 'pages'-sub-key contains two instances of Pages
          * Then the two page objects have the doktype 1
-
          */
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check300.xml');
@@ -1608,17 +1609,27 @@ class AlertManagerTest extends FunctionalTestCase
         static::assertCount(1, $result);
 
         $subArray = current($result);
+        static::assertNotEmpty($subArray['project']);
+        static::assertNotEmpty($subArray['pages']);
+
         static::assertInstanceOf(Project::class, $subArray['project']);
 
-        static::assertCount(2, $subArray['pages']);
-        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
-        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
+        /** @var ObjectStorage $pages */
+        $pages = $subArray['pages'];
+        static::assertInstanceOf(ObjectStorage::class, $pages);
+        static::assertCount(2, $pages);
+        
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->next();
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->rewind();
 
         /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
-        $page = $subArray['pages'][0];
+        $page = $pages->current();
         static::assertEquals(1, $page->getDoktype());
 
-        $page = $subArray['pages'][1];
+        $pages->next();
+        $page = $pages->current();
         static::assertEquals(1, $page->getDoktype());
     }
 
@@ -1642,11 +1653,13 @@ class AlertManagerTest extends FunctionalTestCase
          * Given we search for pages that were created during the last 5 days
          * When I call the method
          * Then an array is returned
-         * Then the array contains one key with an array, which again has two keys
-         * Then the first key 'pages' is a sub-array
-         * Then the second key 'project' contains one project-object
-         * Then the 'pages'-sub-array contains two page-objects
-         * Then the two page objects have not been used for alert-notification, yet
+         * Then the array contains one key, which again contains an array with two keys
+         * Then the first key has the name 'project'
+         * Then the second key has the name 'pages'
+         * Then the 'project'-sub-key contains an instance of Project
+         * Then the 'pages'-sub-key is an instance of ObjectStorage
+         * Then the 'pages'-sub-key contains two instances of Pages
+         * Then the two Page-objects have not been used for alert-notification, yet
          */
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check310.xml');
@@ -1669,17 +1682,27 @@ class AlertManagerTest extends FunctionalTestCase
         static::assertCount(1, $result);
 
         $subArray = current($result);
+        static::assertNotEmpty($subArray['project']);
+        static::assertNotEmpty($subArray['pages']);
+
         static::assertInstanceOf(Project::class, $subArray['project']);
 
-        static::assertCount(2, $subArray['pages']);
-        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
-        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
+        /** @var ObjectStorage $pages */
+        $pages = $subArray['pages'];
+        static::assertInstanceOf(ObjectStorage::class, $pages);
+        static::assertCount(2, $pages);
+
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->next();
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->rewind();
 
         /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
-        $page = $subArray['pages'][0];
+        $page = $pages->current();
         static::assertEquals(0, $page->getTxRkwalertsSendStatus());
-
-        $page = $subArray['pages'][1];
+       
+        $pages->next();
+        $page = $pages->current();
         static::assertEquals(0, $page->getTxRkwalertsSendStatus());
     }
 
@@ -1704,11 +1727,13 @@ class AlertManagerTest extends FunctionalTestCase
          * Given we search for pages that were created during the last 5 days
          * When I call the method
          * Then an array is returned
-         * Then the array contains one key with an array, which again has two keys
-         * Then the first key 'pages' is a sub-array
-         * Then the second key 'project' contains one project-object
-         * Then the 'pages'-sub-array contains two page-objects
-         * Then the two page objects belong to the subscribable project
+         * Then the array contains one key, which again contains an array with two keys
+         * Then the first key has the name 'project'
+         * Then the second key has the name 'pages'
+         * Then the 'project'-sub-key contains an instance of Project
+         * Then the 'pages'-sub-key is an instance of ObjectStorage
+         * Then the 'pages'-sub-key contains two instances of Pages
+         * Then the two Page-objects belong to the subscribable project
          */
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check320.xml');
@@ -1731,17 +1756,27 @@ class AlertManagerTest extends FunctionalTestCase
         static::assertCount(1, $result);
 
         $subArray = current($result);
+        static::assertNotEmpty($subArray['project']);
+        static::assertNotEmpty($subArray['pages']);
+
         static::assertInstanceOf(Project::class, $subArray['project']);
 
-        static::assertCount(2, $subArray['pages']);
-        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
-        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
+        /** @var ObjectStorage $pages */
+        $pages = $subArray['pages'];
+        static::assertInstanceOf(ObjectStorage::class, $pages);
+        static::assertCount(2, $pages);
+
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->next();
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->rewind();
 
         /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
-        $page = $subArray['pages'][0];
+        $page = $pages->current();
         static::assertEquals(320, $page->getTxRkwprojectsProjectUid()->getUid());
 
-        $page = $subArray['pages'][1];
+        $pages->next();
+        $page = $pages->current();
         static::assertEquals(320, $page->getTxRkwprojectsProjectUid()->getUid());
     }
 
@@ -1765,11 +1800,13 @@ class AlertManagerTest extends FunctionalTestCase
          * Given we search for pages that were created during the last 5 days
          * When I call the method
          * Then an array is returned
-         * Then the array contains one key with an array, which again has two keys
-         * Then the first key 'pages' is a sub-array
-         * Then the second key 'project' contains one project-object
-         * Then the 'pages'-sub-array contains two page-objects
-         * Then the two page objects have been created two days before
+         * Then the array contains one key, which again contains an array with two keys
+         * Then the first key has the name 'project'
+         * Then the second key has the name 'pages'
+         * Then the 'project'-sub-key contains an instance of Project
+         * Then the 'pages'-sub-key is an instance of ObjectStorage
+         * Then the 'pages'-sub-key contains two instances of Pages
+         * Then the two Page-objects have been created two days before
          */
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check330.xml');
@@ -1798,17 +1835,27 @@ class AlertManagerTest extends FunctionalTestCase
         static::assertCount(1, $result);
 
         $subArray = current($result);
+        static::assertNotEmpty($subArray['project']);
+        static::assertNotEmpty($subArray['pages']);
+
         static::assertInstanceOf(Project::class, $subArray['project']);
 
-        static::assertCount(2, $subArray['pages']);
-        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
-        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
+        /** @var ObjectStorage $pages */
+        $pages = $subArray['pages'];
+        static::assertInstanceOf(ObjectStorage::class, $pages);
+        static::assertCount(2, $pages);
 
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->next();
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->rewind();
+        
         /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
-        $page = $subArray['pages'][0];
+        $page = $pages->current();
         static::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getCrdate());
 
-        $page = $subArray['pages'][1];
+        $pages->next();
+        $page = $pages->current();
         static::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getCrdate());
     }
 
@@ -1832,11 +1879,13 @@ class AlertManagerTest extends FunctionalTestCase
          * Given we search for pages that were created during the last 5 days
          * When I call the method
          * Then an array is returned
-         * Then the array contains one key with an array, which again has two keys
-         * Then the first key 'pages' is a sub-array
-         * Then the second key 'project' contains one project-object
-         * Then the 'pages'-sub-array contains two page-objects
-         * Then the two page objects have been created two days before
+         * Then the array contains one key, which again contains an array with two keys
+         * Then the first key has the name 'project'
+         * Then the second key has the name 'pages'
+         * Then the 'project'-sub-key contains an instance of Project
+         * Then the 'pages'-sub-key is an instance of ObjectStorage
+         * Then the 'pages'-sub-key contains two instances of Pages
+         * Then the two Page-Objects have been created two days before
          */
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check340.xml');
 
@@ -1866,17 +1915,27 @@ class AlertManagerTest extends FunctionalTestCase
         static::assertCount(1, $result);
 
         $subArray = current($result);
+        static::assertNotEmpty($subArray['project']);
+        static::assertNotEmpty($subArray['pages']);
+
         static::assertInstanceOf(Project::class, $subArray['project']);
 
-        static::assertCount(2, $subArray['pages']);
-        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
-        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
+        /** @var ObjectStorage $pages */
+        $pages = $subArray['pages'];
+        static::assertInstanceOf(ObjectStorage::class, $pages);
+        static::assertCount(2, $pages);
+
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->next();
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->rewind();
 
         /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
-        $page = $subArray['pages'][0];
+        $page = $pages->current();
         static::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getLastUpdated());
 
-        $page = $subArray['pages'][1];
+        $pages->next();
+        $page = $pages->current();
         static::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getLastUpdated());
     }
 
@@ -1900,6 +1959,14 @@ class AlertManagerTest extends FunctionalTestCase
          * Given we search for pages that were created during the last 5 days
          * When I call the method
          * Then an array is returned
+         * Then the array contains two keys, which again contains an array with two keys
+         * Then each first key has the name 'project'
+         * Then each second key has the name 'pages'
+         * Then each 'project'-sub-key contains an instance of Project
+         * Then each 'pages'-sub-key is an instance of ObjectStorage
+         * Then the first 'pages'-sub-key contains two instances of Pages
+         * Then the second 'pages'-sub-key contains three instances of Pages
+
          * Then the array contains two key with one array each, which again has two keys
          * Then the first key 'pages' is a sub-array
          * Then the second key 'project' contains one project-object
@@ -1927,21 +1994,36 @@ class AlertManagerTest extends FunctionalTestCase
         static::assertCount(2, $result);
 
         $subArray = current($result);
-        static::assertInstanceOf(Project::class, $subArray['project']);
-
-        static::assertCount(2, $subArray['pages']);
-        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
-        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
-
         next($result);
-        $subArray = current($result);
+        $subArrayTwo = current($result);
+        
+        static::assertNotEmpty($subArray['project']);
+        static::assertNotEmpty($subArray['pages']);
+        static::assertNotEmpty($subArrayTwo['project']);
+        static::assertNotEmpty($subArrayTwo['pages']);
+
         static::assertInstanceOf(Project::class, $subArray['project']);
+        static::assertInstanceOf(Project::class, $subArrayTwo['project']);
 
-        static::assertCount(3, $subArray['pages']);
-        static::assertInstanceOf(Page::class, $subArray['pages'][0]);
-        static::assertInstanceOf(Page::class, $subArray['pages'][1]);
-        static::assertInstanceOf(Page::class, $subArray['pages'][2]);
+        /** @var ObjectStorage $pages */
+        $pages = $subArray['pages'];
+        static::assertInstanceOf(ObjectStorage::class, $pages);
+        static::assertCount(2, $pages);
 
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->next();
+        static::assertInstanceOf(Page::class, $pages->current());
+
+        $pages = $subArrayTwo['pages'];
+        static::assertInstanceOf(ObjectStorage::class, $pages);
+        static::assertCount(3, $pages);
+
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->next();
+        static::assertInstanceOf(Page::class, $pages->current());
+        $pages->next();
+        static::assertInstanceOf(Page::class, $pages->current());        
+        
     }
 
     //=============================================
@@ -2225,6 +2307,8 @@ class AlertManagerTest extends FunctionalTestCase
         $queueRecipients = $this->queueRecipientRepository->findByQueueMail($queueMails[1]);
         static::assertCount(4, $queueRecipients);
     }
+
+    
 
     //=============================================
 

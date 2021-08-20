@@ -21,6 +21,7 @@ use RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwMailer\Service\MailService;
 use RKW\RkwRegistration\Tools\Registration;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class AlertManager
@@ -714,23 +715,30 @@ class AlertManager
 
         if ($pages = $this->pageRepository->findAllToNotify($filterField, $timeSinceCreation)) {
 
+
+            
             /**  @var \RKW\RkwAlerts\Domain\Model\Page $page */
             foreach ($pages as $page) {
 
                 $projectId = $page->getTxRkwprojectsProjectUid()->getUid();
+
                 if (! isset($result[$projectId])) {
+
+                    /** @var ObjectStorage $pagesObjectStorage */
+                    $pagesObjectStorage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectStorage::class);
+                    $pagesObjectStorage->attach($page);
 
                     /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
                     $project = $this->projectRepository->findByIdentifier($page->getTxRkwprojectsProjectUid()->getUid());
                     $result[$projectId] = [
                         'project' => $project,
-                        'pages' => [
-                            $page,
-                        ],
+                        'pages' => $pagesObjectStorage
                     ];
 
                 } else {
-                    $result[$projectId]['pages'][] = $page;
+                    if ($result[$projectId]['pages'] instanceof ObjectStorage) {
+                        $result[$projectId]['pages']->attach($page);
+                    }
                 }
             }
         }
