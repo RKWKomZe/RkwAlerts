@@ -21,7 +21,7 @@
         "typo3/cms-core": "~7.6.0 || ~8.7.0",
         "rkw/rkw-basics": "~8.7.12",
         "rkw/rkw-ajax": "~8.7.55",
-        "rkw/rkw-mailer": "~8.7.25",
+        "rkw/rkw-mailer": "~8.7.25 || ~9.5.0",
         "rkw/rkw-registration": "~8.7.0",
 		"rkw/rkw-projects": "~8.7.0"
     },
