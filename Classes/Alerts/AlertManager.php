@@ -783,7 +783,7 @@ class AlertManager
 
                     // find all alerts for project
                     /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
-                    if ($alerts = $this->alertRepository->findByProject($projectId)) {
+                    if ($alerts = $this->alertRepository->findByProject($project)) {
 
                         try {
 
