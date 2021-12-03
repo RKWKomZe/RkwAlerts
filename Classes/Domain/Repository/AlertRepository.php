@@ -26,7 +26,6 @@ namespace RKW\RkwAlerts\Domain\Repository;
 class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 
-
     /**
      * findOneByFrontendUserAndProject
      * find one alert by frontendUser and project
@@ -68,6 +67,25 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $query->matching(
             $query->equals('frontendUser', $frontendUser)
+        );
+
+        return $query->execute();
+    }
+
+    /**
+     * findByProject
+     *
+     * @param \RKW\RkwAlerts\Domain\Model\Project $project
+     * @return object
+     */
+    public function findByProject(\RKW\RkwAlerts\Domain\Model\Project $project)
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+
+        $query = $this->createQuery();
+        $query->matching(
+            $query->equals('project', $project)
         );
 
         return $query->execute();
