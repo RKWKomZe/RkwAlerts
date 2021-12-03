@@ -50,6 +50,13 @@ call_user_func(
         );
 
         $signalSlotDispatcher->connect(
+            'RKW\\RkwAlerts\\Alerts\\AlertManager',
+            \RKW\RkwAlerts\Alerts\AlertManager::SIGNAL_AFTER_ALERT_CREATED,
+            'RKW\\RkwAlerts\\Service\\RkwMailService',
+            'confirmAlertUser'
+        );
+
+        $signalSlotDispatcher->connect(
             'RKW\\RkwRegistration\\Tools\\Registration',
             \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_DELETING_USER,
             'RKW\\RkwAlerts\\Alerts\\AlertManager',

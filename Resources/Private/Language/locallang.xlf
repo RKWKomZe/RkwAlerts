@@ -4,36 +4,89 @@
 		<header/>
 		<body>
 			<trans-unit id="tx_rkwalerts_domain_model_alerts">
-				<source>RKW Alerts</source>
-			</trans-unit>
-			<trans-unit id="tx_rkwalerts_domain_model_alerts.frontend_user">
-				<source>Frontend User</source>
-			</trans-unit>
-			<trans-unit id="tx_rkwalerts_domain_model_alerts.topic">
-				<source>Project</source>
-			</trans-unit>
+                <source>RKW Alerts</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwalerts_domain_model_alerts.frontend_user">
+                <source>Frontend User</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwalerts_domain_model_alerts.topic">
+                <source>Project</source>
+            </trans-unit>
+
+            <!-- alertManager-->
+            <trans-unit id="alertManager.error.acceptTerms">
+                <source>Sorry, this has to be done: Please accept our terms of use to enjoy RKW Alerts.</source>
+            </trans-unit>
+            <trans-unit id="alertManager.error.acceptPrivacy">
+                <source>The protection of your data is important to us. Therefore we ask you to agree to the storage of your personal data.</source>
+            </trans-unit>
+            <trans-unit id="alertManager.error.invalidEmail">
+                <source>Something went wrong. Please enter a valid e-mail address.</source>
+            </trans-unit>
+            <trans-unit id="alertManager.error.projectInvalid">
+                <source>Something went wrong. The selected project seems to be not (anymore) activated for RKW Alerts.</source>
+            </trans-unit>
+            <trans-unit id="alertManager.error.alreadySubscribed">
+                <source>Something went wrong. Is it possible that you have already subscribed to RKW Alerts for this project?</source>
+            </trans-unit>
+            <trans-unit id="alertManager.error.frontendUserNotPersisted">
+                <source><![CDATA[Something went wrong. The user account passed doesn't seem to exist yet. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+            </trans-unit>
+            <trans-unit id="alertManager.error.frontendUserNotPersisted">
+                <source><![CDATA[Something went wrong. The user account passed doesn't seem to exist yet. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+            </trans-unit>
+            <trans-unit id="alertManager.error.frontendUserInvalid">
+                <source><![CDATA[Something has gone wrong. The RKW alert does not appear to belong to the current user. Please contact our <a href="mailto:service@rkw.de">support</a>.]]></source>
+            </trans-unit>
+            <trans-unit id="alertManager.error.frontendUserMissing">
+                <source><![CDATA[Something went wrong. No user account was passed. Please contact our <a href="mailto:service@rkw.de">support</a>.]]>.</source>
+            </trans-unit>
+            <trans-unit id="alertManager.error.frontendUserNotLoggedIn">
+                <source><![CDATA[Something went wrong. You must be logged in to perform this action. Please contact our <a href="mailto:service@rkw.de">support</a>.]]>.</source>
+            </trans-unit>
+            <trans-unit id="alertManager.error.alertAlreadyPersisted">
+                <source><![CDATA[Something went wrong. The RKW Alert that was passed in seems to already exist. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+            </trans-unit>
+            <trans-unit id="alertManager.error.alertNotPersisted">
+                <source><![CDATA[Something went wrong. The RKW Alert that was passed in does not exist. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+            </trans-unit>
+
 
             <!-- alertController -->
-            <trans-unit id="alertController.error.not_logged_in">
+            <trans-unit id="alertController.error.create">
+                <source><![CDATA[Something went wrong. This can also happen if you have already clicked the confirmation link. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+            </trans-unit>
+            <trans-unit id="alertController.message.create_1">
+                <source>Woohoo! Alert successfully created.</source>
+            </trans-unit>
+            <trans-unit id="alertController.message.create_2">
+                <source>An e-mail has been send to you. Please click the link in the e-mail to confirm your request.</source>
+            </trans-unit>
+            <trans-unit id="alertController.message.create_3">
+                <source>Too bad you changed your mind. The RKW alert has been deleted.</source>
+            </trans-unit>
+            <trans-unit id="alertController.error.notLoggedIn">
                 <source>You must be logged in to use this feature.</source>
             </trans-unit>
+            <trans-unit id="alertController.error.delete">
+                <source><![CDATA[Something went wrong. The RKW Alert could not be deleted. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+            </trans-unit>
+            <trans-unit id="alertController.message.delete">
+                <source>Woohoo! Alert successfully deleted.</source>
+            </trans-unit>
+
+
             <trans-unit id="alertController.error.no_valid_email">
                 <source>Please enter a valid username.</source>
             </trans-unit>
             <trans-unit id="alertController.error.email_already_in_use">
                 <source>The given E-mail is already used by another user.</source>
             </trans-unit>
-            <trans-unit id="alertController.message.alert_created">
-                <source>Alert successfully created.</source>
-            </trans-unit>
             <trans-unit id="alertController.message.something_went_wrong">
-				<source>Something went wrong.</source>
-			</trans-unit>
+                <source>Something went wrong.</source>
+            </trans-unit>
             <trans-unit id="alertController.message.alert_already_exists">
                 <source>Alert already exists.</source>
-            </trans-unit>
-            <trans-unit id="alertController.message.alert_deleted">
-                <source>Alert successfully deleted.</source>
             </trans-unit>
             <trans-unit id="alertController.message.alert_canceled">
                 <source>Alert creation was canceled.</source>
@@ -49,7 +102,7 @@
             </trans-unit>
 
 
-            <!-- Templates/Alerts/List.html-->
+              <!-- Templates/Alerts/List.html-->
             <trans-unit id="templates_alert_list.headline">
                 <source>Your active Alerts</source>
             </trans-unit>
@@ -69,7 +122,7 @@
                 <source>Delete Alert</source>
             </trans-unit>
             <trans-unit id="templates_alert_deleteConfirm.description">
-                <source>Do you really want to delete the Alert for project "%s"?</source>
+                <source>Do you really want to delete the Alert for topic "%s"?</source>
             </trans-unit>
             <trans-unit id="templates_alert_deleteConfirm.labelYes">
                 <source>Yes, do it</source>
@@ -79,56 +132,64 @@
             </trans-unit>
 
 
-            <!-- Partials/Alerts/New.html-->
-            <trans-unit id="partials_alerts_new.introduction">
+            <!-- Partials/Alerts/Introduction.html-->
+            <trans-unit id="partials_alerts_introduction.headline">
+                <source>Stay tuned!</source>
+            </trans-unit>
+            <trans-unit id="partials_alerts_introduction.text1">
                 <source><![CDATA[Always be up-to-date with RKW Alerts for project "<strong>%s</strong>".]]></source>
             </trans-unit>
-            <trans-unit id="partials_alerts_new.introductionSelect">
-                <source><![CDATA[Always be up-to-date with RKW Alerts for your project.]]></source>
+            <trans-unit id="partials_alerts_introduction.text1_exists">
+                <source><![CDATA[Alert for project "<strong>%s</strong>" is active.]]></source>
             </trans-unit>
-            <trans-unit id="partials_alerts_new.introductionNotLoggedIn">
+            <trans-unit id="partials_alerts_introduction.text2">
                 <source>All you need is an E-mail-address and 10 seconds of time.</source>
             </trans-unit>
-            <trans-unit id="partials_alerts_new.introductionLoggedIn">
-                <source>You're just one click away.</source>
+            <trans-unit id="partials_alerts_introduction.text2_loggedIn">
+                <source>You're just one click away:</source>
             </trans-unit>
-            <trans-unit id="partials_alerts_new.labelUsername">
-                <source>E-Mail</source>
-            </trans-unit>
-            <trans-unit id="partials_alerts_new.alertAlreadyExists">
-                <source>Alert for project "%s" is active.</source>
-            </trans-unit>
-            <trans-unit id="partials_alerts_new.alertAlreadyExistsLabel">
+            <trans-unit id="partials_alerts_introduction.text2_exists">
                 <source>Click here to change settings.</source>
             </trans-unit>
-            <trans-unit id="partials_alerts_new.terms">
+
+
+            <!-- Partials/Alerts/Form.html-->
+            <trans-unit id="partials_alerts_form.labelEmail">
+                <source>E-Mail</source>
+            </trans-unit>
+            <trans-unit id="partials_alerts_form.terms">
                 <source>I accept the terms and conditions.</source>
             </trans-unit>
-
+            <trans-unit id="partials_alerts_form.labelCreateNew">
+                <source>Create Alert</source>
+            </trans-unit>
 
 
             <!-- Email- Subjects -->
             <trans-unit id="rkwMailService.optInAlertUser.subject">
                 <source>Confirmation for RKW Alerts</source>
             </trans-unit>
+            <trans-unit id="rkwMailService.confirmAlertUser.subject">
+                <source>NRKW Alert for project "%s" activated</source>
+            </trans-unit>
             <trans-unit id="rkwMailService.cancelAllUser.subject">
                 <source>Your RKW Alerts have been canceled</source>
             </trans-unit>
             <trans-unit id="rkwMailService.sendAlert.subject">
-                <source>New RKW Alert for project "%s"</source>
+                <source>New RKW Alert for project %s</source>
             </trans-unit>
             <trans-unit id="rkwMailService.sendAlert.subjectDefault">
                 <source>New RKW Alert for project "%s"</source>
             </trans-unit>
+            
+            
 
-
-
-            <!-- Templates/Email/RegisterOptInRequest.html -->
+            <!-- Templates/Email/OptInAlertUser.html -->
             <trans-unit id="templates_email_optInAlertUser.headline">
                 <source>Hello,</source>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.text1">
-                <source>thank you for your interest in RKW Alerts for the following project:</source>
+                <source>thank you for your interest in RKW Alerts for the project "%s".</source>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptIn">
                 <source>Click here to confirm your request:</source>
@@ -141,6 +202,18 @@
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptOutLinkLabel">
                 <source>No, thank you</source>
+            </trans-unit>
+            
+            
+            <!-- Templates/Email/ConfirmAlertUser.html -->
+            <trans-unit id="templates_email_confirmAlertUser.headline">
+                <source>Hello,</source>
+            </trans-unit>
+            <trans-unit id="templates_email_confirmAlertUser.text1">
+                <source>thank you for your interest in RKW Alerts for the project "%s".</source>
+            </trans-unit>
+            <trans-unit id="templates_email_confirmAlertUser.loginLinkLabel">
+                <source>Log in here to adjust settings or cancel alerts.</source>
             </trans-unit>
 
 
@@ -161,7 +234,7 @@
                 <source>Hello,</source>
             </trans-unit>
             <trans-unit id="templates_email_alert.text1">
-                <source>there are new contents on the project "%s" available.</source>
+                <source>there are new contents on the project "%s" available:</source>
             </trans-unit>
             <trans-unit id="templates_email_alert.linkLabel">
                 <source>Click here to see the contents</source>
@@ -172,6 +245,7 @@
             <trans-unit id="templates_email_alert.loginLinkLabel">
                 <source>Log in here to adjust settings or cancel alerts.</source>
             </trans-unit>
+
 
             <!-- Partials/Email/LinkList.html -->
             <trans-unit id="partials_email_linkList.readMore">
