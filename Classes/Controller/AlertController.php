@@ -15,6 +15,9 @@ namespace RKW\RkwAlerts\Controller;
  */
 
 use RKW\RkwRegistration\Tools\Registration;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 
 /**
@@ -230,7 +233,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
             );
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'alertController.' . ($result ? 'message' : 'error') . '.create_' . $result,
                     'rkw_alerts'
                 )
@@ -239,7 +242,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
         } catch (\RKW\RkwAlerts\Exception $exception) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     $exception->getMessage(),
                     'rkw_alerts'
                 ),
@@ -282,13 +285,13 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
         $userSha1 = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('user'));
 
         /** @var \RKW\RkwRegistration\Tools\Registration $register */
-        $register = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registration::class);
+        $register = GeneralUtility::makeInstance(Registration::class);
         $check = $register->checkTokens($tokenYes, $tokenNo, $userSha1);
 
         if ($check == 1) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'alertController.message.create_1', 'rkw_alerts'
                 )
             );
@@ -296,7 +299,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
         } elseif ($check == 2) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'alertController.message.create_3', 'rkw_alerts'
                 )
             );
@@ -304,7 +307,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
         } else {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'alertController.error.create', 'rkw_alerts'
                 ),
                 '',
@@ -354,7 +357,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
             );
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'alertController.' . ($result ? 'message' : 'error') . '.delete',
                     'rkw_alerts'
                 )
@@ -363,7 +366,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
         } catch (\RKW\RkwAlerts\Exception $exception) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     $exception->getMessage(),
                     'rkw_alerts'
                 ),
@@ -439,7 +442,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
     {
 
         if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {
-            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
         }
 
         return $this->logger;

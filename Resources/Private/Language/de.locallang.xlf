@@ -3,6 +3,7 @@
 	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2015-08-12T15:13:53Z" product-name="rkw_alerts">
 		<header/>
 		<body>
+		
 			<trans-unit id="tx_rkwalerts_domain_model_alerts">
 				<source>RKW Alerts</source>
                 <target>RKW Alerts</target>
@@ -15,8 +16,6 @@
 				<source>Project</source>
                 <target>Projekt</target>
 			</trans-unit>
-
-
 
 			<!-- alertManager-->
             <trans-unit id="alertManager.error.acceptTerms">
@@ -69,11 +68,10 @@
             </trans-unit>
 
 
-
             <!-- alertController -->
-            <trans-unit id="alertManager.error.create">
-                <source><![CDATA[Something went wrong. The RKW Alert could not be created. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
-                <target><![CDATA[Da ist etwas schief gelaufen. Der RKW Alert konnte nicht angelegt werden. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            <trans-unit id="alertController.error.create">
+                <source><![CDATA[Something went wrong. This can also happen if you have already clicked the confirmation link. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+                <target><![CDATA[Da ist etwas schief gelaufen. Dies kann auch passieren, wenn Sie den Bestätigungslink bereits verwendet haben. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
             </trans-unit>
             <trans-unit id="alertController.message.create_1">
                 <source>Woohoo! Alert successfully created.</source>
@@ -101,7 +99,6 @@
             </trans-unit>
 
 
-
             <trans-unit id="alertController.error.no_valid_email">
                 <source>Please enter a valid username.</source>
                 <target>Da ist etwas schief gelaufen. Bitte geben Sie eine gültige E-Mailadresse ein.</target>
@@ -120,7 +117,6 @@
                 <source>Alert already exists.</source>
                 <target>Der RKW Alert existiert bereits. Das Projekt scheint also sehr interessant zu sein ;-)</target>
             </trans-unit>
-
             <trans-unit id="alertController.message.alert_canceled">
                 <source>Alert creation was canceled.</source>
                 <target>Schade, dass Sie es sich anders überlegt haben. Der RKW Alert wurde gelöscht.</target>
@@ -137,7 +133,6 @@
                 <source>You have to accept our terms and conditions to activate alerts.</source>
                 <target>Das muss leider sein: Bitte akzeptieren Sie unsere Nutzungsbedingungen, um RKW Alerts nutzen zu können.</target>
             </trans-unit>
-
 
 
               <!-- Templates/Alerts/List.html-->
@@ -176,7 +171,6 @@
                 <source>No, keep it</source>
                 <target>Nein, doch nicht</target>
             </trans-unit>
-
 
 
             <!-- Partials/Alerts/Introduction.html-->
@@ -221,11 +215,14 @@
             </trans-unit>
 
 
-
             <!-- Email- Subjects -->
             <trans-unit id="rkwMailService.optInAlertUser.subject">
                 <source>Confirmation for RKW Alerts</source>
                 <target>Bestätigungslink für RKW Alerts</target>
+            </trans-unit>
+            <trans-unit id="rkwMailService.confirmAlertUser.subject">
+                <source>NRKW Alert for project "%s" activated</source>
+                <target>RKW Alert zum Projekt "%s" erfolgreich angelegt</target>
             </trans-unit>
             <trans-unit id="rkwMailService.cancelAllUser.subject">
                 <source>Your RKW Alerts have been canceled</source>
@@ -239,7 +236,8 @@
                 <source>New RKW Alert for project "%s"</source>
                 <target>Neuer RKW Alert zum Projekt "%s"</target>
             </trans-unit>
-
+            
+            
 
             <!-- Templates/Email/OptInAlertUser.html -->
             <trans-unit id="templates_email_optInAlertUser.headline">
@@ -265,6 +263,21 @@
             <trans-unit id="templates_email_optInAlertUser.textOptOutLinkLabel">
                 <source>No, thank you</source>
                 <target>Nein, ich möchte keine RKW Alerts zu diesem Projekt erhalten</target>
+            </trans-unit>
+            
+            
+            <!-- Templates/Email/ConfirmAlertUser.html -->
+            <trans-unit id="templates_email_confirmAlertUser.headline">
+                <source>Hello,</source>
+                <target>Hallo,</target>
+            </trans-unit>
+            <trans-unit id="templates_email_confirmAlertUser.text1">
+                <source>thank you for your interest in RKW Alerts for the project "%s". Shortly we will send you the first RKW Alert to this e-mail address.</source>
+                <target>wir freuen uns, dass Sie unsere RKW Alerts zum Projekt "%s" erhalten möchten. In Kürze werden wir Ihnen den ersten RKW Alert an diese E-Mailadresse senden.</target>
+            </trans-unit>
+            <trans-unit id="templates_email_confirmAlertUser.loginLinkLabel">
+                <source>Log in here to adjust settings or cancel alerts.</source>
+                <target>Loggen Sie sich hier ein, um die Einstellungen zu ändern, oder die RKW Alerts abzubestellen</target>
             </trans-unit>
 
 

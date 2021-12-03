@@ -817,7 +817,7 @@ class AlertManager
                                             'subject' => FrontendLocalizationUtility::translate(
                                                 'rkwMailService.sendAlert.subject',
                                                 'rkw_alerts',
-                                                array($project->getName()),
+                                                [$project->getName()],
                                                 $frontendUser->getTxRkwregistrationLanguageKey() ? $frontendUser->getTxRkwregistrationLanguageKey() : 'default'
                                             ),
                                         )
@@ -830,7 +830,7 @@ class AlertManager
                                 FrontendLocalizationUtility::translate(
                                     'rkwMailService.sendAlert.subjectDefault',
                                     'rkw_alerts',
-                                    array($project->getName()),
+                                    [$project->getName()],
                                     $settings['settings']['defaultLanguageKey'] ? $settings['settings']['defaultLanguageKey'] : 'default'
                                 )
                             );
