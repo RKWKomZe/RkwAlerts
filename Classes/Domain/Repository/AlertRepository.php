@@ -42,7 +42,6 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
 
-        $query = $this->createQuery();
         $query->matching(
             $query->logicalAnd(
                 $query->equals('frontendUser',$frontendUser->getUid()),
@@ -72,6 +71,7 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
+
     /**
      * findByProject
      *
@@ -83,7 +83,6 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
 
-        $query = $this->createQuery();
         $query->matching(
             $query->equals('project', $project)
         );

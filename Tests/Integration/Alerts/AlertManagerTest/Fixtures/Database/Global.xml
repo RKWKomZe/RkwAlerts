@@ -4,8 +4,6 @@
         <uid>1</uid>
         <pid>0</pid>
         <title>Rootpage</title>
-        <tx_rkwbasics_teaser_text />
-        <tx_rkwbasics_information />
         <doktype>1</doktype>
         <perms_everybody>15</perms_everybody>
     </pages>

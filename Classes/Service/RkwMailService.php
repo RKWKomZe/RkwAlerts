@@ -2,11 +2,11 @@
 
 namespace RKW\RkwAlerts\Service;
 
-use \RKW\RkwBasics\Helper\Common;
 use RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwMailer\Service\MailService;
 use RKW\RkwMailer\Utility\FrontendLocalizationUtility;
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -148,7 +148,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * Handles canceling of all alerts of a user
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param array $alerts
+     * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts
      * @return void
      * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
@@ -157,8 +157,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function cancelAllUser(
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, 
-        array $alerts
+        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
+        QueryResultInterface $alerts
     ): void {
 
         // get settings
