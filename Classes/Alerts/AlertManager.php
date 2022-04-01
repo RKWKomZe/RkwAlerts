@@ -854,6 +854,15 @@ class AlertManager
                                         $recipientCount
                                     )
                                 );
+
+                            } else {
+                                $this->getLogger()->log(
+                                    \TYPO3\CMS\Core\Log\LogLevel::DEBUG,
+                                    sprintf(
+                                        'No valid recipients found for alert notification for project with id %s.',
+                                        $projectId
+                                    )
+                                );
                             }
 
                         } catch (\Exception $e) {
@@ -896,7 +905,7 @@ class AlertManager
             $this->getLogger()->log(
                 \TYPO3\CMS\Core\Log\LogLevel::INFO,
                 sprintf(
-                    'Successfully created %s alert notifications.',
+                    'Found %s projects for alert notifications.',
                     count($results)
                 )
             );
@@ -904,7 +913,7 @@ class AlertManager
         } else {
             $this->getLogger()->log(
                 \TYPO3\CMS\Core\Log\LogLevel::INFO,
-                sprintf('No alert notifications have been created.')
+                sprintf('No projects found for  alert notifications.')
             );
         }
 

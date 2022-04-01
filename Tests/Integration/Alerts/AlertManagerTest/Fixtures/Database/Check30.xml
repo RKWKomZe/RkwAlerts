@@ -4,8 +4,6 @@
         <uid>30</uid>
         <pid>1</pid>
         <title>Test 10</title>
-        <tx_rkwbasics_teaser_text />
-        <tx_rkwbasics_information />
         <doktype>1</doktype>
         <perms_everybody>15</perms_everybody>
         <tx_rkwprojects_project_uid>30</tx_rkwprojects_project_uid>

@@ -336,6 +336,8 @@ class AlertManagerTest extends FunctionalTestCase
         self::assertTrue( $this->subject->hasFrontendUserSubscribedToProject($feUser, $project));
     }
 
+
+
     //=============================================
 
     /**
@@ -2146,7 +2148,7 @@ class AlertManagerTest extends FunctionalTestCase
          * Scenario:
          *
          * Given there are five pages to notify about
-         * Given there are two notifiable project
+         * Given there are two notifiable projects
          * Given three pages belong to notifiable project A
          * Given two pages belong to notifiable project B
          * Given there are two subscriptions to project A
@@ -2157,6 +2159,59 @@ class AlertManagerTest extends FunctionalTestCase
          */
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check380.xml');
+
+        // set date accordingly for our check
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
+        $timeNow = time();
+        foreach ($pages as $page) {
+            $page->setCrdate($timeNow - (2 * 60 * 60 * 24));
+            $this->pageRepository->update($page);
+        }
+
+        $this->persistenceManager->persistAll();
+
+        // now do the check
+        $result = $this->subject->sendNotification('crdate', 432000);
+        static::assertEquals(6, $result);
+
+        $pages = $this->pageRepository->findAll();
+
+        /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
+        foreach ($pages as $page) {
+            static::assertEquals(1, $page->getTxRkwalertsSendStatus());
+        }
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function sendNotificationSendsMailsForProjectsAndRecipientsWithDifferentStoragePids ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are five pages to notify about
+         * Given there are two notifiable projects A and B
+         * Given this project A is stored in storagePid X
+         * Given this project B is stored in storagePid Y
+         * Given three pages belong to notifiable project A
+         * Given two pages belong to notifiable project B
+         * Given there are two subscriptions to project A
+         * Given one of this subscriptions is stored in storagePid X
+         * Given one of this subscriptions is stored in storagePid Y
+         * Given there are four subscriptions to the project B
+         * Given two of this subscriptions are stored in storagePid X
+         * Given two of this subscriptions are stored in storagePid Y
+         * When I call the method
+         * Then the relevant pages are marked as sent
+         * Then six is returned
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check390.xml');
 
         // set date accordingly for our check
         $pages = $this->pageRepository->findAll();
