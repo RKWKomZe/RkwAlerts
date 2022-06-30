@@ -72,6 +72,12 @@ call_user_func(
 
 
         //=================================================================
+        // Register Hook
+        //=================================================================
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \RKW\RkwAlerts\Hooks\DataHandler::class;
+
+
+        //=================================================================
         // Register Command Controller
         //=================================================================
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'RKW\\RkwAlerts\\Controller\\SendCommandController';
