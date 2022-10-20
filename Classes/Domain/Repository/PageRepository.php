@@ -2,7 +2,10 @@
 
 namespace RKW\RkwAlerts\Domain\Repository;
 
+use RKW\RkwAlerts\Domain\Model\Page;
 use RKW\RkwBasics\Helper\QueryTypo3;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -25,7 +28,7 @@ use RKW\RkwBasics\Helper\QueryTypo3;
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class PageRepository extends AbstractRepository
 {
     /**
      * @var \TYPO3\CMS\Core\Log\Logger
@@ -36,11 +39,12 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * findByUid
      * finds page by uid
      *
+     * @param int $uid
      * @return \RKW\RkwAlerts\Domain\Model\Page
      * @throws \TYPO3\CMS\Core\Type\Exception\InvalidEnumerationValueException
      * @deprecated since version 8.7, will be removed in version 9.5
      */
-    public function findByUid($uid)
+    public function findByUid($uid): ?Page
     {
 
         $result = $this->createQuery();
@@ -52,7 +56,6 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         );
 
         return $result->execute()->getFirst();
-        //===
     }
 
 
@@ -66,7 +69,7 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findAllToNotify($filterField, $timeSinceCreation = 432000)
+    public function findAllToNotify(string $filterField, int $timeSinceCreation = 432000): QueryResultInterface
     {
 
         # Clean filter field and check it against TCA
@@ -107,9 +110,8 @@ class PageRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    protected function getLogger()
+    protected function getLogger(): Logger
     {
-
         if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {
             $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
         }

@@ -29,22 +29,15 @@ call_user_func(
          */
         $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Registration',
-            \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_CREATING_OPTIN_EXISTING_USER  . 'RkwAlerts',
+            \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::class,
+            \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::SIGNAL_AFTER_CREATING_OPTIN  . 'RkwAlerts',
             'RKW\\RkwAlerts\\Service\\RkwMailService',
             'optInAlertUser'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Registration',
-            \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_CREATING_OPTIN_USER  . 'RkwAlerts',
-            'RKW\\RkwAlerts\\Service\\RkwMailService',
-            'optInAlertUser'
-        );
-
-        $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Registration',
-            \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_USER_REGISTER_GRANT . 'RkwAlerts',
+            \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::class,
+            \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::SIGNAL_AFTER_REGISTRATION_COMPLETED . 'RkwAlerts',
             'RKW\\RkwAlerts\\Alerts\\AlertManager',
             'saveAlertByRegistration'
         );
@@ -57,8 +50,8 @@ call_user_func(
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Registration',
-            \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_DELETING_USER,
+            \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::class,
+            \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::SIGNAL_AFTER_REGISTRATION_ENDED,
             'RKW\\RkwAlerts\\Alerts\\AlertManager',
             'deleteAlertsByFrontendEndUser'
         );
@@ -69,12 +62,6 @@ call_user_func(
             'RKW\\RkwAlerts\\Service\\RkwMailService',
             'cancelAllUser'
         );
-
-
-        //=================================================================
-        // Register Command Controller
-        //=================================================================
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'RKW\\RkwAlerts\\Controller\\SendCommandController';
 
         //=================================================================
         // Register Logger

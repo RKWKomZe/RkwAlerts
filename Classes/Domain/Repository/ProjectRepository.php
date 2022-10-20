@@ -23,7 +23,7 @@ namespace RKW\RkwAlerts\Domain\Repository;
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ProjectRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class ProjectRepository extends AbstractRepository
 {
 
 

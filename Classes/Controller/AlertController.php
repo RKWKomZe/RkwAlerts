@@ -14,7 +14,7 @@ namespace RKW\RkwAlerts\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwRegistration\Tools\Registration;
+use RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -44,7 +44,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * FrontendUserRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $frontendUserRepository;
 
@@ -53,7 +53,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * alertsRepository
      *
      * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $alertRepository = null;
 
@@ -62,7 +62,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * alertsManager
      *
      * @var \RKW\RkwAlerts\Alerts\AlertManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $alertManager = null;
 
@@ -100,7 +100,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * @param string $email
      * @param integer $terms
      * @param integer $privacy
-     * @ignorevalidation $alert
+     * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      * @return void
      */
     public function newAction(
@@ -122,7 +122,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * @param string $email
      * @param integer $terms
      * @param integer $privacy
-     * @ignorevalidation $alert
+     * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      * @return void
      */
     public function newNonCachedAction(
@@ -142,7 +142,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * @param string $email
      * @param integer $terms
      * @param integer $privacy
-     * @ignorevalidation $alert
+     * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      * @return void
      */
     protected function newActionBase (
@@ -216,9 +216,9 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      */
     public function createAction(
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
-        $email = null,
-        $terms = null,
-        $privacy = null
+        string $email = null,
+        int $terms = 0,
+        int $privacy = 0
     ): void {
 
         try {
@@ -268,27 +268,32 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
     /**
      * Takes optIn parameters and checks them
      *
+     * @param string $tokenUser
+     * @param string $token
      * @return void
+     * @throws \RKW\RkwRegistration\Exception
+     * @throws \RKW\RkwAlerts\Exception
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function optInAction(): void
+    public function optInAction(string $tokenUser, string $token): void
     {
-        $tokenYes = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_yes') ? $this->request->getArgument('token_yes') : ''));
-        $tokenNo = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : ''));
-        $userSha1 = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('user'));
+        /** @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration $registration */
+        $registration = $this->objectManager->get(FrontendUserRegistration::class);
+        $result = $registration->setFrontendUserToken($tokenUser)
+            ->setCategory('rkwAlerts')
+            ->setRequest($this->request)
+            ->validateOptIn($token);
 
-        /** @var \RKW\RkwRegistration\Tools\Registration $register */
-        $register = GeneralUtility::makeInstance(Registration::class);
-        $check = $register->checkTokens($tokenYes, $tokenNo, $userSha1);
-
-        if ($check == 1) {
+        if ($result >= 200 && $result < 300) {
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
@@ -296,7 +301,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
                 )
             );
 
-        } elseif ($check == 2) {
+        } elseif ($result >= 300 && $result < 400) {
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
@@ -324,7 +329,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * action delete confirm
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
-     * @ignorevalidation $alert
+     * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      * @return void
      */
     public function deleteconfirmAction(\RKW\RkwAlerts\Domain\Model\Alert $alert): void
@@ -413,20 +418,20 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
 
 
     /**
-     * Id of logged User
+     * Uid of logged-in user
      *
      * @return integer
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     protected function getFrontendUserId(): int
     {
-
-        // is $GLOBALS set?
+        // is user logged in
+        $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
         if (
-            ($GLOBALS['TSFE'])
-            && ($GLOBALS['TSFE']->loginUser)
-            && ($GLOBALS['TSFE']->fe_user->user['uid'])
-        ) {
-            return intval($GLOBALS['TSFE']->fe_user->user['uid']);
+            ($context->getPropertyFromAspect('frontend.user', 'isLoggedIn'))
+            && ($frontendUserId = $context->getPropertyFromAspect('frontend.user', 'id'))
+        ){
+            return intval($frontendUserId);
         }
 
         return 0;

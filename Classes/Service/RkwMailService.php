@@ -36,7 +36,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * Handles opt-in event
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
      * @return void
      * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
@@ -45,8 +45,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function optInAlertUser(
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, 
-        \RKW\RkwRegistration\Domain\Model\Registration $registration = null
+        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
+        \RKW\RkwRegistration\Domain\Model\OptIn $optIn
     ): void  {
 
         // get settings
@@ -61,11 +61,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             // send new user an email with token
             $mailService->setTo($frontendUser, array(
                 'marker' => array(
-                    'tokenYes'     => $registration->getTokenYes(),
-                    'tokenNo'      => $registration->getTokenNo(),
-                    'userSha1'     => $registration->getUserSha1(),
                     'frontendUser' => $frontendUser,
-                    'registration' => $registration,
+                    'optIn'        => $optIn,
                     'pageUid'      => intval($GLOBALS['TSFE']->id),
                     'loginPid'     => intval($settingsDefault['loginPid']),
                 ),
@@ -103,7 +100,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function confirmAlertUser(
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
-        \RKW\RkwAlerts\Domain\Model\Alert $alert 
+        \RKW\RkwAlerts\Domain\Model\Alert $alert
     ): void  {
 
         // get settings

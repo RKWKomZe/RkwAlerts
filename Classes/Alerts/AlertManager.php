@@ -19,8 +19,10 @@ use RKW\RkwAlerts\Exception;
 use RKW\RkwBasics\Utility\FrontendLocalizationUtility;
 use RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwMailer\Service\MailService;
-use RKW\RkwRegistration\Tools\Registration;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -61,7 +63,7 @@ class AlertManager
      * alertRepository
      *
      * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $alertRepository;
 
@@ -69,7 +71,7 @@ class AlertManager
      * pagesRepository
      *
      * @var \RKW\RkwAlerts\Domain\Repository\PageRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $pageRepository;
 
@@ -77,7 +79,7 @@ class AlertManager
      * projectsRepository
      *
      * @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $projectRepository;
 
@@ -86,13 +88,13 @@ class AlertManager
      * frontendUserRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $frontendUserRepository;
 
     /**
      * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $signalSlotDispatcher;
 
@@ -101,7 +103,7 @@ class AlertManager
      * Persistence Manager
      *
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $persistenceManager;
 
@@ -234,9 +236,9 @@ class AlertManager
         \TYPO3\CMS\Extbase\Mvc\Request $request,
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser = null,
-        $email = '',
-        $terms = false,
-        $privacy = false
+        string $email = '',
+        bool $terms = false,
+        bool $privacy = false
     ) : int
     {
 
@@ -260,7 +262,7 @@ class AlertManager
         }
 
         // check given e-mail
-        if (! \RKW\RkwRegistration\Tools\Registration::validEmail($email)) {
+        if (! \RKW\RkwRegistration\Utility\FrontendUserUtility::validateEmail($email)) {
             throw new Exception('alertManager.error.emailInvalid');
         }
 
@@ -298,7 +300,7 @@ class AlertManager
                 if ($this->saveAlert($alert, $frontendUser)) {
 
                     // add privacy info
-                    \RKW\RkwRegistration\Tools\Privacy::addPrivacyData(
+                    \RKW\RkwRegistration\DataProtection\PrivacyHandler::addPrivacyData(
                         $request,
                         $frontendUser,
                         $alert, 'new alert'
@@ -339,22 +341,20 @@ class AlertManager
             // register new user or simply send opt-in to existing user
             // we also submit the email as additional data to register-function since a logged in user
             // may use a different email and we have to update it after(!!!) opt-in!
-            /** @var \RKW\RkwRegistration\Tools\Registration $registration */
             try {
-                $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registration::class);
-                $registration->register(
-                    array(
-                        'username' => $email,
-                        'email'    => $email,
-                    ),
-                    false,
-                    array(
-                        'alert' => $alert,
-                        'email' => $email,
-                    ),
-                    'rkwAlerts',
-                    $request
-                );
+
+                /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+                $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FrontendUser::class);
+                $frontendUser->setEmail($email);
+
+                /** @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration $registration */
+                $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+                $registration = $objectManager->get(FrontendUserRegistration::class);
+                $registration->setFrontendUser($frontendUser)
+                    ->setData($alert)
+                    ->setCategory('rkwAlerts')
+                    ->setRequest($request)
+                    ->startRegistration();
 
                 // log it
                 $this->getLogger()->log(
@@ -476,18 +476,17 @@ class AlertManager
      * Used by SignalSlot
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
      * @return void
      * @api Used by SignalSlot
      */
     public function saveAlertByRegistration(
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
-        \RKW\RkwRegistration\Domain\Model\Registration $registration
+        \RKW\RkwRegistration\Domain\Model\OptIn $optIn
     ) {
 
         if (
-            ($data = $registration->getData())
-            && ($alert = $data['alert'])
+            ($alert = $optIn->getData())
             && ($alert instanceof \RKW\RkwAlerts\Domain\Model\Alert)
         ) {
 
@@ -716,7 +715,7 @@ class AlertManager
         if ($pages = $this->pageRepository->findAllToNotify($filterField, $timeSinceCreation)) {
 
 
-            
+
             /**  @var \RKW\RkwAlerts\Domain\Model\Page $page */
             foreach ($pages as $page) {
 
@@ -804,7 +803,7 @@ class AlertManager
                                     if ($debugMail) {
                                         $recipient = ['email' => $debugMail];
                                     }
-                                    
+
                                     $mailService->setTo(
                                         $recipient,
                                         array(
@@ -887,7 +886,7 @@ class AlertManager
                                 $debugMail
                             )
                         );
-                        
+
                      // no matter what happens: mark pages as sent
                     } else {
                         /** @var \RKW\RkwAlerts\Domain\Model\Page $page */

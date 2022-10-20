@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  RKW\RkwAlerts\:
+    resource: '../Classes/*'
+
+  RKW\RkwAlerts\Command\SendCommand:
+    tags:
+      - name: 'console.command'
+        command: 'fuck:send'
+        schedulable: false
