@@ -262,7 +262,7 @@ class AlertManager
         }
 
         // check given e-mail
-        if (! \RKW\RkwRegistration\Utility\FrontendUserUtility::validateEmail($email)) {
+        if (! \RKW\RkwRegistration\Utility\FrontendUserUtility::isEmailValid($email)) {
             throw new Exception('alertManager.error.emailInvalid');
         }
 

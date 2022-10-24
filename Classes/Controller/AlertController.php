@@ -216,7 +216,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      */
     public function createAction(
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
-        string $email = null,
+        string $email = '',
         int $terms = 0,
         int $privacy = 0
     ): void {
