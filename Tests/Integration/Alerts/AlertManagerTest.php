@@ -541,7 +541,7 @@ class AlertManagerTest extends FunctionalTestCase
         $request = $this->objectManager->get(Request::class);
 
         static::expectException(\RKW\RkwAlerts\Exception::class);
-        static::expectExceptionMessage('alertManager.error.emailInvalid');
+        static::expectExceptionMessage('alertManager.error.invalidEmail');
 
         $this->subject->createAlert($request, $alert, null, 'invalid-email', true, true);
 
@@ -579,7 +579,7 @@ class AlertManagerTest extends FunctionalTestCase
         $request = $this->objectManager->get(Request::class);
 
         static::expectException(\RKW\RkwAlerts\Exception::class);
-        static::expectExceptionMessage('alertManager.error.emailInvalid');
+        static::expectExceptionMessage('alertManager.error.invalidEmail');
 
         $this->subject->createAlert($request, $alert, $frontendUser, 'valid@email.de', true, true);
 
@@ -742,12 +742,12 @@ class AlertManagerTest extends FunctionalTestCase
         $request = $this->objectManager->get(Request::class);
 
         $result = $this->subject->createAlert($request, $alert, $frontendUser, '', true, true);
-        static::assertEquals(1, $result);
+        self::assertEquals(1, $result);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
         $dbAlert = $this->alertRepository->findByIdentifier(1);
-        static::assertEquals($frontendUser->getUid(), $dbAlert->getFrontendUser()->getUid());
-        static::assertEquals($project->getUid(), $dbAlert->getProject()->getUid());
+        self::assertEquals($frontendUser->getUid(), $dbAlert->getFrontendUser()->getUid());
+        self::assertEquals($project->getUid(), $dbAlert->getProject()->getUid());
 
     }
 
@@ -784,12 +784,12 @@ class AlertManagerTest extends FunctionalTestCase
         $request = $this->objectManager->get(Request::class);
 
         $result = $this->subject->createAlert($request, $alert, null, 'valid@email.de', true, true);
-        static::assertEquals(2, $result);
+        self::assertEquals(2, $result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $registration */
         $registration = $this->registrationRepository->findByIdentifier(1);
-        static::assertInstanceOf(Registration::class, $registration);
-        static::assertEquals($registration->getCategory(), 'rkwAlerts');
+        self::assertInstanceOf(Registration::class, $registration);
+        self::assertEquals($registration->getCategory(), 'rkwAlerts');
 
     }
 
@@ -993,12 +993,12 @@ class AlertManagerTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByUid(160);
 
         $result = $this->subject->saveAlert($alert, $frontendUser);
-        static::assertTrue($result);
+        self::assertTrue($result);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
         $dbAlert = $this->alertRepository->findByIdentifier(1);
-        static::assertEquals($frontendUser->getUid(), $dbAlert->getFrontendUser()->getUid());
-        static::assertEquals($project->getUid(), $dbAlert->getProject()->getUid());
+        self::assertEquals($frontendUser->getUid(), $dbAlert->getFrontendUser()->getUid());
+        self::assertEquals($project->getUid(), $dbAlert->getProject()->getUid());
 
     }
 
@@ -1045,7 +1045,7 @@ class AlertManagerTest extends FunctionalTestCase
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
         $dbAlert = $this->alertRepository->findByIdentifier(1);
-        static::assertEmpty($dbAlert);
+        self::assertEmpty($dbAlert);
 
     }
 
@@ -1082,7 +1082,7 @@ class AlertManagerTest extends FunctionalTestCase
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
         $dbAlert = $this->alertRepository->findByIdentifier(1);
-        static::assertEmpty($dbAlert);
+        self::assertEmpty($dbAlert);
 
     }
 
@@ -1127,8 +1127,8 @@ class AlertManagerTest extends FunctionalTestCase
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
         $dbAlert = $this->alertRepository->findByIdentifier(1);
-        static::assertEquals($frontendUser->getUid(), $dbAlert->getFrontendUser()->getUid());
-        static::assertEquals($project->getUid(), $dbAlert->getProject()->getUid());
+        self::assertEquals($frontendUser->getUid(), $dbAlert->getFrontendUser()->getUid());
+        self::assertEquals($project->getUid(), $dbAlert->getProject()->getUid());
 
     }
 
@@ -1286,10 +1286,10 @@ class AlertManagerTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByUid(200);
 
         $result = $this->subject->deleteAlert($alert, $frontendUser);
-        static::assertTrue($result);
+        self::assertTrue($result);
 
         $alertDb = $this->alertRepository->findByIdentifier(200);
-        static::assertEmpty($alertDb);
+        self::assertEmpty($alertDb);
 
 
     }
@@ -1323,10 +1323,10 @@ class AlertManagerTest extends FunctionalTestCase
         $alert = $this->alertRepository->findByIdentifier(200);
 
         $result = $this->subject->deleteAlert($alert, $frontendUser);
-        static::assertTrue($result);
+        self::assertTrue($result);
 
         $alertDb = $this->alertRepository->findByIdentifier(200);
-        static::assertEmpty($alertDb);
+        self::assertEmpty($alertDb);
 
 
     }
@@ -1363,20 +1363,20 @@ class AlertManagerTest extends FunctionalTestCase
 
         $counter = 0;
         $result = $this->subject->deleteAlerts($alerts, $frontendUser, $counter);
-        static::assertFalse($result);
-        static::assertEquals(3, $counter);
+        self::assertFalse($result);
+        self::assertEquals(3, $counter);
 
         $alertDb = $this->alertRepository->findByIdentifier(230);
-        static::assertInstanceOf(Alert::class, $alertDb);
+        self::assertInstanceOf(Alert::class, $alertDb);
 
         $alertDb = $this->alertRepository->findByIdentifier(231);
-        static::assertEmpty($alertDb);
+        self::assertEmpty($alertDb);
 
         $alertDb = $this->alertRepository->findByIdentifier(232);
-        static::assertEmpty($alertDb);
+        self::assertEmpty($alertDb);
 
         $alertDb = $this->alertRepository->findByIdentifier(233);
-        static::assertEmpty($alertDb);
+        self::assertEmpty($alertDb);
 
     }
 
@@ -1407,8 +1407,8 @@ class AlertManagerTest extends FunctionalTestCase
 
         $counter = 0;
         $result = $this->subject->deleteAlerts($alerts, $frontendUser, $counter);
-        static::assertFalse($result);
-        static::assertEquals(0, $counter);
+        self::assertFalse($result);
+        self::assertEquals(0, $counter);
 
     }
 
@@ -1442,20 +1442,20 @@ class AlertManagerTest extends FunctionalTestCase
 
         $counter = 0;
         $result = $this->subject->deleteAlerts($alerts, $frontendUser, $counter);
-        static::assertTrue($result);
-        static::assertEquals(4, $counter);
+        self::assertTrue($result);
+        self::assertEquals(4, $counter);
 
         $alertDb = $this->alertRepository->findByIdentifier(250);
-        static::assertEmpty($alertDb);
+        self::assertEmpty($alertDb);
 
         $alertDb = $this->alertRepository->findByIdentifier(251);
-        static::assertEmpty($alertDb);
+        self::assertEmpty($alertDb);
 
         $alertDb = $this->alertRepository->findByIdentifier(252);
-        static::assertEmpty($alertDb);
+        self::assertEmpty($alertDb);
 
         $alertDb = $this->alertRepository->findByIdentifier(253);
-        static::assertEmpty($alertDb);
+        self::assertEmpty($alertDb);
 
     }
 
@@ -1487,16 +1487,16 @@ class AlertManagerTest extends FunctionalTestCase
         $this->subject->deleteAlertsByFrontendEndUser($frontendUser);
 
         $alertDb = $this->alertRepository->findByIdentifier(270);
-        static::assertInstanceOf(Alert::class, $alertDb);
+        self::assertInstanceOf(Alert::class, $alertDb);
 
         $alertDb = $this->alertRepository->findByIdentifier(271);
-        static::assertEmpty($alertDb);
+        self::assertEmpty($alertDb);
 
         $alertDb = $this->alertRepository->findByIdentifier(272);
-        static::assertEmpty($alertDb);
+        self::assertEmpty($alertDb);
 
         $alertDb = $this->alertRepository->findByIdentifier(273);
-        static::assertEmpty($alertDb);
+        self::assertEmpty($alertDb);
 
     }
 
@@ -1523,8 +1523,8 @@ class AlertManagerTest extends FunctionalTestCase
         $alerts = $this->alertRepository->findAll();
 
         $result = $this->subject->filterListBySubscribableProjects($alerts);
-        static::assertIsArray( $result);
-        static::assertCount(0, $result);
+        self::assertIsArray( $result);
+        self::assertCount(0, $result);
 
     }
 
@@ -1554,9 +1554,9 @@ class AlertManagerTest extends FunctionalTestCase
         $alerts = $this->alertRepository->findAll();
 
         $result = $this->subject->filterListBySubscribableProjects($alerts);
-        static::assertIsArray( $result);
-        static::assertCount(1, $result);
-        static::assertEquals(280, $result[0]->getUid());
+        self::assertIsArray( $result);
+        self::assertCount(1, $result);
+        self::assertEquals(280, $result[0]->getUid());
 
 
     }
@@ -1607,32 +1607,32 @@ class AlertManagerTest extends FunctionalTestCase
 
         // now do the check
         $result = $this->subject->getPagesAndProjectsToNotify('crdate', 432000);
-        static::assertIsArray( $result);
-        static::assertCount(1, $result);
+        self::assertIsArray( $result);
+        self::assertCount(1, $result);
 
         $subArray = current($result);
-        static::assertNotEmpty($subArray['project']);
-        static::assertNotEmpty($subArray['pages']);
+        self::assertNotEmpty($subArray['project']);
+        self::assertNotEmpty($subArray['pages']);
 
-        static::assertInstanceOf(Project::class, $subArray['project']);
+        self::assertInstanceOf(Project::class, $subArray['project']);
 
         /** @var ObjectStorage $pages */
         $pages = $subArray['pages'];
-        static::assertInstanceOf(ObjectStorage::class, $pages);
-        static::assertCount(2, $pages);
+        self::assertInstanceOf(ObjectStorage::class, $pages);
+        self::assertCount(2, $pages);
 
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->next();
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->rewind();
 
         /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
         $page = $pages->current();
-        static::assertEquals(1, $page->getDoktype());
+        self::assertEquals(1, $page->getDoktype());
 
         $pages->next();
         $page = $pages->current();
-        static::assertEquals(1, $page->getDoktype());
+        self::assertEquals(1, $page->getDoktype());
     }
 
 
@@ -1680,32 +1680,32 @@ class AlertManagerTest extends FunctionalTestCase
 
         // now do the check
         $result = $this->subject->getPagesAndProjectsToNotify('crdate', 432000);
-        static::assertIsArray( $result);
-        static::assertCount(1, $result);
+        self::assertIsArray( $result);
+        self::assertCount(1, $result);
 
         $subArray = current($result);
-        static::assertNotEmpty($subArray['project']);
-        static::assertNotEmpty($subArray['pages']);
+        self::assertNotEmpty($subArray['project']);
+        self::assertNotEmpty($subArray['pages']);
 
-        static::assertInstanceOf(Project::class, $subArray['project']);
+        self::assertInstanceOf(Project::class, $subArray['project']);
 
         /** @var ObjectStorage $pages */
         $pages = $subArray['pages'];
-        static::assertInstanceOf(ObjectStorage::class, $pages);
-        static::assertCount(2, $pages);
+        self::assertInstanceOf(ObjectStorage::class, $pages);
+        self::assertCount(2, $pages);
 
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->next();
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->rewind();
 
         /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
         $page = $pages->current();
-        static::assertEquals(0, $page->getTxRkwalertsSendStatus());
+        self::assertEquals(0, $page->getTxRkwalertsSendStatus());
 
         $pages->next();
         $page = $pages->current();
-        static::assertEquals(0, $page->getTxRkwalertsSendStatus());
+        self::assertEquals(0, $page->getTxRkwalertsSendStatus());
     }
 
 
@@ -1754,32 +1754,32 @@ class AlertManagerTest extends FunctionalTestCase
 
         // now do the check
         $result = $this->subject->getPagesAndProjectsToNotify('crdate', 432000);
-        static::assertIsArray( $result);
-        static::assertCount(1, $result);
+        self::assertIsArray( $result);
+        self::assertCount(1, $result);
 
         $subArray = current($result);
-        static::assertNotEmpty($subArray['project']);
-        static::assertNotEmpty($subArray['pages']);
+        self::assertNotEmpty($subArray['project']);
+        self::assertNotEmpty($subArray['pages']);
 
-        static::assertInstanceOf(Project::class, $subArray['project']);
+        self::assertInstanceOf(Project::class, $subArray['project']);
 
         /** @var ObjectStorage $pages */
         $pages = $subArray['pages'];
-        static::assertInstanceOf(ObjectStorage::class, $pages);
-        static::assertCount(2, $pages);
+        self::assertInstanceOf(ObjectStorage::class, $pages);
+        self::assertCount(2, $pages);
 
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->next();
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->rewind();
 
         /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
         $page = $pages->current();
-        static::assertEquals(320, $page->getTxRkwprojectsProjectUid()->getUid());
+        self::assertEquals(320, $page->getTxRkwprojectsProjectUid()->getUid());
 
         $pages->next();
         $page = $pages->current();
-        static::assertEquals(320, $page->getTxRkwprojectsProjectUid()->getUid());
+        self::assertEquals(320, $page->getTxRkwprojectsProjectUid()->getUid());
     }
 
 
@@ -1833,32 +1833,32 @@ class AlertManagerTest extends FunctionalTestCase
 
         // now do the check
         $result = $this->subject->getPagesAndProjectsToNotify('crdate', 432000);
-        static::assertIsArray( $result);
-        static::assertCount(1, $result);
+        self::assertIsArray( $result);
+        self::assertCount(1, $result);
 
         $subArray = current($result);
-        static::assertNotEmpty($subArray['project']);
-        static::assertNotEmpty($subArray['pages']);
+        self::assertNotEmpty($subArray['project']);
+        self::assertNotEmpty($subArray['pages']);
 
-        static::assertInstanceOf(Project::class, $subArray['project']);
+        self::assertInstanceOf(Project::class, $subArray['project']);
 
         /** @var ObjectStorage $pages */
         $pages = $subArray['pages'];
-        static::assertInstanceOf(ObjectStorage::class, $pages);
-        static::assertCount(2, $pages);
+        self::assertInstanceOf(ObjectStorage::class, $pages);
+        self::assertCount(2, $pages);
 
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->next();
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->rewind();
 
         /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
         $page = $pages->current();
-        static::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getCrdate());
+        self::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getCrdate());
 
         $pages->next();
         $page = $pages->current();
-        static::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getCrdate());
+        self::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getCrdate());
     }
 
     /**
@@ -1913,32 +1913,32 @@ class AlertManagerTest extends FunctionalTestCase
 
         // now do the check
         $result = $this->subject->getPagesAndProjectsToNotify('lastUpdated', 432000);
-        static::assertIsArray( $result);
-        static::assertCount(1, $result);
+        self::assertIsArray( $result);
+        self::assertCount(1, $result);
 
         $subArray = current($result);
-        static::assertNotEmpty($subArray['project']);
-        static::assertNotEmpty($subArray['pages']);
+        self::assertNotEmpty($subArray['project']);
+        self::assertNotEmpty($subArray['pages']);
 
-        static::assertInstanceOf(Project::class, $subArray['project']);
+        self::assertInstanceOf(Project::class, $subArray['project']);
 
         /** @var ObjectStorage $pages */
         $pages = $subArray['pages'];
-        static::assertInstanceOf(ObjectStorage::class, $pages);
-        static::assertCount(2, $pages);
+        self::assertInstanceOf(ObjectStorage::class, $pages);
+        self::assertCount(2, $pages);
 
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->next();
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->rewind();
 
         /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
         $page = $pages->current();
-        static::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getLastUpdated());
+        self::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getLastUpdated());
 
         $pages->next();
         $page = $pages->current();
-        static::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getLastUpdated());
+        self::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getLastUpdated());
     }
 
     /**
@@ -1992,39 +1992,39 @@ class AlertManagerTest extends FunctionalTestCase
 
         // now do the check
         $result = $this->subject->getPagesAndProjectsToNotify('crdate', 432000);
-        static::assertIsArray( $result);
-        static::assertCount(2, $result);
+        self::assertIsArray( $result);
+        self::assertCount(2, $result);
 
         $subArray = current($result);
         next($result);
         $subArrayTwo = current($result);
 
-        static::assertNotEmpty($subArray['project']);
-        static::assertNotEmpty($subArray['pages']);
-        static::assertNotEmpty($subArrayTwo['project']);
-        static::assertNotEmpty($subArrayTwo['pages']);
+        self::assertNotEmpty($subArray['project']);
+        self::assertNotEmpty($subArray['pages']);
+        self::assertNotEmpty($subArrayTwo['project']);
+        self::assertNotEmpty($subArrayTwo['pages']);
 
-        static::assertInstanceOf(Project::class, $subArray['project']);
-        static::assertInstanceOf(Project::class, $subArrayTwo['project']);
+        self::assertInstanceOf(Project::class, $subArray['project']);
+        self::assertInstanceOf(Project::class, $subArrayTwo['project']);
 
         /** @var ObjectStorage $pages */
         $pages = $subArray['pages'];
-        static::assertInstanceOf(ObjectStorage::class, $pages);
-        static::assertCount(2, $pages);
+        self::assertInstanceOf(ObjectStorage::class, $pages);
+        self::assertCount(2, $pages);
 
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->next();
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
 
         $pages = $subArrayTwo['pages'];
-        static::assertInstanceOf(ObjectStorage::class, $pages);
-        static::assertCount(3, $pages);
+        self::assertInstanceOf(ObjectStorage::class, $pages);
+        self::assertCount(3, $pages);
 
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->next();
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
         $pages->next();
-        static::assertInstanceOf(Page::class, $pages->current());
+        self::assertInstanceOf(Page::class, $pages->current());
 
     }
 
@@ -2048,7 +2048,7 @@ class AlertManagerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check360.xml');
 
         $result = $this->subject->sendNotification('crdate', 432000);
-        static::assertEquals(0, $result);
+        self::assertEquals(0, $result);
 
     }
 
@@ -2087,7 +2087,7 @@ class AlertManagerTest extends FunctionalTestCase
 
         // now do the check
         $result = $this->subject->sendNotification('crdate', 432000);
-        static::assertEquals(0, $result);
+        self::assertEquals(0, $result);
 
     }
 
@@ -2127,13 +2127,13 @@ class AlertManagerTest extends FunctionalTestCase
 
         // now do the check
         $result = $this->subject->sendNotification('crdate', 432000);
-        static::assertEquals(2, $result);
+        self::assertEquals(2, $result);
 
         $pages = $this->pageRepository->findAll();
 
         /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         foreach ($pages as $page) {
-            static::assertEquals(1, $page->getTxRkwalertsSendStatus());
+            self::assertEquals(1, $page->getTxRkwalertsSendStatus());
         }
     }
 
@@ -2174,13 +2174,13 @@ class AlertManagerTest extends FunctionalTestCase
 
         // now do the check
         $result = $this->subject->sendNotification('crdate', 432000);
-        static::assertEquals(6, $result);
+        self::assertEquals(6, $result);
 
         $pages = $this->pageRepository->findAll();
 
         /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         foreach ($pages as $page) {
-            static::assertEquals(1, $page->getTxRkwalertsSendStatus());
+            self::assertEquals(1, $page->getTxRkwalertsSendStatus());
         }
     }
 
@@ -2227,13 +2227,13 @@ class AlertManagerTest extends FunctionalTestCase
 
         // now do the check
         $result = $this->subject->sendNotification('crdate', 432000);
-        static::assertEquals(6, $result);
+        self::assertEquals(6, $result);
 
         $pages = $this->pageRepository->findAll();
 
         /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         foreach ($pages as $page) {
-            static::assertEquals(1, $page->getTxRkwalertsSendStatus());
+            self::assertEquals(1, $page->getTxRkwalertsSendStatus());
         }
     }
 
@@ -2281,26 +2281,26 @@ class AlertManagerTest extends FunctionalTestCase
 
         // now do the check
         $result = $this->subject->sendNotification('crdate', 432000, 'debugmode@rkw.de');
-        static::assertEquals(2, $result);
+        self::assertEquals(2, $result);
 
         /**  @var \RKW\RkwAlerts\Domain\Model\Page $page */
         foreach ($pages as $page) {
-            static::assertEquals(0, $page->getTxRkwalertsSendStatus());
+            self::assertEquals(0, $page->getTxRkwalertsSendStatus());
         }
 
         $queueMails = $this->queueMailRepository->findAll()->toArray();
-        static::assertCount(2, $queueMails);
+        self::assertCount(2, $queueMails);
 
         $queueRecipients = $this->queueRecipientRepository->findByQueueMail($queueMails[0]);
-        static::assertCount(1, $queueRecipients);
+        self::assertCount(1, $queueRecipients);
 
         $queueRecipients = $this->queueRecipientRepository->findByQueueMail($queueMails[1]);
-        static::assertCount(1, $queueRecipients);
+        self::assertCount(1, $queueRecipients);
 
         $queueRecipients = $this->queueRecipientRepository->findAll();
         /**  @var  \RKW\RkwMailer\Domain\Model\QueueRecipient $queueRecipient */
         foreach ($queueRecipients as $queueRecipient) {
-            static::assertEquals('debugmode@rkw.de', $queueRecipient->getEmail());
+            self::assertEquals('debugmode@rkw.de', $queueRecipient->getEmail());
         }
 
     }
@@ -2346,21 +2346,21 @@ class AlertManagerTest extends FunctionalTestCase
 
         // now do the check
         $result = $this->subject->sendNotification('crdate', 432000);
-        static::assertEquals(6, $result);
+        self::assertEquals(6, $result);
 
         /**  @var \RKW\RkwAlerts\Domain\Model\Page $page  */
         foreach ($pages as $page) {
-            static::assertEquals(1, $page->getTxRkwalertsSendStatus());
+            self::assertEquals(1, $page->getTxRkwalertsSendStatus());
         }
 
         $queueMails = $this->queueMailRepository->findAll()->toArray();
-        static::assertCount(2, $queueMails);
+        self::assertCount(2, $queueMails);
 
         $queueRecipients = $this->queueRecipientRepository->findByQueueMail($queueMails[0]);
-        static::assertCount(2, $queueRecipients);
+        self::assertCount(2, $queueRecipients);
 
         $queueRecipients = $this->queueRecipientRepository->findByQueueMail($queueMails[1]);
-        static::assertCount(4, $queueRecipients);
+        self::assertCount(4, $queueRecipients);
     }
 
 

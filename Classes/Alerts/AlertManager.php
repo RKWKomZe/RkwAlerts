@@ -263,7 +263,7 @@ class AlertManager
 
         // check given e-mail
         if (! \RKW\RkwRegistration\Utility\FrontendUserUtility::isEmailValid($email)) {
-            throw new Exception('alertManager.error.emailInvalid');
+            throw new Exception('alertManager.error.invalidEmail');
         }
 
         // check if alert has subscribable project
