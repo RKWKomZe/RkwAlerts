@@ -25,28 +25,12 @@
 							<div class="form__approval">
 								<f:if condition="{frontendUser}">
 									<f:then>
-										<div class="form__field">
-											<f:form.checkbox name="privacy" value="1" id="privacy" class="checkbox" checked="{privacy}" />
-											<label for="privacy" class="checkbox-label">
-												<rkwRegistration:privacyText textVersion="defaultAlternative" />
-											</label>
-										</div>
+                                        <rkwRegistration:consent  type="privacy" key="defaultAlternative" />
 									</f:then>
 									<f:else>
-										<div class="form__field">
-											<f:form.checkbox name="terms" value="1" id="terms" class="checkbox" checked="{terms}" />
-											<label for="terms" class="checkbox-label">
-												<f:link.page pageUid="{settings.termsPid}" target="_blank">
-													<f:translate key="partials_alerts_form.terms" />
-												</f:link.page>
-											</label>
-										</div>
-										<div class="form__field">
-											<f:form.checkbox name="privacy" value="1" id="privacy" class="checkbox" checked="{privacy}" />
-											<label for="privacy" class="checkbox-label">
-												<rkwRegistration:privacyText />
-											</label>
-										</div>
+                                        <rkwRegistration:consent type="terms" />
+                                        <rkwRegistration:consent type="privacy" key="default" />
+                                        <rkwRegistration:consent type="marketing" />
 									</f:else>
 								</f:if>
 

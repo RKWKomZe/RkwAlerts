@@ -13,15 +13,13 @@ use RKW\RkwAlerts\Domain\Repository\ProjectRepository;
 use RKW\RkwMailer\Domain\Repository\QueueMailRepository;
 use RKW\RkwMailer\Domain\Repository\QueueRecipientRepository;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Model\Registration;
+use RKW\RkwRegistration\Domain\Model\OptIn;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-
-use RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
+use RKW\RkwRegistration\Domain\Repository\OptInRepository;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /*
@@ -42,7 +40,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  * AlertManagerTest
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -92,9 +90,9 @@ class AlertManagerTest extends FunctionalTestCase
     private $projectRepository;
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\RegistrationRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository
      */
-    private $registrationRepository;
+    private $optInRepository;
 
     /**
      * @var \RKW\RkwMailer\Domain\Repository\QueueMailRepository
@@ -160,7 +158,7 @@ class AlertManagerTest extends FunctionalTestCase
         $this->frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
         $this->pageRepository = $this->objectManager->get(PageRepository::class);
         $this->projectRepository = $this->objectManager->get(ProjectRepository::class);
-        $this->registrationRepository = $this->objectManager->get(RegistrationRepository::class);
+        $this->optInRepository = $this->objectManager->get(OptInRepository::class);
         $this->queueMailRepository = $this->objectManager->get(QueueMailRepository::class);
         $this->queueRecipientRepository = $this->objectManager->get(QueueRecipientRepository::class);
 
@@ -394,131 +392,7 @@ class AlertManagerTest extends FunctionalTestCase
 
     //=============================================
 
-    /**
-     * @test
-     * @throws \RKW\RkwAlerts\Exception
-     */
-    public function createAlertChecksForTermsIfNotLoggedIn ()
-    {
-
-        /**
-         * Scenario:
-         *
-         * Given I'm not logged in
-         * Given I do not accept the Terms & Conditions
-         * When I call the method
-         * Then an acceptTerms-error is thrown
-         */
-        /** @var \RKW\RkwAlerts\Domain\Model\alert $alert */
-        $alert = GeneralUtility::makeInstance(Alert::class);
-
-        /** @var \TYPO3\CMS\Extbase\Mvc\Request $request */
-        $request = $this->objectManager->get(Request::class);
-
-        static::expectException(\RKW\RkwAlerts\Exception::class);
-        static::expectExceptionMessage('alertManager.error.acceptTerms');
-
-        $this->subject->createAlert($request, $alert, null, '', false, false);
-
-    }
-
-    /**
-     * @test
-     * @throws \RKW\RkwAlerts\Exception
-     */
-    public function createAlertChecksForTermsIfUserNotRegistered ()
-    {
-
-        /**
-         * Scenario:
-         *
-         * Given I'm not registered
-         * Given I do not accept the Terms & Conditions
-         * When I call the method
-         * Then an acceptTerms-error is thrown
-         */
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
-
-        /** @var \RKW\RkwAlerts\Domain\Model\alert $alert */
-        $alert = GeneralUtility::makeInstance(alert::class);
-
-        /** @var \TYPO3\CMS\Extbase\Mvc\Request $request */
-        $request = $this->objectManager->get(Request::class);
-
-        static::expectException(\RKW\RkwAlerts\Exception::class);
-        static::expectExceptionMessage('alertManager.error.acceptTerms');
-
-        $this->subject->createAlert($request, $alert, $frontendUser, '', false, false);
-
-    }
-
-    /**
-     * @test
-     * @throws \RKW\RkwAlerts\Exception
-     */
-    public function createAlertChecksForPrivacyIfNotLoggedIn ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given I'm not logged in
-         * Given I accept the Terms and Conditions
-         * Given I do not accept the privacy-terms
-         * When I call the method
-         * Then an acceptPrivacy error is thrown
-         */
-        /** @var \RKW\RkwAlerts\Domain\Model\alert $alert */
-        $alert = GeneralUtility::makeInstance(alert::class);
-
-        /** @var \TYPO3\CMS\Extbase\Mvc\Request $request */
-        $request = $this->objectManager->get(Request::class);
-
-        static::expectException(\RKW\RkwAlerts\Exception::class);
-        static::expectExceptionMessage('alertManager.error.acceptPrivacy');
-
-        $this->subject->createAlert($request, $alert, null, '', true, false);
-
-    }
-
-    /**
-     * @test
-     * @throws \RKW\RkwAlerts\Exception
-     * @throws \Exception
-    */
-    public function createAlertChecksOnlyForPrivacyIfUserIsLoggedIn ()
-    {
-
-        /**
-         * Scenario:
-         *
-         * Given I'm logged in
-         * Given I do not accept the terms and conditions
-         * Given I do not accept the privacy-terms
-         * When I call the method
-         * Then an acceptPrivacy-error is thrown
-        */
-        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check70.xml');
-
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser  $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(70);
-
-        /** @var \RKW\RkwAlerts\Domain\Model\alert $alert */
-        $alert = GeneralUtility::makeInstance(alert::class);
-
-        /** @var \TYPO3\CMS\Extbase\Mvc\Request $request */
-        $request = $this->objectManager->get(Request::class);
-
-        static::expectException(\RKW\RkwAlerts\Exception::class);
-        static::expectExceptionMessage('alertManager.error.acceptPrivacy');
-
-        $this->subject->createAlert($request, $alert, $frontendUser, '', false, false);
-
-    }
-
-
-
-    /**
+       /**
      * @test
      * @throws \RKW\RkwAlerts\Exception
      */
@@ -528,8 +402,6 @@ class AlertManagerTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given I accept the Terms & Conditions
-         * Given I accept the Privacy-Terms
          * Given I have used an invalid email
          * When I call the method
          * Then an emailInvalid-error is thrown
@@ -543,7 +415,7 @@ class AlertManagerTest extends FunctionalTestCase
         static::expectException(\RKW\RkwAlerts\Exception::class);
         static::expectExceptionMessage('alertManager.error.invalidEmail');
 
-        $this->subject->createAlert($request, $alert, null, 'invalid-email', true, true);
+        $this->subject->createAlert($request, $alert, null, 'invalid-email');
 
     }
 
@@ -559,8 +431,6 @@ class AlertManagerTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given I accept the Terms & Conditions
-         * Given I accept the Privacy-Terms
          * Given I'm logged in
          * Given the e-mail-address of my login-user is invalid
          * When I call the method
@@ -581,7 +451,7 @@ class AlertManagerTest extends FunctionalTestCase
         static::expectException(\RKW\RkwAlerts\Exception::class);
         static::expectExceptionMessage('alertManager.error.invalidEmail');
 
-        $this->subject->createAlert($request, $alert, $frontendUser, 'valid@email.de', true, true);
+        $this->subject->createAlert($request, $alert, $frontendUser, 'valid@email.de');
 
     }
 
@@ -597,8 +467,6 @@ class AlertManagerTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given I accept the Terms & Conditions
-         * Given I accept the Privacy-Terms
          * Given I enter a valid e-mail-address
          * Given I subscribe a non-subscribable project
          * When I call the method
@@ -620,7 +488,7 @@ class AlertManagerTest extends FunctionalTestCase
         static::expectException(\RKW\RkwAlerts\Exception::class);
         static::expectExceptionMessage('alertManager.error.projectInvalid');
 
-        $this->subject->createAlert($request,$alert, null, 'valid@email.de', true, true);
+        $this->subject->createAlert($request,$alert, null, 'valid@email.de');
 
     }
 
@@ -635,8 +503,6 @@ class AlertManagerTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given I accept the Terms & Conditions
-         * Given I accept the Privacy-Terms
          * Given I'm logged in
          * Given the e-mail-address of my login-user is valid
          * Given I already subscribed to the given project
@@ -659,7 +525,7 @@ class AlertManagerTest extends FunctionalTestCase
         static::expectException(\RKW\RkwAlerts\Exception::class);
         static::expectExceptionMessage('alertManager.error.alreadySubscribed');
 
-        $this->subject->createAlert($request, $alert, null, 'teste-email@test.de', true, true);
+        $this->subject->createAlert($request, $alert, null, 'teste-email@test.de');
 
     }
 
@@ -675,8 +541,6 @@ class AlertManagerTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given I accept the Terms & Conditions
-         * Given I accept the Privacy-Terms
          * Given I'm logged in
          * Given the e-mail-address of my login-user is valid
          * Given I already subscribed to the given project
@@ -702,7 +566,7 @@ class AlertManagerTest extends FunctionalTestCase
         static::expectException(\RKW\RkwAlerts\Exception::class);
         static::expectExceptionMessage('alertManager.error.alreadySubscribed');
 
-        $this->subject->createAlert($request, $alert, $frontendUser, '', true, true);
+        $this->subject->createAlert($request, $alert, $frontendUser, '');
 
     }
 
@@ -717,8 +581,6 @@ class AlertManagerTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given I accept the Terms & Conditions
-         * Given I accept the Privacy-Terms
          * Given I'm logged in
          * Given the e-mail-address of my login-user is valid
          * When I call the method
@@ -741,7 +603,7 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \TYPO3\CMS\Extbase\Mvc\Request $request */
         $request = $this->objectManager->get(Request::class);
 
-        $result = $this->subject->createAlert($request, $alert, $frontendUser, '', true, true);
+        $result = $this->subject->createAlert($request, $alert, $frontendUser, '');
         self::assertEquals(1, $result);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
@@ -762,8 +624,6 @@ class AlertManagerTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given I accept the Terms & Conditions
-         * Given I accept the Privacy-Terms
          * Given I'm not logged in
          * Given the e-mail-address I entered is valid
          * When I call the method
@@ -783,13 +643,13 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \TYPO3\CMS\Extbase\Mvc\Request $request */
         $request = $this->objectManager->get(Request::class);
 
-        $result = $this->subject->createAlert($request, $alert, null, 'valid@email.de', true, true);
+        $result = $this->subject->createAlert($request, $alert, null, 'valid@email.de');
         self::assertEquals(2, $result);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\Registration $registration */
-        $registration = $this->registrationRepository->findByIdentifier(1);
-        self::assertInstanceOf(Registration::class, $registration);
-        self::assertEquals($registration->getCategory(), 'rkwAlerts');
+        /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
+        $optIn = $this->optInRepository->findByIdentifier(1);
+        self::assertInstanceOf(OptIn::class, $optIn);
+        self::assertEquals($optIn->getCategory(), 'rkwAlerts');
 
     }
 
@@ -1037,11 +897,11 @@ class AlertManagerTest extends FunctionalTestCase
             'test' => $alert
         ];
 
-        /** @var \RKW\RkwRegistration\Domain\Model\Registration $registration */
-        $registration = GeneralUtility::makeInstance(Registration::class);
-        $registration->setData($data);
+        /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
+        $optIn = GeneralUtility::makeInstance(OptIn::class);
+        $optIn>setData($data);
 
-        $this->subject->saveAlertByRegistration($frontendUser, $registration);
+        $this->subject->saveAlertByRegistration($frontendUser, $optIn);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
         $dbAlert = $this->alertRepository->findByIdentifier(1);
@@ -1074,11 +934,11 @@ class AlertManagerTest extends FunctionalTestCase
             'alert' => $frontendUser
         ];
 
-        /** @var \RKW\RkwRegistration\Domain\Model\Registration $registration */
-        $registration = GeneralUtility::makeInstance(Registration::class);
-        $registration->setData($data);
+        /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
+        $optIn = GeneralUtility::makeInstance(OptIn::class);
+        $optIn->setData($data);
 
-        $this->subject->saveAlertByRegistration($frontendUser, $registration);
+        $this->subject->saveAlertByRegistration($frontendUser, $optIn);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
         $dbAlert = $this->alertRepository->findByIdentifier(1);
@@ -1119,11 +979,11 @@ class AlertManagerTest extends FunctionalTestCase
             'alert' => $alert
         ];
 
-        /** @var \RKW\RkwRegistration\Domain\Model\Registration $registration */
-        $registration = GeneralUtility::makeInstance(Registration::class);
-        $registration->setData($data);
+        /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
+        $optIn = GeneralUtility::makeInstance(OptIn::class);
+        $optIn->setData($data);
 
-        $this->subject->saveAlertByRegistration($frontendUser, $registration);
+        $this->subject->saveAlertByRegistration($frontendUser, $optIn);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
         $dbAlert = $this->alertRepository->findByIdentifier(1);

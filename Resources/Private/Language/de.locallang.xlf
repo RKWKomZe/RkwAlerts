@@ -3,7 +3,7 @@
 	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2015-08-12T15:13:53Z" product-name="rkw_alerts">
 		<header/>
 		<body>
-		
+
 			<trans-unit id="tx_rkwalerts_domain_model_alerts">
 				<source>RKW Alerts</source>
                 <target>RKW Alerts</target>
@@ -18,14 +18,6 @@
 			</trans-unit>
 
 			<!-- alertManager-->
-            <trans-unit id="alertManager.error.acceptTerms">
-                <source>Sorry, this has to be done: Please accept our terms of use to enjoy RKW Alerts.</source>
-                <target>Das muss leider sein: Bitte akzeptieren Sie unsere Nutzungsbedingungen, um RKW Alerts nutzen zu können.</target>
-            </trans-unit>
-            <trans-unit id="alertManager.error.acceptPrivacy">
-                <source>The protection of your data is important to us. Therefore we ask you to agree to the storage of your personal data.</source>
-   				<target>Der Schutz Ihrer Daten ist uns wichtig. Daher bitten wir Sie, der Speicherung Ihrer persönlichen Daten zuzustimmen.</target>
-            </trans-unit>
             <trans-unit id="alertManager.error.invalidEmail">
                 <source>Something went wrong. Please enter a valid e-mail address.</source>
                 <target>Da ist etwas schief gelaufen. Bitte geben Sie eine gültige E-Mailadresse ein.</target>
@@ -236,8 +228,8 @@
                 <source>New RKW Alert for project "%s"</source>
                 <target>Neuer RKW Alert zum Projekt "%s"</target>
             </trans-unit>
-            
-            
+
+
 
             <!-- Templates/Email/OptInAlertUser.html -->
             <trans-unit id="templates_email_optInAlertUser.headline">
@@ -264,8 +256,8 @@
                 <source>No, thank you</source>
                 <target>Nein, ich möchte keine RKW Alerts zu diesem Projekt erhalten</target>
             </trans-unit>
-            
-            
+
+
             <!-- Templates/Email/ConfirmAlertUser.html -->
             <trans-unit id="templates_email_confirmAlertUser.headline">
                 <source>Hello,</source>

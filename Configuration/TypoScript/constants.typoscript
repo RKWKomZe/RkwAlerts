@@ -23,9 +23,6 @@ plugin.tx_rkwalerts {
 		# cat=plugin.tx_rkwalerts//a; type=integer; label=Pid of login mask
 		loginPid =
 
-		# cat=plugin.tx_rkwalerts//a; type=integer; label=Pid of terms & conditions
-		termsPid =
-
 		# cat=plugin.tx_rkwalerts//a; type=integer; label=Pid list plugin
 		listPid =
 	}

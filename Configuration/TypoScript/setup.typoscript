@@ -79,7 +79,6 @@ plugin.tx_rkwalerts {
 
 		searchPid = {$plugin.tx_rkwalerts.settings.searchPid}
 		loginPid = {$plugin.tx_rkwalerts.settings.loginPid}
-		termsPid = {$plugin.tx_rkwalerts.settings.termsPid}
 		listPid = {$plugin.tx_rkwalerts.settings.listPid}
 
 		# sorting for link in alert-email

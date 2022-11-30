@@ -14,12 +14,6 @@
             </trans-unit>
 
             <!-- alertManager-->
-            <trans-unit id="alertManager.error.acceptTerms">
-                <source>Sorry, this has to be done: Please accept our terms of use to enjoy RKW Alerts.</source>
-            </trans-unit>
-            <trans-unit id="alertManager.error.acceptPrivacy">
-                <source>The protection of your data is important to us. Therefore we ask you to agree to the storage of your personal data.</source>
-            </trans-unit>
             <trans-unit id="alertManager.error.invalidEmail">
                 <source>Something went wrong. Please enter a valid e-mail address.</source>
             </trans-unit>
@@ -181,8 +175,8 @@
             <trans-unit id="rkwMailService.sendAlert.subjectDefault">
                 <source>New RKW Alert for project "%s"</source>
             </trans-unit>
-            
-            
+
+
 
             <!-- Templates/Email/OptInAlertUser.html -->
             <trans-unit id="templates_email_optInAlertUser.headline">
@@ -203,8 +197,8 @@
             <trans-unit id="templates_email_optInAlertUser.textOptOutLinkLabel">
                 <source>No, thank you</source>
             </trans-unit>
-            
-            
+
+
             <!-- Templates/Email/ConfirmAlertUser.html -->
             <trans-unit id="templates_email_confirmAlertUser.headline">
                 <source>Hello,</source>

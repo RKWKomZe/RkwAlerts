@@ -20,7 +20,7 @@ use RKW\RkwBasics\Utility\FrontendLocalizationUtility;
 use RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwMailer\Service\MailService;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration;
+use RKW\RkwRegistration\Registration\FrontendUserRegistration;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -29,7 +29,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  * Class AlertManager
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -227,8 +227,6 @@ class AlertManager
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
      * @param \TYPO3\CMS\Extbase\Mvc\Request|null $request
      * @param string $email
-     * @param bool $terms
-     * @param bool $privacy
      * @return int
      * @throws \RKW\RkwAlerts\Exception
      */
@@ -236,9 +234,7 @@ class AlertManager
         \TYPO3\CMS\Extbase\Mvc\Request $request,
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser = null,
-        string $email = '',
-        bool $terms = false,
-        bool $privacy = false
+        string $email = ''
     ) : int
     {
 
@@ -247,18 +243,7 @@ class AlertManager
             ($frontendUser)
             && (! $frontendUser->_isNew())
         ) {
-            $terms = true;
             $email = $frontendUser->getEmail();
-        }
-
-        // check terms if user is not logged in
-        if (! $terms) {
-            throw new Exception('alertManager.error.acceptTerms');
-        }
-
-        // check privacy flag
-        if (! $privacy) {
-            throw new Exception('alertManager.error.acceptPrivacy');
         }
 
         // check given e-mail
@@ -300,10 +285,11 @@ class AlertManager
                 if ($this->saveAlert($alert, $frontendUser)) {
 
                     // add privacy info
-                    \RKW\RkwRegistration\DataProtection\PrivacyHandler::addPrivacyData(
+                    \RKW\RkwRegistration\DataProtection\ConsentHandler::add(
                         $request,
                         $frontendUser,
-                        $alert, 'new alert'
+                        $alert,
+                        'new alert'
                     );
 
                     // log it
@@ -347,7 +333,7 @@ class AlertManager
                 $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FrontendUser::class);
                 $frontendUser->setEmail($email);
 
-                /** @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration $registration */
+                /** @var \RKW\RkwRegistration\Registration\FrontendUserRegistration $registration */
                 $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
                 $registration = $objectManager->get(FrontendUserRegistration::class);
                 $registration->setFrontendUser($frontendUser)

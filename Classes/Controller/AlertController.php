@@ -14,7 +14,7 @@ namespace RKW\RkwAlerts\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration;
+use RKW\RkwRegistration\Registration\FrontendUserRegistration;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -24,7 +24,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * Class AlertController
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -96,20 +96,16 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      /**
      * action new
      *
-     * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
+     * @param \RKW\RkwAlerts\Domain\Model\Alert|null $alert
      * @param string $email
-     * @param integer $terms
-     * @param integer $privacy
      * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      * @return void
      */
     public function newAction(
         \RKW\RkwAlerts\Domain\Model\Alert $alert = null,
-        $email = null,
-        $terms = null,
-        $privacy = null
+        string $email = ''
     ): void {
-        $this->newActionBase($alert, $email, $terms, $privacy);
+        $this->newActionBase($alert, $email);
     }
 
 
@@ -118,20 +114,16 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * We need this because cached actions do not work with flashMessages
      * and non-cached do not work with empty-ViewHelper
      *
-     * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
+     * @param \RKW\RkwAlerts\Domain\Model\Alert|null $alert
      * @param string $email
-     * @param integer $terms
-     * @param integer $privacy
      * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      * @return void
      */
     public function newNonCachedAction(
         \RKW\RkwAlerts\Domain\Model\Alert $alert = null,
-        $email = null,
-        $terms = null,
-        $privacy = null
+        string $email = ''
     ): void {
-        $this->newActionBase($alert, $email, $terms, $privacy);
+        $this->newActionBase($alert, $email);
     }
 
 
@@ -140,16 +132,12 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
      * @param string $email
-     * @param integer $terms
-     * @param integer $privacy
      * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      * @return void
      */
     protected function newActionBase (
         \RKW\RkwAlerts\Domain\Model\Alert $alert = null,
-        $email = null,
-        $terms = null,
-        $privacy = null
+        string $email = ''
     ): void {
 
         /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
@@ -182,8 +170,6 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
                         'frontendUser'      => $frontendUser,
                         'project'           => $project,
                         'email'             => $email,
-                        'terms'             => $terms,
-                        'privacy'           => $privacy,
                         'displayForm'       => $displayForm,
                     ]
                 );
@@ -208,17 +194,16 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
      * @param string $email
-     * @param integer $terms
-     * @param integer $privacy
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\TermsValidator", param="alert")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\PrivacyValidator", param="alert")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\MarketingValidator", param="alert")
      */
     public function createAction(
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
-        string $email = '',
-        int $terms = 0,
-        int $privacy = 0
+        string $email = ''
     ): void {
 
         try {
@@ -227,17 +212,27 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
                 $this->request,
                 $alert,
                 $this->getFrontendUser(),
-                $email,
-                $terms,
-                $privacy
+                $email
             );
 
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'alertController.' . ($result ? 'message' : 'error') . '.create_' . $result,
-                    'rkw_alerts'
-                )
-            );
+            if ($result) {
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'alertController.message.create_' . $result,
+                        'rkw_alerts'
+                    )
+                );
+            } else {
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'alertController.error.create',
+                        'rkw_alerts'
+                    ),
+                    '',
+                     \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                );
+            }
+
 
         } catch (\RKW\RkwAlerts\Exception $exception) {
 
@@ -254,8 +249,6 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
                 [
                     'alert' => $alert,
                     'email' => $email,
-                    'terms' => $terms,
-                    'privacy' => $privacy
                 ]
             );
         }
@@ -272,12 +265,12 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * @param string $token
      * @return void
      * @throws \RKW\RkwRegistration\Exception
-     * @throws \RKW\RkwAlerts\Exception
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
@@ -286,7 +279,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      */
     public function optInAction(string $tokenUser, string $token): void
     {
-        /** @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration $registration */
+        /** @var \RKW\RkwRegistration\Registration\FrontendUserRegistration $registration */
         $registration = $this->objectManager->get(FrontendUserRegistration::class);
         $result = $registration->setFrontendUserToken($tokenUser)
             ->setCategory('rkwAlerts')
@@ -407,7 +400,7 @@ class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
     {
         if (!$this->frontendUser) {
 
-            $frontendUser = $this->frontendUserRepository->findByUidNoAnonymous($this->getFrontendUserId());
+            $frontendUser = $this->frontendUserRepository->findByUid($this->getFrontendUserId());
             if ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser) {
                 $this->frontendUser = $frontendUser;
             }
