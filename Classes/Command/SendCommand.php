@@ -15,7 +15,7 @@ namespace RKW\RkwAlerts\Command;
  */
 
 use RKW\RkwAlerts\Alerts\AlertManager;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;

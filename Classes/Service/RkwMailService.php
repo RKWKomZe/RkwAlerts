@@ -2,7 +2,7 @@
 
 namespace RKW\RkwAlerts\Service;
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwMailer\Service\MailService;
 use RKW\RkwMailer\Utility\FrontendLocalizationUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -204,6 +204,6 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      */
     protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
     {
-        return GeneralUtility::getTyposcriptConfiguration('Rkwalerts', $which);
+        return GeneralUtility::getTypoScriptConfiguration('Rkwalerts', $which);
     }
 }

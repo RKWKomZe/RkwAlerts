@@ -1,12 +1,12 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 	xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
-	xmlns:rkwAjax="http://typo3.org/ns/RKW/RkwAjax/ViewHelpers"
+	xmlns:ajaxApi="http://typo3.org/ns/Madj2k/AjaxApi/ViewHelpers"
 	data-namespace-typo3-fluid="true">
 
 	<f:form action="create" name="alert" object="{alert}">
 		<f:form.hidden property="project" value="{project}"/>
 
-		<rkwAjax:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="2">
+		<ajaxApi:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="2">
 
 			<f:comment><!-- Check if form is to be displayed --></f:comment>
 			<f:if condition="{displayForm}">
@@ -44,6 +44,6 @@
 					</div>
 				</div>
 			</f:if>
-		</rkwAjax:ajaxWrapper>
+		</ajaxApi:ajaxWrapper>
 	</f:form>
 </html>

@@ -3,7 +3,7 @@
 namespace RKW\RkwAlerts\Domain\Repository;
 
 use RKW\RkwAlerts\Domain\Model\Page;
-use RKW\RkwBasics\Helper\QueryTypo3;
+use Madj2k\CoreExtended\Utility\QueryUtility;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -51,8 +51,8 @@ class PageRepository extends AbstractRepository
         $result->getQuerySettings()->setRespectStoragePage(false);
         $result->statement('SELECT * FROM pages
             WHERE uid = ' . intval($uid) .
-            QueryTypo3::getWhereClauseForVersioning('pages') .
-            QueryTypo3::getWhereClauseForEnableFields('pages')
+            QueryTypo3::getWhereClauseVersioning('pages') .
+            QueryTypo3::getWhereClauseEnabled('pages')
         );
 
         return $result->execute()->getFirst();

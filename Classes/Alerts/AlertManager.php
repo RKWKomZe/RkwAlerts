@@ -15,15 +15,16 @@ namespace RKW\RkwAlerts\Alerts;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwAlerts\Exception;
-use RKW\RkwBasics\Utility\FrontendLocalizationUtility;
-use RKW\RkwBasics\Utility\GeneralUtility;
-use RKW\RkwMailer\Service\MailService;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Registration\FrontendUserRegistration;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility as FrontendLocalizationUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
+use RKW\RkwMailer\Service\MailService;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Registration\FrontendUserRegistration;
+use RKW\RkwAlerts\Exception;
+
 
 /**
  * Class AlertManager
@@ -931,7 +932,7 @@ class AlertManager
      */
     protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
     {
-        return GeneralUtility::getTyposcriptConfiguration('Rkwalerts', $which);
+        return GeneralUtility::getTypoScriptConfiguration('Rkwalerts', $which);
     }
 
 }

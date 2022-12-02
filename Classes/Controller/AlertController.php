@@ -28,7 +28,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AlertController extends \RKW\RkwAjax\Controller\AjaxAbstractController
+class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
 {
 
 
