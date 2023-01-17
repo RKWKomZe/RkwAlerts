@@ -1,0 +1,24 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:freeCap="http://typo3.org/ns/SJBR/SrFreecap/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+    <div class="form__field form__field--captcha flex width100">
+        <div class="form__field-item">
+            <label for="sjbr-freecap-captcha-response"><f:translate key="partials_captcha.spam_protection" /><span class="is-required">(<f:translate key="partials_captcha.mandatory_field" />)</span></label>
+            <f:form.textfield
+                id="sjbr-freecap-captcha-response"
+                property="captchaResponse"
+                size="15"
+                title="{freeCap:translate(key: 'notice')}{freeCap:translate(key: 'explain')}"
+            />
+            <p class="text-small">{freeCap:translate(key: 'notice')} {freeCap:translate(key: 'explain')}</p>
+        </div>
+        <div class="form__field-item">
+            <freeCap:image />
+            <freeCap:audio />
+        </div>
+    </div>
+
+</html>
+
+

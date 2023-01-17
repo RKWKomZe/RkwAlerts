@@ -43,6 +43,13 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 
 
     /**
+     * @var string
+     * @validate \SJBR\SrFreecap\Validation\Validator\CaptchaValidator
+     */
+    protected $captchaResponse;
+
+
+    /**
      * Returns the frontendUser
      *
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
@@ -84,6 +91,25 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function setProject(\RKW\RkwAlerts\Domain\Model\Project $project): void
     {
         $this->project = $project;
+    }
+
+    /**
+     * Sets the captchaResponse
+     *
+     * @param string $captchaResponse
+     * @return void
+     */
+    public function setCaptchaResponse($captchaResponse) {
+        $this->captchaResponse = $captchaResponse;
+    }
+
+    /**
+     * Getter for captchaResponse
+     *
+     * @return string
+     */
+    public function getCaptchaResponse() {
+        return $this->captchaResponse;
     }
 
 }

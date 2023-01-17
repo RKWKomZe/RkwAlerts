@@ -23,7 +23,8 @@
         "rkw/rkw-ajax": "~8.7.55",
         "rkw/rkw-mailer": "~8.7.25 || ~9.5.0",
         "rkw/rkw-registration": "~8.7.0",
-		"rkw/rkw-projects": "~8.7.0"
+		"rkw/rkw-projects": "~8.7.0",
+        "sjbr/sr-freecap": "~2.4"
     },
     "autoload": {
         "psr-4": {
