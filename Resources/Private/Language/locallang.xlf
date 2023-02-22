@@ -3,23 +3,17 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2015-08-12T15:13:53Z" product-name="rkw_alerts">
 		<header/>
 		<body>
-			<trans-unit id="tx_rkwalerts_domain_model_alerts">
+			<trans-unit id="tx_rkwalerts_domain_model_alert">
                 <source>RKW Alerts</source>
             </trans-unit>
-            <trans-unit id="tx_rkwalerts_domain_model_alerts.frontend_user">
+            <trans-unit id="tx_rkwalerts_domain_model_alert.frontend_user">
                 <source>Frontend User</source>
             </trans-unit>
-            <trans-unit id="tx_rkwalerts_domain_model_alerts.topic">
+            <trans-unit id="tx_rkwalerts_domain_model_alert.topic">
                 <source>Project</source>
             </trans-unit>
 
             <!-- alertManager-->
-            <trans-unit id="alertManager.error.acceptTerms">
-                <source>Sorry, this has to be done: Please accept our terms of use to enjoy RKW Alerts.</source>
-            </trans-unit>
-            <trans-unit id="alertManager.error.acceptPrivacy">
-                <source>The protection of your data is important to us. Therefore we ask you to agree to the storage of your personal data.</source>
-            </trans-unit>
             <trans-unit id="alertManager.error.invalidEmail">
                 <source>Something went wrong. Please enter a valid e-mail address.</source>
             </trans-unit>
@@ -165,6 +159,15 @@
             </trans-unit>
 
 
+			<!-- Partials/CaptchaElement.html-->
+            <trans-unit id="partials_captcha.spam_protection">
+                <source>Spam protection</source>
+            </trans-unit>
+            <trans-unit id="partials_captcha.mandatory_field">
+                <source>Mandatory field</source>
+            </trans-unit>
+
+
             <!-- Email- Subjects -->
             <trans-unit id="rkwMailService.optInAlertUser.subject">
                 <source>Confirmation for RKW Alerts</source>
@@ -181,8 +184,8 @@
             <trans-unit id="rkwMailService.sendAlert.subjectDefault">
                 <source>New RKW Alert for project "%s"</source>
             </trans-unit>
-            
-            
+
+
 
             <!-- Templates/Email/OptInAlertUser.html -->
             <trans-unit id="templates_email_optInAlertUser.headline">
@@ -203,8 +206,8 @@
             <trans-unit id="templates_email_optInAlertUser.textOptOutLinkLabel">
                 <source>No, thank you</source>
             </trans-unit>
-            
-            
+
+
             <!-- Templates/Email/ConfirmAlertUser.html -->
             <trans-unit id="templates_email_confirmAlertUser.headline">
                 <source>Hello,</source>

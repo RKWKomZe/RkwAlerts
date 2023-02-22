@@ -27,54 +27,41 @@ call_user_func(
         /**
          * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher
          */
-        $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+        $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Registration',
-            \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_CREATING_OPTIN_EXISTING_USER  . 'RkwAlerts',
-            'RKW\\RkwAlerts\\Service\\RkwMailService',
+            RKW\RkwRegistration\Registration\AbstractRegistration::class,
+            RKW\RkwRegistration\Registration\AbstractRegistration::SIGNAL_AFTER_CREATING_OPTIN  . 'RkwAlerts',
+            RKW\RkwAlerts\Service\RkwMailService::class,
             'optInAlertUser'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Registration',
-            \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_CREATING_OPTIN_USER  . 'RkwAlerts',
-            'RKW\\RkwAlerts\\Service\\RkwMailService',
-            'optInAlertUser'
-        );
-
-        $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Registration',
-            \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_USER_REGISTER_GRANT . 'RkwAlerts',
-            'RKW\\RkwAlerts\\Alerts\\AlertManager',
+            RKW\RkwRegistration\Registration\AbstractRegistration::class,
+            RKW\RkwRegistration\Registration\AbstractRegistration::SIGNAL_AFTER_REGISTRATION_COMPLETED . 'RkwAlerts',
+            RKW\RkwAlerts\Alerts\AlertManager::class,
             'saveAlertByRegistration'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwAlerts\\Alerts\\AlertManager',
+            RKW\RkwAlerts\Alerts\AlertManager::class,
             \RKW\RkwAlerts\Alerts\AlertManager::SIGNAL_AFTER_ALERT_CREATED,
-            'RKW\\RkwAlerts\\Service\\RkwMailService',
+            RKW\RkwAlerts\Service\RkwMailService::class,
             'confirmAlertUser'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Registration',
-            \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_DELETING_USER,
-            'RKW\\RkwAlerts\\Alerts\\AlertManager',
+            RKW\RkwRegistration\Registration\AbstractRegistration::class,
+            RKW\RkwRegistration\Registration\AbstractRegistration::SIGNAL_AFTER_REGISTRATION_ENDED,
+            RKW\RkwAlerts\Alerts\AlertManager::class,
             'deleteAlertsByFrontendEndUser'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwAlerts\\Alerts\\AlertManager',
+            RKW\RkwAlerts\Alerts\AlertManager::class,
             \RKW\RkwAlerts\Alerts\AlertManager::SIGNAL_AFTER_ALERT_DELETED_ALL,
-            'RKW\\RkwAlerts\\Service\\RkwMailService',
+            RKW\RkwAlerts\Service\RkwMailService::class,
             'cancelAllUser'
         );
-
-
-        //=================================================================
-        // Register Command Controller
-        //=================================================================
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'RKW\\RkwAlerts\\Controller\\SendCommandController';
 
         //=================================================================
         // Register Logger

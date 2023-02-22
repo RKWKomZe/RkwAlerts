@@ -4,22 +4,22 @@
 
     <!-- PLAINTEXT -->
     <f:section name="Plaintext">
-        <rkwMailer:frontend.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}" isPlaintext="true">
+        <rkwMailer:email.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}" isPlaintext="true">
             <f:for each="{pages}" as="page">
                 --------------------------------------------------------------------------------------\n
                 <f:format.date format="d.m.Y">{page.lastUpdated}</f:format.date>: {page.title}\n
                 --------------------------------------------------------------------------------------\n
                 <f:if condition="{page.description}">{page.description}\n\n</f:if>
-                <rkwMailer:frontend.link noCacheHash="true" absolute="true" pageUid="{page.uid}" />
+                <rkwMailer:email.uri.action noCacheHash="true" absolute="true" pageUid="{page.uid}" />
                 \n\n
             </f:for>
-        </rkwMailer:frontend.replace.redirectLinks>
+        </rkwMailer:email.replace.redirectLinks>
     </f:section>
 
 
     <!-- HTML -->
     <f:section name="Html">
-        <rkwMailer:frontend.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}">
+        <rkwMailer:email.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}">
             <table cellpadding="0" cellspacing="0" border="0" style="background-color:#eaeaea; margin-top:16px;">
                 <f:for each="{pages}" as="page">
                     <tr>
@@ -27,16 +27,16 @@
                             <table cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                     <td>
-                                        <a href="{rkwMailer:frontend.link(noCacheHash:'true', absolute:'true', pageUid:'{page.uid}')}" 
+                                        <a href="{rkwMailer:email.uri.action(noCacheHash:'true', absolute:'true', pageUid:'{page.uid}')}"
                                            style="color: #E64415; font-size: 18px; line-height:22px; font-weight: 600; text-decoration: none;">
                                             <f:format.date format="d.m.Y">{page.lastUpdated}</f:format.date>: {page.title}
                                         </a>
                                     </td>
                                 </tr>
-                                <f:if condition="{page.txRkwBasicsTeaserImage}">
+                                <f:if condition="{page.txCoreextendedPreviewImage}">
                                     <tr>
                                         <td style="padding-top:16px;">
-                                            <rkwMailer:frontend.image image="{page.txRkwBasicsTeaserImage}"
+                                            <rkwMailer:email.image image="{page.txCoreextendedPreviewImage}"
                                                 treatIdAsReference="true"
                                                 absolute="false"
                                                 alt="{page.title}"
@@ -51,10 +51,10 @@
                                         <f:if condition="{page.description}">
                                             {page.description}<br><br>
                                         </f:if>
-                                        <a href="{rkwMailer:frontend.link(noCacheHash:'true', absolute:'true', pageUid:'{page.uid}')}">
-                                            <rkwMailer:frontend.translate 
-                                                key="partials_email_linkList.readMore" 
-                                                languageKey="{frontendUser.txRkwregistrationLanguageKey}" 
+                                        <a href="{rkwMailer:email.uri.action(noCacheHash:'true', absolute:'true', pageUid:'{page.uid}')}">
+                                            <rkwMailer:email.translate
+                                                key="partials_email_linkList.readMore"
+                                                languageKey="{frontendUser.txRkwregistrationLanguageKey}"
                                                 extensionName="rkwAlerts" />
                                         </a>
                                     </td>
@@ -64,7 +64,7 @@
                     </tr>
                 </f:for>
             </table>
-        </rkwMailer:frontend.replace.redirectLinks>
+        </rkwMailer:email.replace.redirectLinks>
     </f:section>
 
 </html>

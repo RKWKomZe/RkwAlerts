@@ -25,15 +25,6 @@
                             </config>
                         </TCEforms>
                     </switchableControllerActions>
-                    <!--
-                    <settings.show.listSelect>
-                        <TCEforms>
-                            <label>LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:flexform.show.listSelect</label>
-                            <config>
-                                <type>check</type>
-                            </config>
-                        </TCEforms>
-                    </settings.show.listSelect> -->
                 </el>
             </ROOT>
         </sDEF>

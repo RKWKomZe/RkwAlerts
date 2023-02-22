@@ -52,25 +52,25 @@
     </fe_users>
 
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>370</uid>
         <pid>1</pid>
         <project>370</project>
         <frontend_user>370</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>371</uid>
         <pid>1</pid>
         <project>370</project>
         <frontend_user>371</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>372</uid>
         <pid>1</pid>
         <project>370</project>
         <frontend_user>372</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
 </dataset>

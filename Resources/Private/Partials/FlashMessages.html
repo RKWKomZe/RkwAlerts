@@ -4,7 +4,7 @@
         <f:if condition="{flashMessages}">
             <div class="system-message system-message--scroll" role="alert">
                 <f:for each="{flashMessages}" as="flashMessage">
-                    <div class="system-message__item system-message__item--{flashMessage.class}">
+                    <div class="system-message__item system-message__item--severity{flashMessage.severity}">
                         <f:format.raw>{flashMessage.message}</f:format.raw>
                     </div>
                 </f:for>

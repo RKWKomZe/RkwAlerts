@@ -1,12 +1,12 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 	xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
-	xmlns:rkwAjax="http://typo3.org/ns/RKW/RkwAjax/ViewHelpers"
+	xmlns:ajaxApi="http://typo3.org/ns/Madj2k/AjaxApi/ViewHelpers"
 	data-namespace-typo3-fluid="true">
 
 	<f:form action="create" name="alert" object="{alert}">
 		<f:form.hidden property="project" value="{project}"/>
 
-		<rkwAjax:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="2">
+		<ajaxApi:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="2">
 
 			<f:comment><!-- Check if form is to be displayed --></f:comment>
 			<f:if condition="{displayForm}">
@@ -25,31 +25,17 @@
 							<div class="form__approval">
 								<f:if condition="{frontendUser}">
 									<f:then>
-										<div class="form__field">
-											<f:form.checkbox name="privacy" value="1" id="privacy" class="checkbox" checked="{privacy}" />
-											<label for="privacy" class="checkbox-label">
-												<rkwRegistration:privacyText textVersion="defaultAlternative" />
-											</label>
-										</div>
+                                        <rkwRegistration:consent  type="privacy" key="defaultAlternative" />
 									</f:then>
 									<f:else>
-										<div class="form__field">
-											<f:form.checkbox name="terms" value="1" id="terms" class="checkbox" checked="{terms}" />
-											<label for="terms" class="checkbox-label">
-												<f:link.page pageUid="{settings.termsPid}" target="_blank">
-													<f:translate key="partials_alerts_form.terms" />
-												</f:link.page>
-											</label>
-										</div>
-										<div class="form__field">
-											<f:form.checkbox name="privacy" value="1" id="privacy" class="checkbox" checked="{privacy}" />
-											<label for="privacy" class="checkbox-label">
-												<rkwRegistration:privacyText />
-											</label>
-										</div>
+                                        <rkwRegistration:consent type="terms" />
+                                        <rkwRegistration:consent type="privacy" key="default" />
+                                        <rkwRegistration:consent type="marketing" />
 									</f:else>
 								</f:if>
 
+                                <f:render partial="CaptchaElement" />
+                                
 								<div class="form__field flex space-start full-width-narrow">
 									<button class="btn btn--primary full-width-narrow" name="alerts-submit">
 										<f:translate key="partials_alerts_form.labelCreateNew" />
@@ -60,6 +46,6 @@
 					</div>
 				</div>
 			</f:if>
-		</rkwAjax:ajaxWrapper>
+		</ajaxApi:ajaxWrapper>
 	</f:form>
 </html>

@@ -19,7 +19,7 @@ namespace RKW\RkwAlerts\Domain\Model;
  * Class Project
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -31,7 +31,7 @@ class Project extends \RKW\RkwProjects\Domain\Model\Projects
      *
      * @var bool
      */
-    protected $txRkwalertsEnableAlerts = false;
+    protected bool $txRkwalertsEnableAlerts = false;
 
 
     /**
