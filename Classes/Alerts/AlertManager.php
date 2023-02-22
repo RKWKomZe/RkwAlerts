@@ -15,6 +15,14 @@ namespace RKW\RkwAlerts\Alerts;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwAlerts\Domain\Model\Project;
+use RKW\RkwAlerts\Domain\Repository\AlertRepository;
+use RKW\RkwAlerts\Domain\Repository\PageRepository;
+use RKW\RkwAlerts\Domain\Repository\ProjectRepository;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility as FrontendLocalizationUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -24,7 +32,6 @@ use RKW\RkwMailer\Service\MailService;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Registration\FrontendUserRegistration;
 use RKW\RkwAlerts\Exception;
-
 
 /**
  * Class AlertManager
@@ -43,6 +50,7 @@ class AlertManager
      * @const string
      */
     const SIGNAL_AFTER_ALERT_CREATED = 'afterAlertCreated';
+
 
     /**
      * Signal name for use in ext_localconf.php
@@ -66,7 +74,7 @@ class AlertManager
      * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $alertRepository;
+    protected AlertRepository $alertRepository;
 
     /**
      * pagesRepository
@@ -74,7 +82,7 @@ class AlertManager
      * @var \RKW\RkwAlerts\Domain\Repository\PageRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $pageRepository;
+    protected PageRepository $pageRepository;
 
     /**
      * projectsRepository
@@ -82,7 +90,7 @@ class AlertManager
      * @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $projectRepository;
+    protected ProjectRepository $projectRepository;
 
 
     /**
@@ -91,13 +99,14 @@ class AlertManager
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $frontendUserRepository;
+    protected FrontendUserRepository $frontendUserRepository;
+
 
     /**
      * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $signalSlotDispatcher;
+    protected Dispatcher $signalSlotDispatcher;
 
 
     /**
@@ -106,13 +115,13 @@ class AlertManager
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $persistenceManager;
+    protected PersistenceManager $persistenceManager;
 
 
     /**
-     * @var \TYPO3\CMS\Core\Log\Logger
+     * @var \TYPO3\CMS\Core\Log\Logger|null
      */
-    protected $logger;
+    protected ?Logger $logger = null;
 
 
     /**
@@ -120,9 +129,9 @@ class AlertManager
      * alerts are activated for that project
      *
      * @param int $pid The page uid
-     * @return \RKW\RkwAlerts\Domain\Model\Project
+     * @return \RKW\RkwAlerts\Domain\Model\Project|null
      */
-    public function getSubscribableProjectByPageUid(int $pid)
+    public function getSubscribableProjectByPageUid(int $pid):? Project
     {
         /**
          * @var $page \RKW\RkwAlerts\Domain\Model\Page
@@ -164,6 +173,7 @@ class AlertManager
 
         return false;
     }
+
 
     /**
      * Checks if an email-address has subscribed to the given project
@@ -220,7 +230,6 @@ class AlertManager
     }
 
 
-
     /**
      * Create Alert
      *
@@ -236,8 +245,7 @@ class AlertManager
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser = null,
         string $email = ''
-    ) : int
-    {
+    ) : int  {
 
         // settings for logged-in users
         if (
@@ -372,12 +380,11 @@ class AlertManager
     }
 
 
-
     /**
      * saveAlert
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
      * @return bool
      * @throws \RKW\RkwAlerts\Exception
      */
@@ -490,7 +497,7 @@ class AlertManager
      * deleteAlert
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
      * @return bool
      * @throws \RKW\RkwAlerts\Exception
      */
@@ -581,8 +588,7 @@ class AlertManager
         \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts,
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
         int &$counter = 0
-    ): bool
-    {
+    ): bool {
 
         $counter = 0;
         $status = true;
@@ -622,7 +628,6 @@ class AlertManager
     }
 
 
-
     /**
      * deleteAlertsByFrontendEndUser
      *
@@ -632,8 +637,7 @@ class AlertManager
      */
     public function deleteAlertsByFrontendEndUser (
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-    )
-    {
+    ) {
 
         try {
 
@@ -682,26 +686,23 @@ class AlertManager
     }
 
 
-
     /**
      * Gets an associative array with the projects to notify
      * and the pages to link to
      *
      * @param string $filterField
-     * @param integer $timeSinceCreation
+     * @param int $timeSinceCreation
      * @return array
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function getPagesAndProjectsToNotify(
         string $filterField,
         int $timeSinceCreation = 432000
-    ): array
-    {
+    ): array {
+
         $result = [];
 
         if ($pages = $this->pageRepository->findAllToNotify($filterField, $timeSinceCreation)) {
-
-
 
             /**  @var \RKW\RkwAlerts\Domain\Model\Page $page */
             foreach ($pages as $page) {
@@ -737,18 +738,19 @@ class AlertManager
      * Sends the notifications
      *
      * @param string $filterField
-     * @param integer $timeSinceCreation
+     * @param int $timeSinceCreation
      * @param string $debugMail
      * @return int
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
     public function sendNotification(
         string $filterField,
         int $timeSinceCreation = 432000,
         string $debugMail = ''
-    ): int
-    {
+    ): int {
 
         // load projects to notify
         $recipientCountGlobal = 0;
@@ -912,7 +914,7 @@ class AlertManager
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    protected function getLogger()
+    protected function getLogger(): Logger
     {
 
         if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {
@@ -930,7 +932,7 @@ class AlertManager
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
+    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
         return GeneralUtility::getTypoScriptConfiguration('Rkwalerts', $which);
     }

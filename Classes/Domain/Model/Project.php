@@ -31,7 +31,7 @@ class Project extends \RKW\RkwProjects\Domain\Model\Projects
      *
      * @var bool
      */
-    protected $txRkwalertsEnableAlerts = false;
+    protected bool $txRkwalertsEnableAlerts = false;
 
 
     /**

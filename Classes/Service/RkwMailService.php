@@ -2,12 +2,6 @@
 
 namespace RKW\RkwAlerts\Service;
 
-use Madj2k\CoreExtended\Utility\GeneralUtility;
-use RKW\RkwMailer\Service\MailService;
-use RKW\RkwMailer\Utility\FrontendLocalizationUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,6 +14,12 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use Madj2k\CoreExtended\Utility\GeneralUtility;
+use RKW\RkwMailer\Service\MailService;
+use RKW\RkwMailer\Utility\FrontendLocalizationUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * RkwMailService
@@ -86,6 +86,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
         }
     }
 
+
     /**
      * Handles confirmation
      *
@@ -138,8 +139,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService->getQueueMail()->setHtmlTemplate('Email/ConfirmAlertUser');
             $mailService->send();
         }
-
     }
+
 
     /**
      * Handles canceling of all alerts of a user
@@ -192,8 +193,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService->getQueueMail()->setHtmlTemplate('Email/CancelAllUser');
             $mailService->send();
         }
-
     }
+
 
     /**
      * Returns TYPO3 settings
@@ -202,7 +203,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
+    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
         return GeneralUtility::getTypoScriptConfiguration('Rkwalerts', $which);
     }

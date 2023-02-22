@@ -39,7 +39,7 @@ class AlertRepository extends AbstractRepository
      * @param \RKW\RkwAlerts\Domain\Model\Project $project
      * @return  \RKW\RkwAlerts\Domain\Model\Alert|null
      */
-    public function findOneByFrontendUserAndProject(FrontendUser $frontendUser, Project $project): ?Alert
+    public function findOneByFrontendUserAndProject(FrontendUser $frontendUser, Project $project):? Alert
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);

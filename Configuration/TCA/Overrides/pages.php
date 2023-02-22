@@ -23,8 +23,4 @@ $tempPagesColumns = [
 
 // Add TCA
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('pages', $tempPagesColumns);
-
-// Add field to the existing palette
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette('pages', 'tx_rkwbasics_extended','tx_rkwalerts_send_status');
-
-
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette('pages', 'title','--linebreak--,tx_rkwalerts_send_status','after:subtitle');

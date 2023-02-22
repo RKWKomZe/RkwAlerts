@@ -14,11 +14,16 @@ namespace RKW\RkwAlerts\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwAlerts\Alerts\AlertManager;
+use RKW\RkwAlerts\Domain\Repository\AlertRepository;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Registration\FrontendUserRegistration;
+use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-
 
 /**
  * Class AlertController
@@ -35,9 +40,9 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
     /**
      * logged in FrontendUser
      *
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      */
-    protected $frontendUser = null;
+    protected ?FrontendUser $frontendUser = null;
 
 
     /**
@@ -46,7 +51,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $frontendUserRepository;
+    protected FrontendUserRepository $frontendUserRepository;
 
 
     /**
@@ -55,7 +60,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $alertRepository = null;
+    protected AlertRepository $alertRepository;
 
 
     /**
@@ -64,19 +69,20 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @var \RKW\RkwAlerts\Alerts\AlertManager
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $alertManager = null;
+    protected ?AlertManager $alertManager;
 
 
     /**
-     * @var \TYPO3\CMS\Core\Log\Logger
+     * @var \TYPO3\CMS\Core\Log\Logger|null
      */
-    protected $logger;
+    protected ?Logger $logger = null;
 
 
     /**
      * action list
      *
      * @return void
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public function listAction(): void
     {
@@ -130,7 +136,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
     /**
      * basic functions for action new
      *
-     * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
+     * @param \RKW\RkwAlerts\Domain\Model\Alert|null $alert
      * @param string $email
      * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      * @return void
@@ -189,6 +195,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
         }
     }
 
+
     /**
      * action create
      *
@@ -197,6 +204,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\TermsValidator", param="alert")
      * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\PrivacyValidator", param="alert")
      * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\MarketingValidator", param="alert")
@@ -266,7 +274,9 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @return void
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
@@ -317,7 +327,6 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
     }
 
 
-
     /**
      * action delete confirm
      *
@@ -343,6 +352,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public function deleteAction(\RKW\RkwAlerts\Domain\Model\Alert $alert): void
     {
@@ -377,8 +387,6 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
     }
 
 
-
-
     /**
      * Remove ErrorFlashMessage
      *
@@ -394,40 +402,15 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
     /**
      * Returns current logged in user object
      *
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|NULL
-     */
-    protected function getFrontendUser()
-    {
-        if (!$this->frontendUser) {
-
-            $frontendUser = $this->frontendUserRepository->findByUid($this->getFrontendUserId());
-            if ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser) {
-                $this->frontendUser = $frontendUser;
-            }
-        }
-
-        return $this->frontendUser;
-    }
-
-
-    /**
-     * Uid of logged-in user
-     *
-     * @return integer
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
-    protected function getFrontendUserId(): int
+    protected function getFrontendUser() :? FrontendUser
     {
-        // is user logged in
-        $context = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
-        if (
-            ($context->getPropertyFromAspect('frontend.user', 'isLoggedIn'))
-            && ($frontendUserId = $context->getPropertyFromAspect('frontend.user', 'id'))
-        ){
-            return intval($frontendUserId);
+        if (!$this->frontendUser) {
+            $this->frontendUser = FrontendUserSessionUtility::getLoggedInUser();
         }
-
-        return 0;
+        return $this->frontendUser;
     }
 
 

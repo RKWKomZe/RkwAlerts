@@ -14,13 +14,14 @@ namespace RKW\RkwAlerts\Command;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwAlerts\Alerts\AlertManager;
 use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
+use RKW\RkwAlerts\Alerts\AlertManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -35,15 +36,15 @@ class SendCommand extends Command
 {
 
     /**
-     * @var \RKW\RkwAlerts\Alerts\AlertManager
+     * @var \RKW\RkwAlerts\Alerts\AlertManager|null
      */
-    protected $alertManager;
+    protected ?AlertManager $alertManager = null;
 
 
     /**
-     * @var \TYPO3\CMS\Core\Log\Logger
+     * @var \TYPO3\CMS\Core\Log\Logger|null
      */
-    protected $logger;
+    protected ?Logger $logger = null;
 
 
     /**
@@ -89,10 +90,10 @@ class SendCommand extends Command
      * This is mainly useful when a lot of commands extends one main command
      * where some things need to be initialized based on the input arguments and options.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @see InputInterface::bind()
-     * @see InputInterface::validate()
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @see \Symfony\Component\Console\Input\InputInterface::bind()
+     * @see \Symfony\Component\Console\Input\InputInterface::validate()
      */
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
@@ -105,11 +106,11 @@ class SendCommand extends Command
     /**
      * Executes the command for showing sys_log entries
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return int
-     * @see InputInterface::bind()
-     * @see InputInterface::validate()
+     * @see \Symfony\Component\Console\Input\InputInterface::bind()
+     * @see \Symfony\Component\Console\Input\InputInterface::validate()
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

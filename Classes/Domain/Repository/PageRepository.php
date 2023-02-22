@@ -31,32 +31,9 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 class PageRepository extends AbstractRepository
 {
     /**
-     * @var \TYPO3\CMS\Core\Log\Logger
+     * @var \TYPO3\CMS\Core\Log\Logger|null
      */
-    protected $logger;
-
-    /**
-     * findByUid
-     * finds page by uid
-     *
-     * @param int $uid
-     * @return \RKW\RkwAlerts\Domain\Model\Page
-     * @throws \TYPO3\CMS\Core\Type\Exception\InvalidEnumerationValueException
-     * @deprecated since version 8.7, will be removed in version 9.5
-     */
-    public function findByUid($uid): ?Page
-    {
-
-        $result = $this->createQuery();
-        $result->getQuerySettings()->setRespectStoragePage(false);
-        $result->statement('SELECT * FROM pages
-            WHERE uid = ' . intval($uid) .
-            QueryTypo3::getWhereClauseVersioning('pages') .
-            QueryTypo3::getWhereClauseEnabled('pages')
-        );
-
-        return $result->execute()->getFirst();
-    }
+    protected ?Logger $logger = null;
 
 
     /**
@@ -65,7 +42,7 @@ class PageRepository extends AbstractRepository
      * finds all pages to notify
      *
      * @param string $filterField
-     * @param integer $timeSinceCreation
+     * @param int $timeSinceCreation
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */

@@ -36,7 +36,7 @@ class AbstractRepository  extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @return void
      */
-    public function initializeObject()
+    public function initializeObject(): void
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $configurationManager = $objectManager->get(ConfigurationManager::class);

@@ -4,15 +4,15 @@
 		<header/>
 		<body>
 
-			<trans-unit id="tx_rkwalerts_domain_model_alerts">
+			<trans-unit id="tx_rkwalerts_domain_model_alert">
 				<source>RKW Alerts</source>
                 <target>RKW Alerts</target>
 			</trans-unit>
-			<trans-unit id="tx_rkwalerts_domain_model_alerts.frontend_user">
+			<trans-unit id="tx_rkwalerts_domain_model_alert.frontend_user">
 				<source>Frontend User</source>
                 <target>Frontend User</target>
 			</trans-unit>
-			<trans-unit id="tx_rkwalerts_domain_model_alerts.topic">
+			<trans-unit id="tx_rkwalerts_domain_model_alert.topic">
 				<source>Project</source>
                 <target>Projekt</target>
 			</trans-unit>
@@ -204,6 +204,17 @@
             <trans-unit id="partials_alerts_form.labelCreateNew">
                 <source>Create Alert</source>
                 <target>Auf dem Laufenden bleiben</target>
+            </trans-unit>
+
+
+            <!-- Partials/CaptchaElement.html-->
+            <trans-unit id="partials_captcha.spam_protection">
+                <source>Spam protection</source>
+                <target>Spam-Schutz</target>
+            </trans-unit>
+            <trans-unit id="partials_captcha.mandatory_field">
+                <source>Mandatory field</source>
+                <target>Pflichtfeld</target>
             </trans-unit>
 
 

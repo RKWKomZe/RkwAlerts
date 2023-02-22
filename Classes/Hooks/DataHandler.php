@@ -16,7 +16,6 @@ namespace RKW\RkwAlerts\Hooks;
  */
 
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * DataHandler
@@ -31,26 +30,24 @@ class DataHandler implements SingletonInterface
 
 
     /**
+     * processDatamap_postProcessFieldArray
      *
-     *
-     * @param $status
-     * @param $table
-     * @param $id
-     * @param $fieldArray
+     * @param string $status
+     * @param string $table
+     * @param int $id
+     * @param array $fieldArray
      * @param $reference
      * @return void
      */
-    function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, &$reference)
+    function processDatamap_postProcessFieldArray(string $status, string $table, int $id, array &$fieldArray, &$reference)
     {
 
         if ($table === 'pages' && $status === 'new') {
 
+            // do not copy that flag!
             if ($fieldArray['tx_rkwalerts_send_status']) {
-
-                // do not copy that flag!
                 $fieldArray['tx_rkwalerts_send_status'] = 0;
             }
-
         }
     }
 

@@ -51,7 +51,7 @@ class AlertManagerTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
         'typo3conf/ext/rkw_mailer',
         'typo3conf/ext/rkw_authors',
@@ -59,60 +59,72 @@ class AlertManagerTest extends FunctionalTestCase
         'typo3conf/ext/rkw_alerts',
     ];
 
+
     /**
      * @var string[]
      */
     protected $coreExtensionsToLoad = [];
 
-    /**
-     * @var \RKW\RkwAlerts\Alerts\AlertManager
-     */
-    private $subject = null;
 
     /**
-     * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
+     * @var \RKW\RkwAlerts\Alerts\AlertManager|null
      */
-    private $alertRepository;
+    private ?AlertManager $subject = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository|null
      */
-    private $frontendUserRepository;
+    private ?AlertRepository $alertRepository = null;
+
 
     /**
-     * @var \RKW\RkwAlerts\Domain\Repository\PageRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
      */
-    private $pageRepository;
+    private ?FrontendUserRepository $frontendUserRepository = null;
+
 
     /**
-     * @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository
+     * @var \RKW\RkwAlerts\Domain\Repository\PageRepository|null
      */
-    private $projectRepository;
+    private ?PageRepository $pageRepository = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository
+     * @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository|null
      */
-    private $optInRepository;
+    private ?ProjectRepository $projectRepository = null;
+
 
     /**
-     * @var \RKW\RkwMailer\Domain\Repository\QueueMailRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository|null
      */
-    private $queueMailRepository;
+    private ?OptInRepository $optInRepository = null;
+
 
     /**
-     * @var \RKW\RkwMailer\Domain\Repository\QueueRecipientRepository
+     * @var \RKW\RkwMailer\Domain\Repository\QueueMailRepository|null
      */
-    private $queueRecipientRepository;
+    private ?QueueMailRepository $queueMailRepository = null;
+
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @var \RKW\RkwMailer\Domain\Repository\QueueRecipientRepository|null
      */
-    private $persistenceManager;
+    private ?QueueRecipientRepository $queueRecipientRepository = null;
+
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager|null
      */
-    private $objectManager;
+    private ?PersistenceManager $persistenceManager = null;
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager|null
+     */
+    private ?ObjectManager $objectManager = null;
+
 
     /**
      * @const
@@ -136,7 +148,7 @@ class AlertManagerTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
+                'EXT:rkw_coreextended/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_mailer/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_authors/Configuration/TypoScript/setup.txt',
@@ -279,6 +291,7 @@ class AlertManagerTest extends FunctionalTestCase
         self::assertFalse( $this->subject->hasFrontendUserSubscribedToProject($feUser, $project));
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -334,8 +347,6 @@ class AlertManagerTest extends FunctionalTestCase
         self::assertTrue( $this->subject->hasFrontendUserSubscribedToProject($feUser, $project));
     }
 
-
-
     //=============================================
 
     /**
@@ -389,10 +400,9 @@ class AlertManagerTest extends FunctionalTestCase
         self::assertTrue( $this->subject->hasEmailSubscribedToProject('teste-email@test.de', $project));
     }
 
-
     //=============================================
 
-       /**
+    /**
      * @test
      * @throws \RKW\RkwAlerts\Exception
      */
@@ -489,8 +499,8 @@ class AlertManagerTest extends FunctionalTestCase
         static::expectExceptionMessage('alertManager.error.projectInvalid');
 
         $this->subject->createAlert($request,$alert, null, 'valid@email.de');
-
     }
+
 
     /**
      * @test
@@ -526,7 +536,6 @@ class AlertManagerTest extends FunctionalTestCase
         static::expectExceptionMessage('alertManager.error.alreadySubscribed');
 
         $this->subject->createAlert($request, $alert, null, 'teste-email@test.de');
-
     }
 
 
@@ -567,8 +576,8 @@ class AlertManagerTest extends FunctionalTestCase
         static::expectExceptionMessage('alertManager.error.alreadySubscribed');
 
         $this->subject->createAlert($request, $alert, $frontendUser, '');
-
     }
+
 
     /**
      * @test
@@ -612,6 +621,7 @@ class AlertManagerTest extends FunctionalTestCase
         self::assertEquals($project->getUid(), $dbAlert->getProject()->getUid());
 
     }
+
 
     /**
      * @test
@@ -682,6 +692,7 @@ class AlertManagerTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \RKW\RkwAlerts\Exception
@@ -709,8 +720,8 @@ class AlertManagerTest extends FunctionalTestCase
         static::expectExceptionMessage('alertManager.error.frontendUserNotPersisted');
 
         $this->subject->saveAlert($alert, $frontendUser);
-
     }
+
 
     /**
      * @test
@@ -862,7 +873,7 @@ class AlertManagerTest extends FunctionalTestCase
 
     }
 
-//=============================================
+    //=============================================
 
     /**
      * @test
@@ -899,7 +910,7 @@ class AlertManagerTest extends FunctionalTestCase
 
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
         $optIn = GeneralUtility::makeInstance(OptIn::class);
-        $optIn>setData($data);
+        $optIn->setData($data);
 
         $this->subject->saveAlertByRegistration($frontendUser, $optIn);
 
@@ -945,6 +956,7 @@ class AlertManagerTest extends FunctionalTestCase
         self::assertEmpty($dbAlert);
 
     }
+
 
     /**
      * @test
@@ -992,8 +1004,8 @@ class AlertManagerTest extends FunctionalTestCase
 
     }
 
-
     //=============================================
+
     /**
      * @test
      * @throws \RKW\RkwAlerts\Exception
@@ -1022,6 +1034,7 @@ class AlertManagerTest extends FunctionalTestCase
         $this->subject->deleteAlert($alert, null);
 
     }
+
 
     /**
      * @test
@@ -1055,6 +1068,7 @@ class AlertManagerTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \RKW\RkwAlerts\Exception
@@ -1086,6 +1100,7 @@ class AlertManagerTest extends FunctionalTestCase
         $this->subject->deleteAlert($alert, $frontendUser);
 
     }
+
 
     /**
      * @test
@@ -1120,6 +1135,7 @@ class AlertManagerTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \RKW\RkwAlerts\Exception
@@ -1151,8 +1167,8 @@ class AlertManagerTest extends FunctionalTestCase
         $alertDb = $this->alertRepository->findByIdentifier(200);
         self::assertEmpty($alertDb);
 
-
     }
+
 
     /**
      * @test
@@ -1187,11 +1203,10 @@ class AlertManagerTest extends FunctionalTestCase
 
         $alertDb = $this->alertRepository->findByIdentifier(200);
         self::assertEmpty($alertDb);
-
-
     }
 
     //=============================================
+
     /**
      * @test
      * @throws \Exception
@@ -1237,8 +1252,8 @@ class AlertManagerTest extends FunctionalTestCase
 
         $alertDb = $this->alertRepository->findByIdentifier(233);
         self::assertEmpty($alertDb);
-
     }
+
 
     /**
      * @test
@@ -1269,8 +1284,8 @@ class AlertManagerTest extends FunctionalTestCase
         $result = $this->subject->deleteAlerts($alerts, $frontendUser, $counter);
         self::assertFalse($result);
         self::assertEquals(0, $counter);
-
     }
+
 
     /**
      * @test
@@ -1320,6 +1335,7 @@ class AlertManagerTest extends FunctionalTestCase
     }
 
     //=============================================
+
     /**
      * @test
      * @throws \Exception
@@ -1357,10 +1373,10 @@ class AlertManagerTest extends FunctionalTestCase
 
         $alertDb = $this->alertRepository->findByIdentifier(273);
         self::assertEmpty($alertDb);
-
     }
 
     //=============================================
+
     /**
      * @test
      * @throws \Exception
@@ -1387,6 +1403,7 @@ class AlertManagerTest extends FunctionalTestCase
         self::assertCount(0, $result);
 
     }
+
 
     /**
      * @test
@@ -1422,7 +1439,6 @@ class AlertManagerTest extends FunctionalTestCase
     }
 
     //=============================================
-
 
     /**
      * @test
@@ -1721,6 +1737,7 @@ class AlertManagerTest extends FunctionalTestCase
         self::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getCrdate());
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -1801,6 +1818,7 @@ class AlertManagerTest extends FunctionalTestCase
         self::assertEquals($timeNow - (2 * 60 * 60 * 24), $page->getLastUpdated());
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -1828,7 +1846,6 @@ class AlertManagerTest extends FunctionalTestCase
          * Then each 'pages'-sub-key is an instance of ObjectStorage
          * Then the first 'pages'-sub-key contains two instances of Pages
          * Then the second 'pages'-sub-key contains three instances of Pages
-
          * Then the array contains two key with one array each, which again has two keys
          * Then the first key 'pages' is a sub-array
          * Then the second key 'project' contains one project-object
@@ -1997,6 +2014,7 @@ class AlertManagerTest extends FunctionalTestCase
         }
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -2043,6 +2061,7 @@ class AlertManagerTest extends FunctionalTestCase
             self::assertEquals(1, $page->getTxRkwalertsSendStatus());
         }
     }
+
 
     /**
      * @test
@@ -2162,8 +2181,8 @@ class AlertManagerTest extends FunctionalTestCase
         foreach ($queueRecipients as $queueRecipient) {
             self::assertEquals('debugmode@rkw.de', $queueRecipient->getEmail());
         }
-
     }
+
 
     /**
      * @test
@@ -2222,8 +2241,6 @@ class AlertManagerTest extends FunctionalTestCase
         $queueRecipients = $this->queueRecipientRepository->findByQueueMail($queueMails[1]);
         self::assertCount(4, $queueRecipients);
     }
-
-
 
     //=============================================
 

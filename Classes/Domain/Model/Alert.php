@@ -15,6 +15,9 @@ namespace RKW\RkwAlerts\Domain\Model;
  * The TYPO3 project - inspiring people to share!
  */
 
+use SJBR\SrFreecap\Validation\Validator\CaptchaValidator;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+
 /**
  * Class Alert
  *
@@ -29,17 +32,24 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * frontendUser
      *
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      */
-    protected $frontendUser = null;
+    protected ?FrontendUser $frontendUser = null;
 
 
     /**
      * project
      *
-     * @var \RKW\RkwAlerts\Domain\Model\Project
+     * @var \RKW\RkwAlerts\Domain\Model\Project|null
      */
-    protected $project = null;
+    protected ?Project $project = null;
+
+
+    /**
+     * @var string
+     * @validate \SJBR\SrFreecap\Validation\Validator\CaptchaValidator
+     */
+    protected string $captchaResponse = '';
 
 
     /**
@@ -47,7 +57,7 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      */
-    public function getFrontendUser()
+    public function getFrontendUser():? FrontendUser
     {
         return $this->frontendUser;
     }
@@ -70,10 +80,11 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return \RKW\RkwAlerts\Domain\Model\Project $project
      */
-    public function getProject()
+    public function getProject():? Project
     {
         return $this->project;
     }
+
 
     /**
      * Sets the project
@@ -84,6 +95,27 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function setProject(\RKW\RkwAlerts\Domain\Model\Project $project): void
     {
         $this->project = $project;
+    }
+
+
+    /**
+     * Sets the captchaResponse
+     *
+     * @param string $captchaResponse
+     * @return void
+     */
+    public function setCaptchaResponse(string $captchaResponse): void {
+        $this->captchaResponse = $captchaResponse;
+    }
+
+
+    /**
+     * Getter for captchaResponse
+     *
+     * @return string
+     */
+    public function getCaptchaResponse(): string {
+        return $this->captchaResponse;
     }
 
 }
