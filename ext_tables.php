@@ -9,7 +9,7 @@ call_user_func(
         // Add Tables
         //=================================================================
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages(
-            'tx_rkwalerts_domain_model_alerts'
+            'tx_rkwalerts_domain_model_alert'
         );
 
 

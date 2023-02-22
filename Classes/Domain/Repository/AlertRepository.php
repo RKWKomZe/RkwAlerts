@@ -15,15 +15,20 @@ namespace RKW\RkwAlerts\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwAlerts\Domain\Model\Alert;
+use RKW\RkwAlerts\Domain\Model\Project;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+
 /**
  * Class AlertRepository
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class AlertRepository extends AbstractRepository
 {
 
     /**
@@ -32,12 +37,9 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param \RKW\RkwAlerts\Domain\Model\Project $project
-     * @return object
+     * @return  \RKW\RkwAlerts\Domain\Model\Alert|null
      */
-    public function findOneByFrontendUserAndProject(
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
-        \RKW\RkwAlerts\Domain\Model\Project $project
-    )
+    public function findOneByFrontendUserAndProject(FrontendUser $frontendUser, Project $project):? Alert
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
@@ -58,7 +60,7 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findByFrontendUser($frontendUser)
+    public function findByFrontendUser(FrontendUser $frontendUser): QueryResultInterface
     {
 
         $query = $this->createQuery();
@@ -76,9 +78,9 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * findByProject
      *
      * @param \RKW\RkwAlerts\Domain\Model\Project $project
-     * @return object
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findByProject(\RKW\RkwAlerts\Domain\Model\Project $project)
+    public function findByProject(Project $project): QueryResultInterface
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
@@ -97,7 +99,7 @@ class AlertRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $uid
      * @return array
      */
-    public function findByIdentifierRaw($uid)
+    public function findByIdentifierRaw(int $uid): array
     {
 
         $query = $this->createQuery();

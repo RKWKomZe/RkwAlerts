@@ -5,7 +5,10 @@
 
         <f:comment><!-- Contents --></f:comment>
         <f:render partial="Alert/Introduction" section="Headline" arguments="{_all}"/>
+        
         <f:render partial="FlashMessages" arguments="{_all}" />
+        <f:render partial="FormErrors" arguments="{for:alert}"/>
+
         <f:render partial="Alert/Introduction" section="Body" arguments="{_all}"/>
         <f:render partial="Alert/Form" arguments="{_all}"/>
 

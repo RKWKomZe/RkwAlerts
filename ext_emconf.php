@@ -21,15 +21,16 @@ $EM_CONF[$_EXTKEY] = [
 	'uploadfolder' => '0',
 	'createDirs' => '',
 	'clearCacheOnLoad' => 0,
-	'version' => '8.7.0',
+	'version' => '9.5.0',
 	'constraints' => [
 		'depends' => [
-			'typo3' => '7.6.0-8.7.99',
-			'rkw_basics' => '8.7.12-8.7.99',
-            'rkw_ajax' => '8.7.55-8.7.99',
-            'rkw_mailer' => '8.7.25-8.7.99',
+			'typo3' => '9.5.0-9.5.99',
+            'core_extended' => '9.5.4-9.5.99',
+            'ajax_api' => '9.5.0-9.5.99',
+            'rkw_mailer' => '8.7.55-8.7.99',
 			'rkw_registration' => '8.7.0-8.7.99',
 			'rkw_projects' => '8.7.0-8.7.99',
+            'sr_freecap' => '2.5.0-2.5.99'
 		],
 		'conflicts' => [
 		],

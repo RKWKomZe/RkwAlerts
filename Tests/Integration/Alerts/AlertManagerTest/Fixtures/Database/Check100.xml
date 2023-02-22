@@ -15,10 +15,10 @@
         <tx_rkwalerts_enable_alerts>1</tx_rkwalerts_enable_alerts>
     </tx_rkwprojects_domain_model_projects>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>100</uid>
         <pid>1</pid>
         <project>100</project>
         <frontend_user>100</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 </dataset>

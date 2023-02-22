@@ -19,7 +19,7 @@ namespace RKW\RkwAlerts\Domain\Model;
  * Class Page
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -30,15 +30,15 @@ class Page extends \RKW\RkwProjects\Domain\Model\Pages
     /**
      * txRkwalertsSendStatus
      *
-     * @var integer
+     * @var int
      */
-    protected $txRkwalertsSendStatus = 0;
+    protected int $txRkwalertsSendStatus = 0;
 
 
     /**
      * Returns the txRkwalertsSendStatus
      *
-     * @return integer
+     * @return int
      */
     public function getTxRkwalertsSendStatus(): int
     {
@@ -48,10 +48,10 @@ class Page extends \RKW\RkwProjects\Domain\Model\Pages
     /**
      * Sets the txRkwalertsSendStatus
      *
-     * @param integer $txRkwalertsSendStatus
+     * @param int $txRkwalertsSendStatus
      * @return void
      */
-    public function setTxRkwalertsSendStatus($txRkwalertsSendStatus): void
+    public function setTxRkwalertsSendStatus(int $txRkwalertsSendStatus): void
     {
         $this->txRkwalertsSendStatus = $txRkwalertsSendStatus;
     }

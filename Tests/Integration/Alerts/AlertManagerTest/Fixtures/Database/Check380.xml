@@ -96,46 +96,46 @@
         <email>teste-email4@test.de</email>
     </fe_users>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>380</uid>
         <pid>1</pid>
         <project>380</project>
         <frontend_user>380</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>381</uid>
         <pid>1</pid>
         <project>380</project>
         <frontend_user>381</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>382</uid>
         <pid>1</pid>
         <project>381</project>
         <frontend_user>380</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>383</uid>
         <pid>1</pid>
         <project>381</project>
         <frontend_user>381</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>384</uid>
         <pid>1</pid>
         <project>381</project>
         <frontend_user>382</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>385</uid>
         <pid>1</pid>
         <project>381</project>
         <frontend_user>383</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
 </dataset>

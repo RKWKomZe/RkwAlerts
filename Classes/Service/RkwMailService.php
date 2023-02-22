@@ -2,12 +2,6 @@
 
 namespace RKW\RkwAlerts\Service;
 
-use RKW\RkwBasics\Utility\GeneralUtility;
-use RKW\RkwMailer\Service\MailService;
-use RKW\RkwMailer\Utility\FrontendLocalizationUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -21,11 +15,17 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Madj2k\CoreExtended\Utility\GeneralUtility;
+use RKW\RkwMailer\Service\MailService;
+use RKW\RkwMailer\Utility\FrontendLocalizationUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+
 /**
  * RkwMailService
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -36,7 +36,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * Handles opt-in event
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
      * @return void
      * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
@@ -45,8 +45,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function optInAlertUser(
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, 
-        \RKW\RkwRegistration\Domain\Model\Registration $registration = null
+        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
+        \RKW\RkwRegistration\Domain\Model\OptIn $optIn
     ): void  {
 
         // get settings
@@ -61,11 +61,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             // send new user an email with token
             $mailService->setTo($frontendUser, array(
                 'marker' => array(
-                    'tokenYes'     => $registration->getTokenYes(),
-                    'tokenNo'      => $registration->getTokenNo(),
-                    'userSha1'     => $registration->getUserSha1(),
                     'frontendUser' => $frontendUser,
-                    'registration' => $registration,
+                    'optIn'        => $optIn,
                     'pageUid'      => intval($GLOBALS['TSFE']->id),
                     'loginPid'     => intval($settingsDefault['loginPid']),
                 ),
@@ -89,6 +86,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
         }
     }
 
+
     /**
      * Handles confirmation
      *
@@ -103,7 +101,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function confirmAlertUser(
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
-        \RKW\RkwAlerts\Domain\Model\Alert $alert 
+        \RKW\RkwAlerts\Domain\Model\Alert $alert
     ): void  {
 
         // get settings
@@ -141,8 +139,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService->getQueueMail()->setHtmlTemplate('Email/ConfirmAlertUser');
             $mailService->send();
         }
-
     }
+
 
     /**
      * Handles canceling of all alerts of a user
@@ -195,8 +193,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService->getQueueMail()->setHtmlTemplate('Email/CancelAllUser');
             $mailService->send();
         }
-
     }
+
 
     /**
      * Returns TYPO3 settings
@@ -205,8 +203,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
+    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
-        return GeneralUtility::getTyposcriptConfiguration('Rkwalerts', $which);
+        return GeneralUtility::getTypoScriptConfiguration('Rkwalerts', $which);
     }
 }

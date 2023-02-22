@@ -8,33 +8,33 @@
         <email>teste-email@test.de</email>
     </fe_users>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>230</uid>
         <pid>1</pid>
         <project>0</project>
         <frontend_user>100</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>231</uid>
         <pid>1</pid>
         <project>0</project>
         <frontend_user>230</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>232</uid>
         <pid>1</pid>
         <project>0</project>
         <frontend_user>230</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>233</uid>
         <pid>1</pid>
         <project>0</project>
         <frontend_user>230</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
 
 

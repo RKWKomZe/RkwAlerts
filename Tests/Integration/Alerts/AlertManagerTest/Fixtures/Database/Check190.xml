@@ -15,12 +15,12 @@
         <email>teste-email@test.de</email>
     </fe_users>
 
-    <tx_rkwalerts_domain_model_alerts>
+    <tx_rkwalerts_domain_model_alert>
         <uid>190</uid>
         <pid>1</pid>
         <project>0</project>
         <frontend_user>190190</frontend_user>
-    </tx_rkwalerts_domain_model_alerts>
+    </tx_rkwalerts_domain_model_alert>
 
 
 </dataset>

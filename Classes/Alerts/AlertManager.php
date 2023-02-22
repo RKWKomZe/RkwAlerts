@@ -15,19 +15,29 @@ namespace RKW\RkwAlerts\Alerts;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwAlerts\Exception;
-use RKW\RkwBasics\Utility\FrontendLocalizationUtility;
-use RKW\RkwBasics\Utility\GeneralUtility;
-use RKW\RkwMailer\Service\MailService;
-use RKW\RkwRegistration\Tools\Registration;
+use RKW\RkwAlerts\Domain\Model\Project;
+use RKW\RkwAlerts\Domain\Repository\AlertRepository;
+use RKW\RkwAlerts\Domain\Repository\PageRepository;
+use RKW\RkwAlerts\Domain\Repository\ProjectRepository;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility as FrontendLocalizationUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
+use RKW\RkwMailer\Service\MailService;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Registration\FrontendUserRegistration;
+use RKW\RkwAlerts\Exception;
 
 /**
  * Class AlertManager
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -40,6 +50,7 @@ class AlertManager
      * @const string
      */
     const SIGNAL_AFTER_ALERT_CREATED = 'afterAlertCreated';
+
 
     /**
      * Signal name for use in ext_localconf.php
@@ -61,55 +72,56 @@ class AlertManager
      * alertRepository
      *
      * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $alertRepository;
+    protected AlertRepository $alertRepository;
 
     /**
      * pagesRepository
      *
      * @var \RKW\RkwAlerts\Domain\Repository\PageRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $pageRepository;
+    protected PageRepository $pageRepository;
 
     /**
      * projectsRepository
      *
      * @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $projectRepository;
+    protected ProjectRepository $projectRepository;
 
 
     /**
      * frontendUserRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $frontendUserRepository;
+    protected FrontendUserRepository $frontendUserRepository;
+
 
     /**
      * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $signalSlotDispatcher;
+    protected Dispatcher $signalSlotDispatcher;
 
 
     /**
      * Persistence Manager
      *
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $persistenceManager;
+    protected PersistenceManager $persistenceManager;
 
 
     /**
-     * @var \TYPO3\CMS\Core\Log\Logger
+     * @var \TYPO3\CMS\Core\Log\Logger|null
      */
-    protected $logger;
+    protected ?Logger $logger = null;
 
 
     /**
@@ -117,9 +129,9 @@ class AlertManager
      * alerts are activated for that project
      *
      * @param int $pid The page uid
-     * @return \RKW\RkwAlerts\Domain\Model\Project
+     * @return \RKW\RkwAlerts\Domain\Model\Project|null
      */
-    public function getSubscribableProjectByPageUid(int $pid)
+    public function getSubscribableProjectByPageUid(int $pid):? Project
     {
         /**
          * @var $page \RKW\RkwAlerts\Domain\Model\Page
@@ -161,6 +173,7 @@ class AlertManager
 
         return false;
     }
+
 
     /**
      * Checks if an email-address has subscribed to the given project
@@ -217,7 +230,6 @@ class AlertManager
     }
 
 
-
     /**
      * Create Alert
      *
@@ -225,8 +237,6 @@ class AlertManager
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
      * @param \TYPO3\CMS\Extbase\Mvc\Request|null $request
      * @param string $email
-     * @param bool $terms
-     * @param bool $privacy
      * @return int
      * @throws \RKW\RkwAlerts\Exception
      */
@@ -234,34 +244,20 @@ class AlertManager
         \TYPO3\CMS\Extbase\Mvc\Request $request,
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser = null,
-        $email = '',
-        $terms = false,
-        $privacy = false
-    ) : int
-    {
+        string $email = ''
+    ) : int  {
 
         // settings for logged-in users
         if (
             ($frontendUser)
             && (! $frontendUser->_isNew())
         ) {
-            $terms = true;
             $email = $frontendUser->getEmail();
         }
 
-        // check terms if user is not logged in
-        if (! $terms) {
-            throw new Exception('alertManager.error.acceptTerms');
-        }
-
-        // check privacy flag
-        if (! $privacy) {
-            throw new Exception('alertManager.error.acceptPrivacy');
-        }
-
         // check given e-mail
-        if (! \RKW\RkwRegistration\Tools\Registration::validEmail($email)) {
-            throw new Exception('alertManager.error.emailInvalid');
+        if (! \RKW\RkwRegistration\Utility\FrontendUserUtility::isEmailValid($email)) {
+            throw new Exception('alertManager.error.invalidEmail');
         }
 
         // check if alert has subscribable project
@@ -298,10 +294,11 @@ class AlertManager
                 if ($this->saveAlert($alert, $frontendUser)) {
 
                     // add privacy info
-                    \RKW\RkwRegistration\Tools\Privacy::addPrivacyData(
+                    \RKW\RkwRegistration\DataProtection\ConsentHandler::add(
                         $request,
                         $frontendUser,
-                        $alert, 'new alert'
+                        $alert,
+                        'new alert'
                     );
 
                     // log it
@@ -339,22 +336,20 @@ class AlertManager
             // register new user or simply send opt-in to existing user
             // we also submit the email as additional data to register-function since a logged in user
             // may use a different email and we have to update it after(!!!) opt-in!
-            /** @var \RKW\RkwRegistration\Tools\Registration $registration */
             try {
-                $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Registration::class);
-                $registration->register(
-                    array(
-                        'username' => $email,
-                        'email'    => $email,
-                    ),
-                    false,
-                    array(
-                        'alert' => $alert,
-                        'email' => $email,
-                    ),
-                    'rkwAlerts',
-                    $request
-                );
+
+                /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+                $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FrontendUser::class);
+                $frontendUser->setEmail($email);
+
+                /** @var \RKW\RkwRegistration\Registration\FrontendUserRegistration $registration */
+                $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+                $registration = $objectManager->get(FrontendUserRegistration::class);
+                $registration->setFrontendUser($frontendUser)
+                    ->setData($alert)
+                    ->setCategory('rkwAlerts')
+                    ->setRequest($request)
+                    ->startRegistration();
 
                 // log it
                 $this->getLogger()->log(
@@ -385,12 +380,11 @@ class AlertManager
     }
 
 
-
     /**
      * saveAlert
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
      * @return bool
      * @throws \RKW\RkwAlerts\Exception
      */
@@ -476,18 +470,17 @@ class AlertManager
      * Used by SignalSlot
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
      * @return void
      * @api Used by SignalSlot
      */
     public function saveAlertByRegistration(
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
-        \RKW\RkwRegistration\Domain\Model\Registration $registration
+        \RKW\RkwRegistration\Domain\Model\OptIn $optIn
     ) {
 
         if (
-            ($data = $registration->getData())
-            && ($alert = $data['alert'])
+            ($alert = $optIn->getData())
             && ($alert instanceof \RKW\RkwAlerts\Domain\Model\Alert)
         ) {
 
@@ -504,7 +497,7 @@ class AlertManager
      * deleteAlert
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
      * @return bool
      * @throws \RKW\RkwAlerts\Exception
      */
@@ -595,8 +588,7 @@ class AlertManager
         \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts,
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
         int &$counter = 0
-    ): bool
-    {
+    ): bool {
 
         $counter = 0;
         $status = true;
@@ -636,7 +628,6 @@ class AlertManager
     }
 
 
-
     /**
      * deleteAlertsByFrontendEndUser
      *
@@ -646,8 +637,7 @@ class AlertManager
      */
     public function deleteAlertsByFrontendEndUser (
         \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-    )
-    {
+    ) {
 
         try {
 
@@ -696,27 +686,24 @@ class AlertManager
     }
 
 
-
     /**
      * Gets an associative array with the projects to notify
      * and the pages to link to
      *
      * @param string $filterField
-     * @param integer $timeSinceCreation
+     * @param int $timeSinceCreation
      * @return array
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function getPagesAndProjectsToNotify(
         string $filterField,
         int $timeSinceCreation = 432000
-    ): array
-    {
+    ): array {
+
         $result = [];
 
         if ($pages = $this->pageRepository->findAllToNotify($filterField, $timeSinceCreation)) {
 
-
-            
             /**  @var \RKW\RkwAlerts\Domain\Model\Page $page */
             foreach ($pages as $page) {
 
@@ -751,18 +738,19 @@ class AlertManager
      * Sends the notifications
      *
      * @param string $filterField
-     * @param integer $timeSinceCreation
+     * @param int $timeSinceCreation
      * @param string $debugMail
      * @return int
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
     public function sendNotification(
         string $filterField,
         int $timeSinceCreation = 432000,
         string $debugMail = ''
-    ): int
-    {
+    ): int {
 
         // load projects to notify
         $recipientCountGlobal = 0;
@@ -804,7 +792,7 @@ class AlertManager
                                     if ($debugMail) {
                                         $recipient = ['email' => $debugMail];
                                     }
-                                    
+
                                     $mailService->setTo(
                                         $recipient,
                                         array(
@@ -887,7 +875,7 @@ class AlertManager
                                 $debugMail
                             )
                         );
-                        
+
                      // no matter what happens: mark pages as sent
                     } else {
                         /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
@@ -926,7 +914,7 @@ class AlertManager
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    protected function getLogger()
+    protected function getLogger(): Logger
     {
 
         if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {
@@ -944,9 +932,9 @@ class AlertManager
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
+    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
-        return GeneralUtility::getTyposcriptConfiguration('Rkwalerts', $which);
+        return GeneralUtility::getTypoScriptConfiguration('Rkwalerts', $which);
     }
 
 }
