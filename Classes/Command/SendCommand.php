@@ -31,6 +31,11 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  * class SendCommand
  *
  * Execute on CLI with: 'vendor/bin/typo3 rkw_alerts:send'
+ *
+ * @author Steffen Kroggel <developer@steffenkroggel.de>
+ * @copyright RKW Kompetenzzentrum
+ * @package RKW_RkwAlerts
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class SendCommand extends Command
 {
@@ -97,7 +102,7 @@ class SendCommand extends Command
      */
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        /** @var  TYPO3\CMS\Extbase\Object\ObjectManager$objectManager */
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->alertManager = $objectManager->get(AlertManager::class);
     }
