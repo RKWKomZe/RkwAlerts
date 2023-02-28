@@ -16,8 +16,8 @@ namespace RKW\RkwAlerts\Service;
  */
 
 use Madj2k\CoreExtended\Utility\GeneralUtility;
-use RKW\RkwMailer\Service\MailService;
-use RKW\RkwMailer\Utility\FrontendLocalizationUtility;
+use Madj2k\Postmaster\Service\MailService;
+use Madj2k\Postmaster\Utility\FrontendLocalizationUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -35,18 +35,18 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Handles opt-in event
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\OptIn $optIn
      * @return void
-     * @throws \RKW\RkwMailer\Exception
+     * @throws \Madj2k\Postmaster\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function optInAlertUser(
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
-        \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser,
+        \Madj2k\FeRegister\Domain\Model\OptIn $optIn
     ): void  {
 
         // get settings
@@ -55,7 +55,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
 
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
+            /** @var \Madj2k\Postmaster\Service\MailService $mailService */
             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
@@ -73,7 +73,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                     'rkwMailService.optInAlertUser.subject',
                     'rkw_alerts',
                     null,
-                    $frontendUser->getTxRkwregistrationLanguageKey()
+                    $frontendUser->getTxFeregisterLanguageKey()
                 )
             );
 
@@ -90,17 +90,17 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Handles confirmation
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
      * @return void
-     * @throws \RKW\RkwMailer\Exception
+     * @throws \Madj2k\Postmaster\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function confirmAlertUser(
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser,
         \RKW\RkwAlerts\Domain\Model\Alert $alert
     ): void  {
 
@@ -110,7 +110,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
 
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
+            /** @var \Madj2k\Postmaster\Service\MailService $mailService */
             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
@@ -128,7 +128,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                     'rkwMailService.confirmAlertUser.subject',
                     'rkw_alerts',
                     [$alert->getProject()->getName()],
-                    $frontendUser->getTxRkwregistrationLanguageKey()
+                    $frontendUser->getTxFeregisterLanguageKey()
                 )
             );
 
@@ -145,17 +145,17 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Handles canceling of all alerts of a user
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts
      * @return void
-     * @throws \RKW\RkwMailer\Exception
+     * @throws \Madj2k\Postmaster\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function cancelAllUser(
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser,
         QueryResultInterface $alerts
     ): void {
 
@@ -164,7 +164,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
         $settingsDefault = $this->getSettings();
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
+            /** @var \Madj2k\Postmaster\Service\MailService $mailService */
             $mailService = GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
@@ -182,7 +182,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                     'rkwMailService.cancelAllUser.subject',
                     'rkw_alerts',
                     null,
-                    $frontendUser->getTxRkwregistrationLanguageKey()
+                    $frontendUser->getTxFeregisterLanguageKey()
                 )
             );
 

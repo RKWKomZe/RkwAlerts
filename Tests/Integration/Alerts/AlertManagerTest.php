@@ -10,12 +10,12 @@ use RKW\RkwAlerts\Domain\Model\Project;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
 use RKW\RkwAlerts\Domain\Repository\PageRepository;
 use RKW\RkwAlerts\Domain\Repository\ProjectRepository;
-use RKW\RkwMailer\Domain\Repository\QueueMailRepository;
-use RKW\RkwMailer\Domain\Repository\QueueRecipientRepository;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Model\OptIn;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use RKW\RkwRegistration\Domain\Repository\OptInRepository;
+use Madj2k\Postmaster\Domain\Repository\QueueMailRepository;
+use Madj2k\Postmaster\Domain\Repository\QueueRecipientRepository;
+use Madj2k\FeRegister\Domain\Model\FrontendUser;
+use Madj2k\FeRegister\Domain\Model\OptIn;
+use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
+use Madj2k\FeRegister\Domain\Repository\OptInRepository;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -52,8 +52,8 @@ class AlertManagerTest extends FunctionalTestCase
      */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/core_extended',
-        'typo3conf/ext/rkw_registration',
-        'typo3conf/ext/rkw_mailer',
+        'typo3conf/ext/postmaster',
+        'typo3conf/ext/fe_register',
         'typo3conf/ext/rkw_authors',
         'typo3conf/ext/rkw_projects',
         'typo3conf/ext/rkw_alerts',
@@ -79,7 +79,7 @@ class AlertManagerTest extends FunctionalTestCase
 
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
+     * @var \Madj2k\FeRegister\Domain\Repository\FrontendUserRepository|null
      */
     private ?FrontendUserRepository $frontendUserRepository = null;
 
@@ -97,19 +97,19 @@ class AlertManagerTest extends FunctionalTestCase
 
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository|null
+     * @var \Madj2k\FeRegister\Domain\Repository\OptInRepository|null
      */
     private ?OptInRepository $optInRepository = null;
 
 
     /**
-     * @var \RKW\RkwMailer\Domain\Repository\QueueMailRepository|null
+     * @var \Madj2k\Postmaster\Domain\Repository\QueueMailRepository|null
      */
     private ?QueueMailRepository $queueMailRepository = null;
 
 
     /**
-     * @var \RKW\RkwMailer\Domain\Repository\QueueRecipientRepository|null
+     * @var \Madj2k\Postmaster\Domain\Repository\QueueRecipientRepository|null
      */
     private ?QueueRecipientRepository $queueRecipientRepository = null;
 
@@ -140,7 +140,7 @@ class AlertManagerTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        // defaults for rkw_mailer
+        // defaults for postmaster
         $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromAddress'] = 'service@rkw.de';
         $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromName'] = 'RKW';
 
@@ -149,8 +149,8 @@ class AlertManagerTest extends FunctionalTestCase
             1,
             [
                 'EXT:rkw_coreextended/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_mailer/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
+                'EXT:postmaster/Configuration/TypoScript/setup.txt',
+                'EXT:fe_register/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_authors/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_projects/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_alerts/Configuration/TypoScript/setup.txt',
@@ -282,8 +282,8 @@ class AlertManagerTest extends FunctionalTestCase
          */
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check40.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $feUser */
-        $feUser = $this->objectManager->get(\RKW\RkwRegistration\Domain\Model\FrontendUser::class);
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $feUser */
+        $feUser = $this->objectManager->get(\Madj2k\FeRegister\Domain\Model\FrontendUser::class);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
         $project = $this->projectRepository->findByIdentifier(40);
@@ -309,7 +309,7 @@ class AlertManagerTest extends FunctionalTestCase
          */
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check50.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $feUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $feUser */
         $feUser = $this->frontendUserRepository->findByIdentifier(50);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
@@ -338,7 +338,7 @@ class AlertManagerTest extends FunctionalTestCase
          */
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check60.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $feUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $feUser */
         $feUser = $this->frontendUserRepository->findByIdentifier(60);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
@@ -449,7 +449,7 @@ class AlertManagerTest extends FunctionalTestCase
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check80.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(80);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */
@@ -559,7 +559,7 @@ class AlertManagerTest extends FunctionalTestCase
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check100.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(100);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
@@ -599,7 +599,7 @@ class AlertManagerTest extends FunctionalTestCase
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check110.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(110);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
@@ -656,7 +656,7 @@ class AlertManagerTest extends FunctionalTestCase
         $result = $this->subject->createAlert($request, $alert, null, 'valid@email.de');
         self::assertEquals(2, $result);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
+        /** @var \Madj2k\FeRegister\Domain\Model\OptIn $optIn */
         $optIn = $this->optInRepository->findByIdentifier(1);
         self::assertInstanceOf(OptIn::class, $optIn);
         self::assertEquals($optIn->getCategory(), 'rkwAlerts');
@@ -713,7 +713,7 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */
         $alert = GeneralUtility::makeInstance(Alert::class);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
 
         static::expectException(\RKW\RkwAlerts\Exception::class);
@@ -745,7 +745,7 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */
         $alert = $this->alertRepository->findByIdentifier(130);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(130);
 
         static::expectException(\RKW\RkwAlerts\Exception::class);
@@ -783,7 +783,7 @@ class AlertManagerTest extends FunctionalTestCase
         $alert = GeneralUtility::makeInstance(Alert::class);
         $alert->setProject($project);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(140);
 
         static::expectException(\RKW\RkwAlerts\Exception::class);
@@ -822,7 +822,7 @@ class AlertManagerTest extends FunctionalTestCase
         $alert = GeneralUtility::makeInstance(Alert::class);
         $alert->setProject($project);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(150);
 
         static::expectException(\RKW\RkwAlerts\Exception::class);
@@ -860,7 +860,7 @@ class AlertManagerTest extends FunctionalTestCase
         $alert = GeneralUtility::makeInstance(Alert::class);
         $alert->setProject($project);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(160);
 
         $result = $this->subject->saveAlert($alert, $frontendUser);
@@ -894,7 +894,7 @@ class AlertManagerTest extends FunctionalTestCase
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check210.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(210);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
@@ -908,7 +908,7 @@ class AlertManagerTest extends FunctionalTestCase
             'test' => $alert
         ];
 
-        /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
+        /** @var \Madj2k\FeRegister\Domain\Model\OptIn $optIn */
         $optIn = GeneralUtility::makeInstance(OptIn::class);
         $optIn->setData($data);
 
@@ -938,14 +938,14 @@ class AlertManagerTest extends FunctionalTestCase
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check210.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(210);
 
         $data = [
             'alert' => $frontendUser
         ];
 
-        /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
+        /** @var \Madj2k\FeRegister\Domain\Model\OptIn $optIn */
         $optIn = GeneralUtility::makeInstance(OptIn::class);
         $optIn->setData($data);
 
@@ -977,7 +977,7 @@ class AlertManagerTest extends FunctionalTestCase
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check220.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(220);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
@@ -991,7 +991,7 @@ class AlertManagerTest extends FunctionalTestCase
             'alert' => $alert
         ];
 
-        /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
+        /** @var \Madj2k\FeRegister\Domain\Model\OptIn $optIn */
         $optIn = GeneralUtility::makeInstance(OptIn::class);
         $optIn->setData($data);
 
@@ -1058,7 +1058,7 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */
         $alert = $this->alertRepository->findByIdentifier(170);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
 
         static::expectException(\RKW\RkwAlerts\Exception::class);
@@ -1091,7 +1091,7 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */
         $alert = GeneralUtility::makeInstance(Alert::class);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(180);
 
         static::expectException(\RKW\RkwAlerts\Exception::class);
@@ -1125,7 +1125,7 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */
         $alert = $this->alertRepository->findByIdentifier(190);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(190);
 
         static::expectException(\RKW\RkwAlerts\Exception::class);
@@ -1158,7 +1158,7 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */
         $alert = $this->alertRepository->findByIdentifier(200);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(200);
 
         $result = $this->subject->deleteAlert($alert, $frontendUser);
@@ -1190,7 +1190,7 @@ class AlertManagerTest extends FunctionalTestCase
          */
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check200.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(200);
         $this->frontendUserRepository->remove($frontendUser);
         $this->persistenceManager->persistAll();
@@ -1230,7 +1230,7 @@ class AlertManagerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check230.xml');
 
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(230);
 
         /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts */
@@ -1274,7 +1274,7 @@ class AlertManagerTest extends FunctionalTestCase
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check240.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(240);
 
         /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts */
@@ -1309,7 +1309,7 @@ class AlertManagerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check250.xml');
 
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(250);
 
         /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts */
@@ -1357,7 +1357,7 @@ class AlertManagerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check270.xml');
 
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(270);
 
         $this->subject->deleteAlertsByFrontendEndUser($frontendUser);
@@ -2177,7 +2177,7 @@ class AlertManagerTest extends FunctionalTestCase
         self::assertCount(1, $queueRecipients);
 
         $queueRecipients = $this->queueRecipientRepository->findAll();
-        /**  @var  \RKW\RkwMailer\Domain\Model\QueueRecipient $queueRecipient */
+        /**  @var  \Madj2k\Postmaster\Domain\Model\QueueRecipient $queueRecipient */
         foreach ($queueRecipients as $queueRecipient) {
             self::assertEquals('debugmode@rkw.de', $queueRecipient->getEmail());
         }

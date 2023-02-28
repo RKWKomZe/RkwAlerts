@@ -19,7 +19,7 @@ use RKW\RkwAlerts\Domain\Model\Project;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
 use RKW\RkwAlerts\Domain\Repository\PageRepository;
 use RKW\RkwAlerts\Domain\Repository\ProjectRepository;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
@@ -28,9 +28,9 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use Madj2k\CoreExtended\Utility\GeneralUtility;
-use RKW\RkwMailer\Service\MailService;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Registration\FrontendUserRegistration;
+use Madj2k\Postmaster\Service\MailService;
+use Madj2k\FeRegister\Domain\Model\FrontendUser;
+use Madj2k\FeRegister\Registration\FrontendUserRegistration;
 use RKW\RkwAlerts\Exception;
 
 /**
@@ -96,7 +96,7 @@ class AlertManager
     /**
      * frontendUserRepository
      *
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @var \Madj2k\FeRegister\Domain\Repository\FrontendUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected FrontendUserRepository $frontendUserRepository;
@@ -154,12 +154,12 @@ class AlertManager
     /**
      * Checks if frontend user has subscribed to the given project
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @param \RKW\RkwAlerts\Domain\Model\Project $project
      * @return bool
      */
     public function hasFrontendUserSubscribedToProject (
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser,
         \RKW\RkwAlerts\Domain\Model\Project $project
     ): bool {
 
@@ -234,7 +234,7 @@ class AlertManager
      * Create Alert
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser|null $frontendUser
      * @param \TYPO3\CMS\Extbase\Mvc\Request|null $request
      * @param string $email
      * @return int
@@ -243,7 +243,7 @@ class AlertManager
     public function createAlert (
         \TYPO3\CMS\Extbase\Mvc\Request $request,
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser = null,
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser = null,
         string $email = ''
     ) : int  {
 
@@ -256,7 +256,7 @@ class AlertManager
         }
 
         // check given e-mail
-        if (! \RKW\RkwRegistration\Utility\FrontendUserUtility::isEmailValid($email)) {
+        if (! \Madj2k\FeRegister\Utility\FrontendUserUtility::isEmailValid($email)) {
             throw new Exception('alertManager.error.invalidEmail');
         }
 
@@ -294,7 +294,7 @@ class AlertManager
                 if ($this->saveAlert($alert, $frontendUser)) {
 
                     // add privacy info
-                    \RKW\RkwRegistration\DataProtection\ConsentHandler::add(
+                    \Madj2k\FeRegister\DataProtection\ConsentHandler::add(
                         $request,
                         $frontendUser,
                         $alert,
@@ -338,11 +338,11 @@ class AlertManager
             // may use a different email and we have to update it after(!!!) opt-in!
             try {
 
-                /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+                /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
                 $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FrontendUser::class);
                 $frontendUser->setEmail($email);
 
-                /** @var \RKW\RkwRegistration\Registration\FrontendUserRegistration $registration */
+                /** @var \Madj2k\FeRegister\Registration\FrontendUserRegistration $registration */
                 $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
                 $registration = $objectManager->get(FrontendUserRegistration::class);
                 $registration->setFrontendUser($frontendUser)
@@ -384,13 +384,13 @@ class AlertManager
      * saveAlert
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser|null $frontendUser
      * @return bool
      * @throws \RKW\RkwAlerts\Exception
      */
     public function saveAlert (
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser = null
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser = null
     ): bool {
 
         // check frontendUser
@@ -469,14 +469,14 @@ class AlertManager
      * Save alert by registration
      * Used by SignalSlot
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\OptIn $optIn
      * @return void
      * @api Used by SignalSlot
      */
     public function saveAlertByRegistration(
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
-        \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser,
+        \Madj2k\FeRegister\Domain\Model\OptIn $optIn
     ) {
 
         if (
@@ -497,13 +497,13 @@ class AlertManager
      * deleteAlert
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser|null $frontendUser
      * @return bool
      * @throws \RKW\RkwAlerts\Exception
      */
     public function deleteAlert (
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser = null
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser = null
     ): bool {
 
         // check frontendUser
@@ -580,13 +580,13 @@ class AlertManager
      * deleteAlerts
      *
      * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @param int $counter
      * @return bool
      */
     public function deleteAlerts (
         \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts,
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser,
         int &$counter = 0
     ): bool {
 
@@ -631,12 +631,12 @@ class AlertManager
     /**
      * deleteAlertsByFrontendEndUser
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @return void
      * @api Used by SignalSlot
      */
     public function deleteAlertsByFrontendEndUser (
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
     ) {
 
         try {
@@ -775,7 +775,7 @@ class AlertManager
 
                         try {
 
-                            /** @var \RKW\RkwMailer\Service\MailService $mailService */
+                            /** @var \Madj2k\Postmaster\Service\MailService $mailService */
                             $mailService = GeneralUtility::makeInstance(MailService::class);
 
                             // set recipients
@@ -785,7 +785,7 @@ class AlertManager
                                 // check if FE-User exists
                                 if (
                                     ($frontendUser = $alert->getFrontendUser())
-                                    && ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser)
+                                    && ($frontendUser instanceof \Madj2k\FeRegister\Domain\Model\FrontendUser)
                                 ) {
 
                                     $recipient = $frontendUser;
@@ -806,7 +806,7 @@ class AlertManager
                                                 'rkwMailService.sendAlert.subject',
                                                 'rkw_alerts',
                                                 [$project->getName()],
-                                                $frontendUser->getTxRkwregistrationLanguageKey() ? $frontendUser->getTxRkwregistrationLanguageKey() : 'default'
+                                                $frontendUser->getTxFeregisterLanguageKey() ? $frontendUser->getTxFeregisterLanguageKey() : 'default'
                                             ),
                                         )
                                     );

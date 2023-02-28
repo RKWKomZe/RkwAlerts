@@ -16,7 +16,7 @@
         <template class="ajax" id="tx-rkwalerts-ajax"></template>
         <f:if condition="! {ajaxHelper.isPostCall}">
             <script type="text/javascript">
-              var txRkwAlertsAjaxUrl = "{f:uri.action(action:'new', absolute:'1', additionalParams:'{rkw_ajax : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1,2\\\'}\'}') -> f:format.raw()}";
+              var txRkwAlertsAjaxUrl = "{f:uri.action(action:'new', absolute:'1', additionalParams:'{ajax_api : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1,2\\\'}\'}') -> f:format.raw()}";
               if (document.cookie.indexOf('fe_typo_user=') > -1) {
                 document.getElementById('tx-rkwalerts-ajax').setAttribute('data-ajax-url', txRkwAlertsAjaxUrl);
               }
