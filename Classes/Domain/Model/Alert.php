@@ -16,7 +16,7 @@ namespace RKW\RkwAlerts\Domain\Model;
  */
 
 use SJBR\SrFreecap\Validation\Validator\CaptchaValidator;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use Madj2k\FeRegister\Domain\Model\FrontendUser;
 
 /**
  * Class Alert
@@ -32,7 +32,7 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * frontendUser
      *
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
+     * @var \Madj2k\FeRegister\Domain\Model\FrontendUser|null
      */
     protected ?FrontendUser $frontendUser = null;
 
@@ -55,7 +55,7 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the frontendUser
      *
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @return \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      */
     public function getFrontendUser():? FrontendUser
     {
@@ -66,10 +66,10 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the frontendUser
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @return void
      */
-    public function setFrontendUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser): void
+    public function setFrontendUser(\Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser): void
     {
         $this->frontendUser = $frontendUser;
     }

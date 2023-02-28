@@ -1,31 +1,31 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-	xmlns:rkwMailer="http://typo3.org/ns/RKW/RkwMailer/ViewHelpers"
+	xmlns:postmaster="http://typo3.org/ns/Madj2k/Postmaster/ViewHelpers"
 	data-namespace-typo3-fluid="true">
 
 	<f:layout name="Email/{mailType}" />
 
 	<!-- PLAINTEXT -->
-	<f:section name="Plaintext"><rkwMailer:email.plaintextLineBreaks>
-	<rkwMailer:email.translate key="templates_email_cancelAllUser.headline" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"  />\n\n
+	<f:section name="Plaintext"><postmaster:email.plaintextLineBreaks>
+	<postmaster:email.translate key="templates_email_cancelAllUser.headline" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts"  />\n\n
 
-	<rkwMailer:email.translate key="templates_email_cancelAllUser.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" />\n\n
+	<postmaster:email.translate key="templates_email_cancelAllUser.text1" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" />\n\n
 
 	<f:for each="{alerts}" as="alert">
 	* {alert.project.name}\n
 	</f:for>\n
 
-	<rkwMailer:email.translate key="templates_email_cancelAllUser.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" />
-</rkwMailer:email.plaintextLineBreaks></f:section>
+	<postmaster:email.translate key="templates_email_cancelAllUser.text2" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" />
+</postmaster:email.plaintextLineBreaks></f:section>
 
 	<!-- HTML -->
 	<f:section name="Html">
-		<h1><rkwMailer:email.translate key="templates_email_cancelAllUser.headline" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" /></h1>
-		<p><rkwMailer:email.translate key="templates_email_cancelAllUser.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" /></p>
+		<h1><postmaster:email.translate key="templates_email_cancelAllUser.headline" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" /></h1>
+		<p><postmaster:email.translate key="templates_email_cancelAllUser.text1" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" /></p>
 		<ul>
 			<f:for each="{alerts}" as="alert">
 				<li>{alert.project.name}</li>
 			</f:for>
 		</ul>
-		<p><rkwMailer:email.translate key="templates_email_cancelAllUser.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts" /></p>
+		<p><postmaster:email.translate key="templates_email_cancelAllUser.text2" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" /></p>
 	</f:section>
 </html>

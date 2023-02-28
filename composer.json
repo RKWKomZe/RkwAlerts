@@ -22,8 +22,8 @@
 		"sjbr/sr-freecap": "~2.5.0",
 		"madj2k/t3-core-extended": "~9.5.4",
 		"madj2k/t3-ajax-api": "~9.5.0",
-        "rkw/rkw-mailer": "~9.5.0",
-        "rkw/rkw-registration": "~9.5.0",
+        "madj2k/t3-postmaster": "~9.5.0",
+        "madj2k/t3-fe-register": "~9.5.0",
 	    "rkw/rkw-projects": "~9.5.0"
     },
     "autoload": {

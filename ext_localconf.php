@@ -29,15 +29,15 @@ call_user_func(
          */
         $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
         $signalSlotDispatcher->connect(
-            RKW\RkwRegistration\Registration\AbstractRegistration::class,
-            RKW\RkwRegistration\Registration\AbstractRegistration::SIGNAL_AFTER_CREATING_OPTIN  . 'RkwAlerts',
+            Madj2k\FeRegister\Registration\AbstractRegistration::class,
+            Madj2k\FeRegister\Registration\AbstractRegistration::SIGNAL_AFTER_CREATING_OPTIN  . 'RkwAlerts',
             RKW\RkwAlerts\Service\RkwMailService::class,
             'optInAlertUser'
         );
 
         $signalSlotDispatcher->connect(
-            RKW\RkwRegistration\Registration\AbstractRegistration::class,
-            RKW\RkwRegistration\Registration\AbstractRegistration::SIGNAL_AFTER_REGISTRATION_COMPLETED . 'RkwAlerts',
+            Madj2k\FeRegister\Registration\AbstractRegistration::class,
+            Madj2k\FeRegister\Registration\AbstractRegistration::SIGNAL_AFTER_REGISTRATION_COMPLETED . 'RkwAlerts',
             RKW\RkwAlerts\Alerts\AlertManager::class,
             'saveAlertByRegistration'
         );
@@ -50,8 +50,8 @@ call_user_func(
         );
 
         $signalSlotDispatcher->connect(
-            RKW\RkwRegistration\Registration\AbstractRegistration::class,
-            RKW\RkwRegistration\Registration\AbstractRegistration::SIGNAL_AFTER_REGISTRATION_ENDED,
+            Madj2k\FeRegister\Registration\AbstractRegistration::class,
+            Madj2k\FeRegister\Registration\AbstractRegistration::SIGNAL_AFTER_REGISTRATION_ENDED,
             RKW\RkwAlerts\Alerts\AlertManager::class,
             'deleteAlertsByFrontendEndUser'
         );

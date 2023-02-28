@@ -16,10 +16,10 @@ namespace RKW\RkwAlerts\Controller;
 
 use RKW\RkwAlerts\Alerts\AlertManager;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use RKW\RkwRegistration\Registration\FrontendUserRegistration;
-use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use Madj2k\FeRegister\Domain\Model\FrontendUser;
+use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
+use Madj2k\FeRegister\Registration\FrontendUserRegistration;
+use Madj2k\FeRegister\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -40,7 +40,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
     /**
      * logged in FrontendUser
      *
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
+     * @var \Madj2k\FeRegister\Domain\Model\FrontendUser|null
      */
     protected ?FrontendUser $frontendUser = null;
 
@@ -48,7 +48,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
     /**
      * FrontendUserRepository
      *
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @var \Madj2k\FeRegister\Domain\Repository\FrontendUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected FrontendUserRepository $frontendUserRepository;
@@ -162,7 +162,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
             ){
 
                 // check if alert already exists when user is logged in
-                /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser */
+                /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser */
                 if (
                     ($frontendUser)
                     && ($this->alertManager->hasFrontendUserSubscribedToProject($frontendUser, $project))
@@ -205,9 +205,9 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\TermsValidator", param="alert")
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\PrivacyValidator", param="alert")
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\MarketingValidator", param="alert")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\Madj2k\FeRegister\Validation\Consent\TermsValidator", param="alert")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\Madj2k\FeRegister\Validation\Consent\PrivacyValidator", param="alert")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\Madj2k\FeRegister\Validation\Consent\MarketingValidator", param="alert")
      */
     public function createAction(
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
@@ -272,7 +272,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @param string $tokenUser
      * @param string $token
      * @return void
-     * @throws \RKW\RkwRegistration\Exception
+     * @throws \Madj2k\FeRegister\Exception
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
@@ -289,7 +289,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      */
     public function optInAction(string $tokenUser, string $token): void
     {
-        /** @var \RKW\RkwRegistration\Registration\FrontendUserRegistration $registration */
+        /** @var \Madj2k\FeRegister\Registration\FrontendUserRegistration $registration */
         $registration = $this->objectManager->get(FrontendUserRegistration::class);
         $result = $registration->setFrontendUserToken($tokenUser)
             ->setCategory('rkwAlerts')
@@ -402,7 +402,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
     /**
      * Returns current logged in user object
      *
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null
+     * @return \Madj2k\FeRegister\Domain\Model\FrontendUser|null
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     protected function getFrontendUser() :? FrontendUser

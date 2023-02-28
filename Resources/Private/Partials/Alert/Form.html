@@ -1,5 +1,5 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-	xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
+	xmlns:feRegister="http://typo3.org/ns/Madj2k/FeRegister/ViewHelpers"
 	xmlns:ajaxApi="http://typo3.org/ns/Madj2k/AjaxApi/ViewHelpers"
 	data-namespace-typo3-fluid="true">
 
@@ -25,12 +25,12 @@
 							<div class="form__approval">
 								<f:if condition="{frontendUser}">
 									<f:then>
-                                        <rkwRegistration:consent  type="privacy" key="defaultAlternative" />
+                                        <feRegister:consent  type="privacy" key="defaultAlternative" />
 									</f:then>
 									<f:else>
-                                        <rkwRegistration:consent type="terms" />
-                                        <rkwRegistration:consent type="privacy" key="default" />
-                                        <rkwRegistration:consent type="marketing" />
+                                        <feRegister:consent type="terms" />
+                                        <feRegister:consent type="privacy" key="default" />
+                                        <feRegister:consent type="marketing" />
 									</f:else>
 								</f:if>
 

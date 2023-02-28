@@ -17,7 +17,7 @@ namespace RKW\RkwAlerts\Domain\Repository;
 
 use RKW\RkwAlerts\Domain\Model\Alert;
 use RKW\RkwAlerts\Domain\Model\Project;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use Madj2k\FeRegister\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
@@ -35,7 +35,7 @@ class AlertRepository extends AbstractRepository
      * findOneByFrontendUserAndProject
      * find one alert by frontendUser and project
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @param \RKW\RkwAlerts\Domain\Model\Project $project
      * @return  \RKW\RkwAlerts\Domain\Model\Alert|null
      */
@@ -57,7 +57,7 @@ class AlertRepository extends AbstractRepository
     /**
      * Find all alerts by frontend-user
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     public function findByFrontendUser(FrontendUser $frontendUser): QueryResultInterface
