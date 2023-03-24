@@ -6,28 +6,28 @@
 
 	<!-- PLAINTEXT -->
 	<f:section name="Plaintext"><postmaster:email.plaintextLineBreaks>
-	<postmaster:email.translate key="templates_email_optInAlertUser.headline" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" />\n\n
+	<postmaster:email.translate key="templates_email_optInAlertUser.headline" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" />\n\n
 
-	<postmaster:email.translate key="templates_email_optInAlertUser.text1" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" arguments="{0 : optIn.data.project.name}" />\n\n
+	<postmaster:email.translate key="templates_email_optInAlertUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : optIn.data.project.name}" />\n\n
 
-	<postmaster:email.translate key="templates_email_optInAlertUser.textOptIn" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" />\n
-	<postmaster:email.uri.action action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="rkwAlerts" absolute="true" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_rkwalerts: {token: optIn.tokenYes, tokenUser: optIn.tokenUser}}" section="rkw-alerts" />\n\n
+	<postmaster:email.translate key="templates_email_optInAlertUser.textOptIn" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" />\n
+	<postmaster:email.uri.action action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="create" absolute="true" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_create: {token: optIn.tokenYes, tokenUser: optIn.tokenUser}}" section="rkw-alerts" />\n\n
 
-	<postmaster:email.translate key="templates_email_optInAlertUser.textOptOut" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" />\n
-	<postmaster:email.uri.action action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="rkwAlerts" absolute="true" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_rkwalerts: {token: optIn.tokenNo, tokenUser: optIn.tokenUser}}" section="rkw-alerts" />
+	<postmaster:email.translate key="templates_email_optInAlertUser.textOptOut" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" />\n
+	<postmaster:email.uri.action action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="create" absolute="true" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_create: {token: optIn.tokenNo, tokenUser: optIn.tokenUser}}" section="rkw-alerts" />
 </postmaster:email.plaintextLineBreaks></f:section>
 
 	<!-- HTML -->
 	<f:section name="Html">
-		<h1><postmaster:email.translate key="templates_email_optInAlertUser.headline" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" /></h1>
-		<p><postmaster:email.translate key="templates_email_optInAlertUser.text1" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" arguments="{0 : optIn.data.project.name}"/></p>
+		<h1><postmaster:email.translate key="templates_email_optInAlertUser.headline" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" /></h1>
+		<p><postmaster:email.translate key="templates_email_optInAlertUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : optIn.data.project.name}"/></p>
 		<p>
-			<postmaster:email.translate key="templates_email_optInAlertUser.textOptIn" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts"/><br>
-			<a href="<postmaster:email.uri.action action='optIn' controller='Alert' extensionName='rkwAlerts' pluginName='rkwAlerts' absolute='true' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_rkwalerts: {token: optIn.tokenYes, tokenUser: optIn.tokenUser}}' section='rkw-alerts' />"><postmaster:email.translate key="templates_email_optInAlertUser.textOptInLinkLabel" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts"/></a>
+			<postmaster:email.translate key="templates_email_optInAlertUser.textOptIn" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts"/><br>
+			<a href="<postmaster:email.uri.action action='optIn' controller='Alert' extensionName='rkwAlerts' pluginName='create' absolute='true' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_create: {token: optIn.tokenYes, tokenUser: optIn.tokenUser}}' section='rkw-alerts' />"><postmaster:email.translate key="templates_email_optInAlertUser.textOptInLinkLabel" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts"/></a>
 		</p>
 		<p>
-			<postmaster:email.translate key="templates_email_optInAlertUser.textOptOut" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" /><br>
-			<a href="<postmaster:email.uri.action action='optIn' controller='Alert' extensionName='rkwAlerts' pluginName='rkwAlerts' absolute='true' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_rkwalerts: {token: optIn.tokenNo, tokenUser: optIn.tokenUser}}' section='rkw-alerts' />"><postmaster:email.translate key="templates_email_optInAlertUser.textOptOutLinkLabel" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts"/></a>
+			<postmaster:email.translate key="templates_email_optInAlertUser.textOptOut" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" /><br>
+			<a href="<postmaster:email.uri.action action='optIn' controller='Alert' extensionName='rkwAlerts' pluginName='create' absolute='true' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_create: {token: optIn.tokenNo, tokenUser: optIn.tokenUser}}' section='rkw-alerts' />"><postmaster:email.translate key="templates_email_optInAlertUser.textOptOutLinkLabel" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts"/></a>
 		</p>
 	</f:section>
 

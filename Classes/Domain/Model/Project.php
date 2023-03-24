@@ -27,8 +27,6 @@ class Project extends \RKW\RkwProjects\Domain\Model\Projects
 {
 
     /**
-     * txRkwalertsEnableAlerts
-     *
      * @var bool
      */
     protected bool $txRkwalertsEnableAlerts = false;
@@ -43,6 +41,7 @@ class Project extends \RKW\RkwProjects\Domain\Model\Projects
     {
         return $this->txRkwalertsEnableAlerts;
     }
+
 
     /**
      * Sets the txRkwalertsEnableAlerts

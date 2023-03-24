@@ -15,7 +15,7 @@ namespace RKW\RkwAlerts\Domain\Model;
  * The TYPO3 project - inspiring people to share!
  */
 
-use SJBR\SrFreecap\Validation\Validator\CaptchaValidator;
+use Madj2k\CoreExtended\Domain\Model\AbstractCaptcha;
 use Madj2k\FeRegister\Domain\Model\FrontendUser;
 
 /**
@@ -26,30 +26,20 @@ use Madj2k\FeRegister\Domain\Model\FrontendUser;
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Alert extends AbstractCaptcha
 {
 
     /**
-     * frontendUser
-     *
      * @var \Madj2k\FeRegister\Domain\Model\FrontendUser|null
      */
     protected ?FrontendUser $frontendUser = null;
 
 
     /**
-     * project
-     *
      * @var \RKW\RkwAlerts\Domain\Model\Project|null
      */
     protected ?Project $project = null;
 
-
-    /**
-     * @var string
-     * @validate \SJBR\SrFreecap\Validation\Validator\CaptchaValidator
-     */
-    protected string $captchaResponse = '';
 
 
     /**
@@ -95,27 +85,6 @@ class Alert extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function setProject(\RKW\RkwAlerts\Domain\Model\Project $project): void
     {
         $this->project = $project;
-    }
-
-
-    /**
-     * Sets the captchaResponse
-     *
-     * @param string $captchaResponse
-     * @return void
-     */
-    public function setCaptchaResponse(string $captchaResponse): void {
-        $this->captchaResponse = $captchaResponse;
-    }
-
-
-    /**
-     * Getter for captchaResponse
-     *
-     * @return string
-     */
-    public function getCaptchaResponse(): string {
-        return $this->captchaResponse;
     }
 
 }

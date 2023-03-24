@@ -1,20 +1,27 @@
 routeEnhancers:
   RkwAlerts:
     type: Extbase
-    namespace: 'tx_rkwalerts_rkwalerts'
+    namespace: 'tx_rkwalerts_create'
     routes:
-      - routePath: '/rkw-alerts/list'
-        _controller: 'Alert::list'
       - routePath: '/rkw-alerts/create'
         _controller: 'Alert::create'
-      - routePath: '/rkw-alerts/delete/{alert}'
-        _controller: 'Alert::delete'
-      - routePath: '/rkw-alerts/delete-confirm/{alert}'
-        _controller: 'Alert::deleteconfirm'
+      - routePath: '/rkw-alerts/newnoncached'
+        _controller: 'Alert::newNonCached'
       - routePath: '/rkw-alerts/optin/{tokenUser}/{token}'
         _controller: 'Alert::optIn'
     defaultController: 'Alert::list'
     requirements:
+      tokenUser: '[a-zA-Z0-9]{30}'
+      token: '[a-zA-Z0-9]{30}'
+  RkwAlerts1:
+    type: Extbase
+    namespace: 'tx_rkwalerts_edit'
+    routes:
+      - routePath: '/rkw-alerts/list'
+        _controller: 'Alert::list'
+      - routePath: '/rkw-alerts/delete/{alert}'
+        _controller: 'Alert::delete'
+      - routePath: '/rkw-alerts/delete-confirm/{alert}'
+        _controller: 'Alert::deleteconfirm'
+    requirements:
       alert: '[0-9]{1,10000}'
-      tokenUser: '[a-zA-Z0-9]{60}'
-      token: '[a-zA-Z0-9]{60}'

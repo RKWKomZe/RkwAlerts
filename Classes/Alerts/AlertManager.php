@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwAlerts\Alerts;
 
 /*
@@ -15,6 +14,8 @@ namespace RKW\RkwAlerts\Alerts;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Madj2k\FeRegister\Utility\FrontendUserSessionUtility;
+use Madj2k\Postmaster\Mail\MailMessage;
 use RKW\RkwAlerts\Domain\Model\Project;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
 use RKW\RkwAlerts\Domain\Repository\PageRepository;
@@ -28,7 +29,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use Madj2k\CoreExtended\Utility\GeneralUtility;
-use Madj2k\Postmaster\Service\MailService;
+use Madj2k\Postmaster\Mail\MailMassage;
 use Madj2k\FeRegister\Domain\Model\FrontendUser;
 use Madj2k\FeRegister\Registration\FrontendUserRegistration;
 use RKW\RkwAlerts\Exception;
@@ -76,6 +77,7 @@ class AlertManager
      */
     protected AlertRepository $alertRepository;
 
+
     /**
      * pagesRepository
      *
@@ -83,6 +85,7 @@ class AlertManager
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected PageRepository $pageRepository;
+
 
     /**
      * projectsRepository
@@ -239,6 +242,7 @@ class AlertManager
      * @param string $email
      * @return int
      * @throws \RKW\RkwAlerts\Exception
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public function createAlert (
         \TYPO3\CMS\Extbase\Mvc\Request $request,
@@ -281,6 +285,7 @@ class AlertManager
         if (
             ($frontendUser)
             && (! $frontendUser->_isNew())
+            && (FrontendUserSessionUtility::isUserLoggedIn($frontendUser))
         ) {
 
             // check if subscription exists already
@@ -775,8 +780,8 @@ class AlertManager
 
                         try {
 
-                            /** @var \Madj2k\Postmaster\Service\MailService $mailService */
-                            $mailService = GeneralUtility::makeInstance(MailService::class);
+                            /** @var \Madj2k\Postmaster\Mail\MailMessage $mailService */
+                            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailMessage::class);
 
                             // set recipients
                             /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */

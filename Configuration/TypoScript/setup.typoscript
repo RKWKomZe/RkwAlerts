@@ -2,7 +2,7 @@ config.tx_extbase{
     persistence{
         classes{
 
-			\RKW\RkwProjects\Domain\Model\Projects {
+			RKW\RkwProjects\Domain\Model\Projects {
 				subclasses {
 					Tx_RkwAlerts_Project = RKW\RkwAlerts\Domain\Model\Project
 				}
@@ -19,13 +19,13 @@ config.tx_extbase{
                 }
             }
 
-
 			\RKW\RkwProjects\Domain\Model\Pages {
 				subclasses {
 					Tx_RkwAlerts_Page = RKW\RkwAlerts\Domain\Model\Page
 
 				}
 			}
+
             RKW\RkwAlerts\Domain\Model\Page {
                 mapping {
                     tableName = pages
@@ -35,6 +35,12 @@ config.tx_extbase{
 					# if we do not set anything, all pages are found
 					recordType =
                 }
+            }
+
+            RKW\RkwAlerts\Domain\Model\Alert {
+
+                // storage for new records
+                newRecordStoragePid = {$plugin.tx_rkwalerts.persistence.newRecordStoragePid}
             }
     	}
     }
@@ -54,6 +60,7 @@ plugin.tx_rkwalerts {
         partialRootPaths {
             0 = EXT:rkw_alerts/Resources/Private/Partials/
             1 = {$plugin.tx_rkwalerts.view.partialRootPath}
+            2 = {$plugin.tx_coreextended.view.partialRootPath}
         }
     }
 
