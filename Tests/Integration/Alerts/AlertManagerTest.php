@@ -1,27 +1,6 @@
 <?php
 namespace RKW\RkwAlerts\Tests\Integration\Alerts;
 
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-
-use RKW\RkwAlerts\Alerts\AlertManager;
-use RKW\RkwAlerts\Domain\Model\Alert;
-use RKW\RkwAlerts\Domain\Model\Page;
-use RKW\RkwAlerts\Domain\Model\Project;
-use RKW\RkwAlerts\Domain\Repository\AlertRepository;
-use RKW\RkwAlerts\Domain\Repository\PageRepository;
-use RKW\RkwAlerts\Domain\Repository\ProjectRepository;
-use Madj2k\Postmaster\Domain\Repository\QueueMailRepository;
-use Madj2k\Postmaster\Domain\Repository\QueueRecipientRepository;
-use Madj2k\FeRegister\Domain\Model\FrontendUser;
-use Madj2k\FeRegister\Domain\Model\OptIn;
-use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
-use Madj2k\FeRegister\Domain\Repository\OptInRepository;
-use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -35,6 +14,28 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use RKW\RkwAlerts\Alerts\AlertManager;
+use RKW\RkwAlerts\Domain\Model\Alert;
+use RKW\RkwAlerts\Domain\Model\Page;
+use RKW\RkwAlerts\Domain\Model\Project;
+use RKW\RkwAlerts\Domain\Repository\AlertRepository;
+use RKW\RkwAlerts\Domain\Repository\PageRepository;
+use RKW\RkwAlerts\Domain\Repository\ProjectRepository;
+use Madj2k\Postmaster\Domain\Repository\QueueMailRepository;
+use Madj2k\Postmaster\Domain\Repository\QueueRecipientRepository;
+use Madj2k\FeRegister\Domain\Model\FrontendUser;
+use Madj2k\FeRegister\Domain\Model\OptIn;
+use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
+use Madj2k\FeRegister\Domain\Repository\FrontendUserGroupRepository;
+use Madj2k\FeRegister\Domain\Repository\OptInRepository;
+use Madj2k\FeRegister\Utility\FrontendUserSessionUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
+use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * AlertManagerTest
@@ -82,6 +83,12 @@ class AlertManagerTest extends FunctionalTestCase
      * @var \Madj2k\FeRegister\Domain\Repository\FrontendUserRepository|null
      */
     private ?FrontendUserRepository $frontendUserRepository = null;
+
+
+    /**
+     * @var \Madj2k\FeRegister\Domain\Repository\FrontendUserGroupRepository|null
+     */
+    private ?FrontendUserGroupRepository $frontendUserGroupRepository = null;
 
 
     /**
@@ -154,10 +161,12 @@ class AlertManagerTest extends FunctionalTestCase
                 'EXT:rkw_authors/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_projects/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_alerts/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_alerts/Tests/Functional/Alerts/Fixtures/Frontend/Configuration/Rootpage.typoscript',
-            ]
+                self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
+            ],
+            ['example.com' => self::FIXTURE_PATH .  '/Frontend/Configuration/config.yaml']
         );
 
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
 
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 
@@ -168,6 +177,7 @@ class AlertManagerTest extends FunctionalTestCase
 
         $this->alertRepository = $this->objectManager->get(AlertRepository::class);
         $this->frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
+        $this->frontendUserGroupRepository = $this->objectManager->get(FrontendUserGroupRepository::class);
         $this->pageRepository = $this->objectManager->get(PageRepository::class);
         $this->projectRepository = $this->objectManager->get(ProjectRepository::class);
         $this->optInRepository = $this->objectManager->get(OptInRepository::class);
@@ -602,6 +612,11 @@ class AlertManagerTest extends FunctionalTestCase
         /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(110);
 
+        /** @var \Madj2k\FeRegister\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(110);
+
+        FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup);
+
         /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
         $project = $this->projectRepository->findByIdentifier(110);
 
@@ -619,6 +634,7 @@ class AlertManagerTest extends FunctionalTestCase
         $dbAlert = $this->alertRepository->findByIdentifier(1);
         self::assertEquals($frontendUser->getUid(), $dbAlert->getFrontendUser()->getUid());
         self::assertEquals($project->getUid(), $dbAlert->getProject()->getUid());
+
 
     }
 
@@ -973,6 +989,8 @@ class AlertManagerTest extends FunctionalTestCase
          * Given the alert has a subscribable project set
          * When I call the method
          * Then the alert is persisted
+         * Then the project is referenced
+         * Then the storagePid of the extension is used
          */
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check220.xml');
@@ -987,20 +1005,19 @@ class AlertManagerTest extends FunctionalTestCase
         $alert = GeneralUtility::makeInstance(Alert::class);
         $alert->setProject($project);
 
-        $data = [
-            'alert' => $alert
-        ];
-
         /** @var \Madj2k\FeRegister\Domain\Model\OptIn $optIn */
         $optIn = GeneralUtility::makeInstance(OptIn::class);
-        $optIn->setData($data);
+        $optIn->setData($alert);
 
         $this->subject->saveAlertByRegistration($frontendUser, $optIn);
 
         /** @var \RKW\RkwAlerts\Domain\Model\Alert $dbAlert */
         $dbAlert = $this->alertRepository->findByIdentifier(1);
+
         self::assertEquals($frontendUser->getUid(), $dbAlert->getFrontendUser()->getUid());
         self::assertEquals($project->getUid(), $dbAlert->getProject()->getUid());
+        self::assertEquals(1, $dbAlert->getPid());
+
 
     }
 
@@ -2250,6 +2267,8 @@ class AlertManagerTest extends FunctionalTestCase
     protected function tearDown(): void
     {
         parent::tearDown();
+
+        FrontendSimulatorUtility::resetFrontendEnvironment();
     }
 
 

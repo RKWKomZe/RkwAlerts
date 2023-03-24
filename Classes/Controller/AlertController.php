@@ -14,6 +14,7 @@ namespace RKW\RkwAlerts\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Madj2k\FeRegister\Utility\FrontendUserUtility;
 use RKW\RkwAlerts\Alerts\AlertManager;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
 use Madj2k\FeRegister\Domain\Model\FrontendUser;
@@ -99,13 +100,14 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
     }
 
 
-     /**
+    /**
      * action new
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert|null $alert
      * @param string $email
      * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      * @return void
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public function newAction(
         \RKW\RkwAlerts\Domain\Model\Alert $alert = null,
@@ -124,6 +126,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @param string $email
      * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      * @return void
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public function newNonCachedAction(
         \RKW\RkwAlerts\Domain\Model\Alert $alert = null,
@@ -140,6 +143,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @param string $email
      * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      * @return void
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     protected function newActionBase (
         \RKW\RkwAlerts\Domain\Model\Alert $alert = null,
@@ -205,9 +209,10 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\Madj2k\FeRegister\Validation\Consent\TermsValidator", param="alert")
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\Madj2k\FeRegister\Validation\Consent\PrivacyValidator", param="alert")
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\Madj2k\FeRegister\Validation\Consent\MarketingValidator", param="alert")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("Madj2k\FeRegister\Validation\Consent\TermsValidator", param="alert")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("Madj2k\FeRegister\Validation\Consent\PrivacyValidator", param="alert")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("Madj2k\FeRegister\Validation\Consent\MarketingValidator", param="alert")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("Madj2k\CoreExtended\Validation\CaptchaValidator", param="alert")
      */
     public function createAction(
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
@@ -353,6 +358,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      */
     public function deleteAction(\RKW\RkwAlerts\Domain\Model\Alert $alert): void
     {
@@ -408,7 +414,14 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
     protected function getFrontendUser() :? FrontendUser
     {
         if (!$this->frontendUser) {
-            $this->frontendUser = FrontendUserSessionUtility::getLoggedInUser();
+
+            // get frontendUser - but NO guestUsers!
+            if (
+                ($frontendUser = FrontendUserSessionUtility::getLoggedInUser())
+                && (! FrontendUserUtility::isGuestUser($frontendUser))
+            ){
+                $this->frontendUser = $frontendUser;
+            }
         }
         return $this->frontendUser;
     }

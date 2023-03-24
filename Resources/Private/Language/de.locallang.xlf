@@ -207,17 +207,6 @@
             </trans-unit>
 
 
-            <!-- Partials/CaptchaElement.html-->
-            <trans-unit id="partials_captcha.spam_protection">
-                <source>Spam protection</source>
-                <target>Spam-Schutz</target>
-            </trans-unit>
-            <trans-unit id="partials_captcha.mandatory_field">
-                <source>Mandatory field</source>
-                <target>Pflichtfeld</target>
-            </trans-unit>
-
-
             <!-- Email- Subjects -->
             <trans-unit id="rkwMailService.optInAlertUser.subject">
                 <source>Confirmation for RKW Alerts</source>

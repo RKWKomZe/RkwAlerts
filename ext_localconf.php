@@ -10,13 +10,26 @@ call_user_func(
         //=================================================================
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
-            'Rkwalerts',
+            'Create',
             array(
-                'Alert' => 'new, newNonCached, list, create, delete, deleteconfirm, optIn',
+                'Alert' => 'new, newNonCached, create, optIn',
             ),
             // non-cacheable actions
             array(
-                'Alert' => 'newNonCached, list, create, delete, deleteconfirm, optIn',
+                'Alert' => 'newNonCached, create, optIn',
+            )
+        );
+
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'Edit',
+            array(
+                'Alert' => 'list, delete, deleteconfirm',
+            ),
+            // non-cacheable actions
+            array(
+                'Alert' => 'list, delete, deleteconfirm',
             )
         );
 
@@ -75,7 +88,7 @@ call_user_func(
                 // add a FileWriter
                 'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => array(
                     // configuration for the writer
-                    'logFile' => 'typo3temp/var/logs/tx_rkwalerts.log'
+                    'logFile' => \TYPO3\CMS\Core\Core\Environment::getVarPath()  . '/log/tx_rkwalerts.log'
                 )
             ),
         );

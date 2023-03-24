@@ -6,26 +6,26 @@
 
 	<!-- PLAINTEXT -->
 	<f:section name="Plaintext"><postmaster:email.plaintextLineBreaks>
-	<postmaster:email.translate key="templates_email_cancelAllUser.headline" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts"  />\n\n
-
-	<postmaster:email.translate key="templates_email_cancelAllUser.text1" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" />\n\n
-
-	<f:for each="{alerts}" as="alert">
-	* {alert.project.name}\n
-	</f:for>\n
-
-	<postmaster:email.translate key="templates_email_cancelAllUser.text2" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" />
-</postmaster:email.plaintextLineBreaks></f:section>
+        <postmaster:email.translate key="templates_email_cancelAllUser.headline" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts"  />\n\n
+    
+        <postmaster:email.translate key="templates_email_cancelAllUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" />\n\n
+    
+        <f:for each="{alerts}" as="alert">
+        * {alert.project.name}\n
+        </f:for>\n
+    
+        <postmaster:email.translate key="templates_email_cancelAllUser.text2" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" />
+    </postmaster:email.plaintextLineBreaks></f:section>
 
 	<!-- HTML -->
 	<f:section name="Html">
-		<h1><postmaster:email.translate key="templates_email_cancelAllUser.headline" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" /></h1>
-		<p><postmaster:email.translate key="templates_email_cancelAllUser.text1" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" /></p>
+		<h1><postmaster:email.translate key="templates_email_cancelAllUser.headline" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" /></h1>
+		<p><postmaster:email.translate key="templates_email_cancelAllUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" /></p>
 		<ul>
 			<f:for each="{alerts}" as="alert">
 				<li>{alert.project.name}</li>
 			</f:for>
 		</ul>
-		<p><postmaster:email.translate key="templates_email_cancelAllUser.text2" languageKey="{frontendUser.txFeregisterLanguageKey}" extensionName="rkwAlerts" /></p>
+		<p><postmaster:email.translate key="templates_email_cancelAllUser.text2" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" /></p>
 	</f:section>
 </html>

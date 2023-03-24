@@ -1,3 +1,11 @@
+config.tx_extbase{
+    persistence {
+        classes {
+            RKW\RkwAlerts\Domain\Model\Alert.newRecordStoragePid = 1
+        }
+    }
+}
+
 plugin.tx_rkwalerts  {
     persistence {
         storagePid = 1

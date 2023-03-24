@@ -28,8 +28,6 @@ class Page extends \RKW\RkwProjects\Domain\Model\Pages
 
 
     /**
-     * txRkwalertsSendStatus
-     *
      * @var int
      */
     protected int $txRkwalertsSendStatus = 0;

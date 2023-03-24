@@ -16,7 +16,8 @@ namespace RKW\RkwAlerts\Service;
  */
 
 use Madj2k\CoreExtended\Utility\GeneralUtility;
-use Madj2k\Postmaster\Service\MailService;
+use Madj2k\Postmaster\Mail\MailMassage;
+use Madj2k\Postmaster\Mail\MailMessage;
 use Madj2k\Postmaster\Utility\FrontendLocalizationUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -55,8 +56,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
 
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \Madj2k\Postmaster\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
+            /** @var \Madj2k\Postmaster\Mail\MailMessage $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailMessage::class);
 
             // send new user an email with token
             $mailService->setTo($frontendUser, array(
@@ -110,8 +111,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
 
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \Madj2k\Postmaster\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
+            /** @var \Madj2k\Postmaster\Mail\MailMessage $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailMessage::class);
 
             // send new user an email with token
             $mailService->setTo($frontendUser, array(
@@ -164,8 +165,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
         $settingsDefault = $this->getSettings();
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \Madj2k\Postmaster\Service\MailService $mailService */
-            $mailService = GeneralUtility::makeInstance(MailService::class);
+            /** @var \Madj2k\Postmaster\Mail\MailMessage $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailMessage::class);
 
             // send new user an email with token
             $mailService->setTo($frontendUser, array(

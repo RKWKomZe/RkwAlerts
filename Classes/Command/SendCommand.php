@@ -143,7 +143,7 @@ class SendCommand extends Command
             FrontendSimulatorUtility::simulateFrontendEnvironment($settingsPid);
 
             // send alerts
-            $result = (bool) $this->alertManager->sendNotification($filterField, $timeSinceCreation, $debugMail);
+            $this->alertManager->sendNotification($filterField, $timeSinceCreation, $debugMail);
 
             // reset frontend
             FrontendSimulatorUtility::resetFrontendEnvironment();
@@ -156,6 +156,7 @@ class SendCommand extends Command
 
             $io->error($message);
             $this->getLogger()->log(LogLevel::ERROR, $message);
+            $result = 1;
         }
 
         $io->writeln('Done');

@@ -29,12 +29,12 @@ $EM_CONF[$_EXTKEY] = [
             'ajax_api' => '9.5.0-9.5.99',
             'postmaster' => '8.7.55-8.7.99',
 			'fe_register' => '8.7.0-8.7.99',
-            'sr_freecap' => '2.5.0-2.5.99',
             'rkw_projects' => '8.7.0-8.7.99',
 		],
 		'conflicts' => [
 		],
 		'suggests' => [
-		],
+            'sr_freecap' => '2.5.0-2.5.99',
+        ],
 	],
 ];

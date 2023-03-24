@@ -12,13 +12,18 @@
         <f:render partial="Alert/Introduction" section="Body" arguments="{_all}"/>
         <f:render partial="Alert/Form" arguments="{_all}"/>
 
-        <f:comment><!-- Ajax-Call for logged in users. But only do an ajax-call if fe-cookie is set. --></f:comment>
-        <template class="ajax" id="tx-rkwalerts-ajax"></template>
+        <template
+            class="ajax"
+            id="tx-rkwalerts-ajax"
+            data-ajax-ignore="1"
+            data-ajax-url="{f:uri.action(action:'new', absolute:'1', additionalParams:'{ajax_api:\'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1,2\\\'}\'}') -> f:format.raw()}"
+        ></template>
+
+        <f:comment><!-- only do an ajax-call if not ajax-post has been done AND a fe-cookie is set. This is to reduce requests to the server--></f:comment>
         <f:if condition="! {ajaxHelper.isPostCall}">
             <script type="text/javascript">
-              var txRkwAlertsAjaxUrl = "{f:uri.action(action:'new', absolute:'1', additionalParams:'{ajax_api : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1,2\\\'}\'}') -> f:format.raw()}";
-              if (document.cookie.indexOf('fe_typo_user=') > -1) {
-                document.getElementById('tx-rkwalerts-ajax').setAttribute('data-ajax-url', txRkwAlertsAjaxUrl);
+              if (document.cookie.indexOf('fe_logged_in=') > -1) {
+                document.getElementById('tx-rkwalerts-ajax').setAttribute('data-ajax-ignore', 0);
               }
             </script>
         </f:if>
