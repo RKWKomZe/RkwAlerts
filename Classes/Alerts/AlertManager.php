@@ -352,6 +352,7 @@ class AlertManager
                 $registration = $objectManager->get(FrontendUserRegistration::class);
                 $registration->setFrontendUser($frontendUser)
                     ->setData($alert)
+                    ->setDataParent($alert->getProject())
                     ->setCategory('rkwAlerts')
                     ->setRequest($request)
                     ->startRegistration();
