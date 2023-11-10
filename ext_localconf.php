@@ -77,6 +77,35 @@ call_user_func(
         );
 
         //=================================================================
+        // Add XClasses for extending existing classes
+        //=================================================================
+        // for TYPO3 12+
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\RKW\RkwProjects\Domain\Model\Projects::class] = [
+            'className' => \RKW\RkwAlerts\Domain\Model\Project::class
+        ];
+
+        // for TYPO3 9.5 - 11.5 only, not required for TYPO3 12
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\Container\Container::class)
+            ->registerImplementation(
+                \RKW\RkwProjects\Domain\Model\Projects::class,
+                \RKW\RkwAlerts\Domain\Model\Project::class
+            );
+
+
+        // for TYPO3 12+
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\RKW\RkwProjects\Domain\Model\Pages::class] = [
+            'className' => \RKW\RkwAlerts\Domain\Model\Page::class
+        ];
+
+        // for TYPO3 9.5 - 11.5 only, not required for TYPO3 12
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\Container\Container::class)
+            ->registerImplementation(
+                \RKW\RkwProjects\Domain\Model\Pages::class,
+                \RKW\RkwAlerts\Domain\Model\Page::class
+            );
+
+
+        //=================================================================
         // Register Logger
         //=================================================================
         $GLOBALS['TYPO3_CONF_VARS']['LOG']['RKW']['RkwAlerts']['writerConfiguration'] = array(
@@ -94,6 +123,6 @@ call_user_func(
         );
 
     },
-    $_EXTKEY
+    'rkw_alerts'
 );
 

@@ -7,7 +7,7 @@ call_user_func(
         // Register Plugin
         //=================================================================
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-            'RKW.RkwAlerts',
+            $extKey,
             'Create',
             'RKW Alerts: Create'
         );
@@ -16,7 +16,7 @@ call_user_func(
         // Register Plugin
         //=================================================================
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-            'RKW.RkwAlerts',
+            $extKey,
             'Edit',
             'RKW Alerts: Edit'
         );
