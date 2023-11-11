@@ -104,6 +104,10 @@ call_user_func(
                 \RKW\RkwAlerts\Domain\Model\Page::class
             );
 
+        //=================================================================
+        // Register Hook
+        //=================================================================
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \RKW\RkwAlerts\Hooks\DataHandler::class;
 
         //=================================================================
         // Register Logger

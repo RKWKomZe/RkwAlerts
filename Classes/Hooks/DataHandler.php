@@ -28,27 +28,33 @@ use TYPO3\CMS\Core\SingletonInterface;
 class DataHandler implements SingletonInterface
 {
 
-
     /**
      * processDatamap_postProcessFieldArray
+     * Prevent copying alert send status
      *
      * @param string $status
      * @param string $table
-     * @param int $id
+     * @param string $id
      * @param array $fieldArray
-     * @param $reference
+     * @param object $reference
      * @return void
      */
-    function processDatamap_postProcessFieldArray(string $status, string $table, int $id, array &$fieldArray, &$reference)
-    {
+    public function processDatamap_postProcessFieldArray(
+        string $status,
+        string $table,
+        string $id,
+        array &$fieldArray,
+        object $reference
+    ): void {
 
-        if ($table === 'pages' && $status === 'new') {
-
-            // do not copy that flag!
-            if ($fieldArray['tx_rkwalerts_send_status']) {
-                $fieldArray['tx_rkwalerts_send_status'] = 0;
-            }
+        if (
+            $table === 'pages'
+            && $status === 'new'
+            && $fieldArray['tx_rkwalerts_send_status']
+        ) {
+            $fieldArray['tx_rkwalerts_send_status'] = 0;
         }
+
     }
 
 }
