@@ -52,7 +52,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @var \Madj2k\FeRegister\Domain\Repository\FrontendUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected FrontendUserRepository $frontendUserRepository;
+    protected ?FrontendUserRepository $frontendUserRepository  = null;
 
 
     /**
@@ -61,7 +61,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected AlertRepository $alertRepository;
+    protected ?AlertRepository $alertRepository = null;
 
 
     /**
@@ -70,13 +70,40 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @var \RKW\RkwAlerts\Alerts\AlertManager
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected ?AlertManager $alertManager;
+    protected ?AlertManager $alertManager  = null;
 
 
     /**
      * @var \TYPO3\CMS\Core\Log\Logger|null
      */
     protected ?Logger $logger = null;
+
+
+    /**
+     * @var \Madj2k\FeRegister\Domain\Repository\FrontendUserRepository
+     */
+    public function injectFrontendUserRepository (FrontendUserRepository $frontendUserRepository)
+    {
+        $this->frontendUserRepository= $frontendUserRepository;
+    }
+
+
+    /**
+     * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
+     */
+    public function injectAlertRepository (AlertRepository $alertRepository)
+    {
+        $this->alertRepository= $alertRepository;
+    }
+
+
+    /**
+     * @var \RKW\RkwAlerts\Alerts\AlertManager
+     */
+    public function injectAlertManager (AlertManager $alertManager)
+    {
+        $this->alertManager  = $alertManager;
+    }
 
 
     /**

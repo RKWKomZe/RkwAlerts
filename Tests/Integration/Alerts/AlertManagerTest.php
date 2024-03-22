@@ -52,6 +52,7 @@ class AlertManagerTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
+        'typo3conf/ext/ajax_api',
         'typo3conf/ext/core_extended',
         'typo3conf/ext/postmaster',
         'typo3conf/ext/fe_register',
@@ -1761,7 +1762,6 @@ class AlertManagerTest extends FunctionalTestCase
      */
     public function getPagesAndProjectsToNotifyReturnsPagesInGivenTimeframeOnlyWithCustomField ()
     {
-
         /**
          * Scenario:
          *
@@ -1869,6 +1869,7 @@ class AlertManagerTest extends FunctionalTestCase
          * Then the first 'pages'-sub-array contains two page-objects
          * Then the second 'pages'-sub-array contains three page-objects
          */
+
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check350.xml');
 
