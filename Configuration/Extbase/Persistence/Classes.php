@@ -7,5 +7,10 @@ return [
     ],
     \RKW\RkwAlerts\Domain\Model\Page::class => [
         'tableName' => 'pages',
+        'properties' => [
+            'lastUpdated' => [
+                'fieldName' => 'lastUpdated'
+            ],
+        ],
     ],
 ];

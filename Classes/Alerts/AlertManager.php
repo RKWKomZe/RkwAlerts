@@ -16,6 +16,7 @@ namespace RKW\RkwAlerts\Alerts;
 
 use Madj2k\FeRegister\Utility\FrontendUserSessionUtility;
 use Madj2k\Postmaster\Mail\MailMessage;
+use Madj2k\Postmaster\Tracking\ClickTracker;
 use RKW\RkwAlerts\Domain\Model\Project;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
 use RKW\RkwAlerts\Domain\Repository\PageRepository;
@@ -75,7 +76,7 @@ class AlertManager
      * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected AlertRepository $alertRepository;
+    protected ?AlertRepository $alertRepository = null;
 
 
     /**
@@ -84,7 +85,7 @@ class AlertManager
      * @var \RKW\RkwAlerts\Domain\Repository\PageRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected PageRepository $pageRepository;
+    protected ?PageRepository $pageRepository = null;
 
 
     /**
@@ -93,7 +94,7 @@ class AlertManager
      * @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected ProjectRepository $projectRepository;
+    protected ?ProjectRepository $projectRepository = null;
 
 
     /**
@@ -102,14 +103,14 @@ class AlertManager
      * @var \Madj2k\FeRegister\Domain\Repository\FrontendUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected FrontendUserRepository $frontendUserRepository;
+    protected ?FrontendUserRepository $frontendUserRepository = null;
 
 
     /**
      * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected Dispatcher $signalSlotDispatcher;
+    protected ?Dispatcher $signalSlotDispatcher = null;
 
 
     /**
@@ -118,13 +119,65 @@ class AlertManager
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected PersistenceManager $persistenceManager;
+    protected ?PersistenceManager $persistenceManager = null;
 
 
     /**
      * @var \TYPO3\CMS\Core\Log\Logger|null
      */
     protected ?Logger $logger = null;
+
+
+    /**
+     * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
+     */
+    public function injectAlertRepository (AlertRepository $alertRepository)
+    {
+        $this->alertRepository= $alertRepository;
+    }
+
+    /**
+     * @var \RKW\RkwAlerts\Domain\Repository\PageRepository
+     */
+    public function injectPageRepository (PageRepository $pageRepository)
+    {
+        $this->pageRepository= $pageRepository;
+    }
+
+    /**
+     * @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository
+     */
+    public function injectProjectRepository (ProjectRepository $projectRepository)
+    {
+        $this->projectRepository= $projectRepository;
+    }
+
+
+    /**
+     * @var \Madj2k\FeRegister\Domain\Repository\FrontendUserRepository
+     */
+    public function injectFrontendUserRepository (FrontendUserRepository $frontendUserRepository)
+    {
+        $this->frontendUserRepository= $frontendUserRepository;
+    }
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     */
+    public function injectDispatcher (Dispatcher $signalSlotDispatcher)
+    {
+        $this->signalSlotDispatcher = $signalSlotDispatcher;
+    }
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     */
+    public function injectPersistenceManager (PersistenceManager $persistenceManager)
+    {
+        $this->persistenceManager = $persistenceManager;
+    }
 
 
     /**
