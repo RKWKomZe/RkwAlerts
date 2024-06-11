@@ -20,18 +20,19 @@ $EM_CONF[$_EXTKEY] = [
 	'internal' => '',
 	'uploadfolder' => '0',
 	'clearCacheOnLoad' => 0,
-<<<<<<< Updated upstream
-	'version' => '9.5.0',
-=======
 	'version' => '9.5.1000',
->>>>>>> Stashed changes
 	'constraints' => [
 		'depends' => [
 			'typo3' => '10.4.0-10.4.99',
             'core_extended' => '10.4.0-12.4.99',
             'ajax_api' => '10.4.0-12.4.99',
+            'fe_register' => '10.4.0-12.4.99',
+            'tx_news' => '10.0.3-10.0.99',
+
+            // remove?
             'postmaster' => '10.4.0-12.4.99',
-			'fe_register' => '10.4.0-12.4.99',
+
+            // remove!
             'rkw_projects' => '10.4.0-12.4.99',
 		],
 		'conflicts' => [

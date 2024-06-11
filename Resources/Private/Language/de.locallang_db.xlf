@@ -5,22 +5,22 @@
 		<body>
 
 
-            <!-- tx_rkwalerts_domain_model_pages -->
-            <trans-unit id="tx_rkwalerts_domain_model_pages.tx_rkwalerts_send_status">
+            <!-- tx_rkwalerts_domain_model_news -->
+            <trans-unit id="tx_rkwalerts_domain_model_news.tx_rkwalerts_send_status">
                 <source>Alerts Send Status</source>
                 <target>RKW Alerts</target>
             </trans-unit>
-            <trans-unit id="tx_rkwalerts_domain_model_pages.tx_rkwalerts_send_status.I.sent">
+            <trans-unit id="tx_rkwalerts_domain_model_news.tx_rkwalerts_send_status.I.sent">
                 <source>Sent</source>
                 <target>versendet</target>
             </trans-unit>
 
 
-            <!-- tx_rkwprojects_domain_model_projects -->
-            <trans-unit id="tx_rkwprojects_domain_model_projects.tx_rkwalerts_enable_alerts">
+            <!-- tx_rkwalerts_domain_model_categories -->
+            <trans-unit id="tx_rkwalerts_domain_model_categories.tx_rkwalerts_enable_alerts">
                 <source>RKW Alerts</source>
             </trans-unit>
-            <trans-unit id="tx_rkwprojects_domain_model_projects.tx_rkwalerts_enable_alerts.I.enable">
+            <trans-unit id="tx_rkwalerts_domain_model_categories.tx_rkwalerts_enable_alerts.I.enable">
                 <source>Allow getting RKW Alerts for this project</source>
                 <target>RKW Alerts für dieses Projekt erlauben</target>
             </trans-unit>
@@ -35,9 +35,9 @@
 				<source>Frontend User</source>
                 <target>Frontend User</target>
 			</trans-unit>
-			<trans-unit id="tx_rkwalerts_domain_model_alert.project">
-				<source>Project</source>
-                <target>Thema / Projekt</target>
+			<trans-unit id="tx_rkwalerts_domain_model_alert.category">
+				<source>Category</source>
+                <target>Thema / Kategorie</target>
 			</trans-unit>
 
 
@@ -46,6 +46,11 @@
                 <source>Alerts</source>
                 <target>RKW Alerts</target>
             </trans-unit>
+            <trans-unit id="flexform.alerts.categories">
+                <source>Categories</source>
+                <target>Kategorien (Themen)</target>
+            </trans-unit>
+
             <trans-unit id="flexform.alerts.action">
                 <source>Action</source>
                 <target>Aktion</target>

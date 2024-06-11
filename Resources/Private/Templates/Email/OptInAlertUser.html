@@ -8,7 +8,7 @@
 	<f:section name="Plaintext"><postmaster:email.plaintextLineBreaks>
 	<postmaster:email.translate key="templates_email_optInAlertUser.headline" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" />\n\n
 
-	<postmaster:email.translate key="templates_email_optInAlertUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : optIn.data.project.name}" />\n\n
+	<postmaster:email.translate key="templates_email_optInAlertUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : optIn.data.category.title}" />\n\n
 
 	<postmaster:email.translate key="templates_email_optInAlertUser.textOptIn" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" />\n
 	<postmaster:email.uri.action action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="create" absolute="true" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_create: {token: optIn.tokenYes, tokenUser: optIn.tokenUser}}" section="rkw-alerts" />\n\n
@@ -20,7 +20,7 @@
 	<!-- HTML -->
 	<f:section name="Html">
 		<h1><postmaster:email.translate key="templates_email_optInAlertUser.headline" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" /></h1>
-		<p><postmaster:email.translate key="templates_email_optInAlertUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : optIn.data.project.name}"/></p>
+		<p><postmaster:email.translate key="templates_email_optInAlertUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : optIn.data.category.title}"/></p>
 		<p>
 			<postmaster:email.translate key="templates_email_optInAlertUser.textOptIn" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts"/><br>
 			<a href="<postmaster:email.uri.action action='optIn' controller='Alert' extensionName='rkwAlerts' pluginName='create' absolute='true' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_create: {token: optIn.tokenYes, tokenUser: optIn.tokenUser}}' section='rkw-alerts' />"><postmaster:email.translate key="templates_email_optInAlertUser.textOptInLinkLabel" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts"/></a>

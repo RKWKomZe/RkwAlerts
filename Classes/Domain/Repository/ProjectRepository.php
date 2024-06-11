@@ -18,6 +18,8 @@ namespace RKW\RkwAlerts\Domain\Repository;
 /**
  * Class ProjectRepository
  *
+ * @deprecated Use Categories instead
+ *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts

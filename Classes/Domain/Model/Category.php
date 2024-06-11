@@ -16,44 +16,41 @@ namespace RKW\RkwAlerts\Domain\Model;
  */
 
 /**
- * Class Page
+ * Class Category
  *
- * @deprecated Use News instead
- *
- * @author Steffen Kroggel <developer@steffenkroggel.de>
+ * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Page extends \RKW\RkwProjects\Domain\Model\Pages
+class Category extends \TYPO3\CMS\Extbase\Domain\Model\Category
 {
-
-
     /**
-     * @var int
+     * @var bool
      */
-    protected int $txRkwalertsSendStatus = 0;
+    protected bool $txRkwalertsEnableAlerts = false;
 
 
     /**
-     * Returns the txRkwalertsSendStatus
+     * Returns the txRkwalertsEnableAlerts
      *
-     * @return int
+     * @return bool
      */
-    public function getTxRkwalertsSendStatus(): int
+    public function getTxRkwalertsEnableAlerts(): bool
     {
-        return $this->txRkwalertsSendStatus;
+        return $this->txRkwalertsEnableAlerts;
     }
 
+
     /**
-     * Sets the txRkwalertsSendStatus
+     * Sets the txRkwalertsEnableAlerts
      *
-     * @param int $txRkwalertsSendStatus
+     * @param bool $txRkwalertsEnableAlerts
      * @return void
      */
-    public function setTxRkwalertsSendStatus(int $txRkwalertsSendStatus): void
+    public function setTxRkwalertsEnableAlerts(bool $txRkwalertsEnableAlerts): void
     {
-        $this->txRkwalertsSendStatus = $txRkwalertsSendStatus;
+        $this->txRkwalertsEnableAlerts = $txRkwalertsEnableAlerts;
     }
 
 }

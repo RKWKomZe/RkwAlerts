@@ -8,13 +8,13 @@ call_user_func(
 
             'tx_rkwalerts_enable_alerts' => [
                 'exclude' => 0,
-                'label' => 'LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:tx_rkwprojects_domain_model_projects.tx_rkwalerts_enable_alerts',
+                'label' => 'LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:tx_rkwalerts_domain_model_categories.tx_rkwalerts_enable_alerts',
                 'config' => [
                     'type' => 'check',
                     'default' => 0,
                     'items' => [
                         '1' => [
-                            '0' => 'LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:tx_rkwprojects_domain_model_projects.tx_rkwalerts_enable_alerts.I.enable'
+                            '0' => 'LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:tx_rkwalerts_domain_model_categories.tx_rkwalerts_enable_alerts.I.enable'
                         ]
                     ]
                 ]
@@ -30,3 +30,5 @@ call_user_func(
     },
     'rkw_alerts'
 );
+
+

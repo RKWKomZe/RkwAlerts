@@ -34,12 +34,10 @@ class Alert extends AbstractCaptcha
      */
     protected ?FrontendUser $frontendUser = null;
 
-
     /**
-     * @var \RKW\RkwAlerts\Domain\Model\Project|null
+     * @var \TYPO3\CMS\Extbase\Domain\Model\Category|null
      */
-    protected ?Project $project = null;
-
+    protected ?Category $category = null;
 
 
     /**
@@ -66,25 +64,25 @@ class Alert extends AbstractCaptcha
 
 
     /**
-     * Returns the project
+     * Returns the category
      *
-     * @return \RKW\RkwAlerts\Domain\Model\Project $project
+     * @return \RKW\RkwAlerts\Domain\Model\Category $category
      */
-    public function getProject():? Project
+    public function getCategory():? Category
     {
-        return $this->project;
+        return $this->category;
     }
 
 
     /**
-     * Sets the project
+     * Sets the category
      *
-     * @param \RKW\RkwAlerts\Domain\Model\Project $project
+     * @param \RKW\RkwAlerts\Domain\Model\Category $category
      * @return void
      */
-    public function setProject(\RKW\RkwAlerts\Domain\Model\Project $project): void
+    public function setCategory(\RKW\RkwAlerts\Domain\Model\Category $category): void
     {
-        $this->project = $project;
+        $this->category = $category;
     }
 
 }

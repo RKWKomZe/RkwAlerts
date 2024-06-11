@@ -11,7 +11,7 @@
         <postmaster:email.translate key="templates_email_cancelAllUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" />\n\n
     
         <f:for each="{alerts}" as="alert">
-        * {alert.project.name}\n
+        * {alert.category.title}\n
         </f:for>\n
     
         <postmaster:email.translate key="templates_email_cancelAllUser.text2" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" />
@@ -23,7 +23,7 @@
 		<p><postmaster:email.translate key="templates_email_cancelAllUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" /></p>
 		<ul>
 			<f:for each="{alerts}" as="alert">
-				<li>{alert.project.name}</li>
+				<li>{alert.category.title}</li>
 			</f:for>
 		</ul>
 		<p><postmaster:email.translate key="templates_email_cancelAllUser.text2" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" /></p>

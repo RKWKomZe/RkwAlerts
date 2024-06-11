@@ -4,3 +4,9 @@ Please make sure to execute the following MySQL-statements BEFORE updating the t
 ```
 RENAME TABLE `tx_rkwalerts_domain_model_alerts` TO `tx_rkwalerts_domain_model_alert`;
 ```
+
+## Rewrite for txNews
+```
+* Project -> Category
+* Page -> News
+```

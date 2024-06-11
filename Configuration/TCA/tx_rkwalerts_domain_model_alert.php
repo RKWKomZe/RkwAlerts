@@ -72,17 +72,25 @@ return [
 				'maxitems' => 1,
             ]
 		],
-		'project' => [
-			'exclude' => 0,
-			'label' => 'LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:tx_rkwalerts_domain_model_alert.project',
-			'config' => [
-				'type' => 'select',
-				'renderType' => 'selectSingle',
-				'foreign_table' => 'tx_rkwprojects_domain_model_projects',
-                'foreign_table_where' => 'AND tx_rkwprojects_domain_model_projects.hidden = 0 AND tx_rkwprojects_domain_model_projects.deleted = 0 ORDER BY tx_rkwprojects_domain_model_projects.name ASC',
-				'minitems' => 1,
-				'maxitems' => 1,
-			]
-		]
+        'category' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:rkw_events/Resources/Private/Language/locallang_db.xlf:tx_rkwalerts_domain_model_alert.category',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectTree',
+                'foreign_table' => 'sys_category',
+                'maxitems' => 1,
+                'size' => 10,
+                'treeConfig' => [
+                    'parentField' => 'pid',
+                    'appearance' => [
+                        'expandAll' => true,
+                        'showHeader' => false,
+                        //'nonSelectableLevels' => '0,1',
+                    ],
+                ],
+            ],
+        ],
+
 	]
 ];

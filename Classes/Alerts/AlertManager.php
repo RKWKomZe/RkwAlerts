@@ -17,13 +17,17 @@ namespace RKW\RkwAlerts\Alerts;
 use Madj2k\FeRegister\Utility\FrontendUserSessionUtility;
 use Madj2k\Postmaster\Mail\MailMessage;
 use Madj2k\Postmaster\Tracking\ClickTracker;
+use RKW\RkwAlerts\Domain\Model\News;
 use RKW\RkwAlerts\Domain\Model\Project;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
+use RKW\RkwAlerts\Domain\Repository\CategoryRepository;
+use RKW\RkwAlerts\Domain\Repository\NewsRepository;
 use RKW\RkwAlerts\Domain\Repository\PageRepository;
 use RKW\RkwAlerts\Domain\Repository\ProjectRepository;
 use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility as FrontendLocalizationUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -82,6 +86,8 @@ class AlertManager
     /**
      * pagesRepository
      *
+     * @deprecated Use News instead
+     *
      * @var \RKW\RkwAlerts\Domain\Repository\PageRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
@@ -89,12 +95,32 @@ class AlertManager
 
 
     /**
+     * newsRepository
+     *
+     * @var \RKW\RkwAlerts\Domain\Repository\NewsRepository
+     * @TYPO3\CMS\Extbase\Annotation\Inject
+     */
+    protected ?NewsRepository $newsRepository = null;
+
+
+    /**
      * projectsRepository
+     *
+     * @deprecated Use Categories instead
      *
      * @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected ?ProjectRepository $projectRepository = null;
+
+
+    /**
+     * categoryRepository
+     *
+     * @var \RKW\RkwAlerts\Domain\Repository\CategoryRepository
+     * @TYPO3\CMS\Extbase\Annotation\Inject
+     */
+    protected ?CategoryRepository $categoryRepository = null;
 
 
     /**
@@ -137,6 +163,9 @@ class AlertManager
     }
 
     /**
+     *
+     * @deprecated Use News instead
+     *
      * @var \RKW\RkwAlerts\Domain\Repository\PageRepository
      */
     public function injectPageRepository (PageRepository $pageRepository)
@@ -145,11 +174,29 @@ class AlertManager
     }
 
     /**
+     * @var \RKW\RkwAlerts\Domain\Repository\NewsRepository
+     */
+    public function injectNewsRepository (NewsRepository $newsRepository)
+    {
+        $this->newsRepository= $newsRepository;
+    }
+
+    /**
+     * @deprecated Use Categories instead
+     *
      * @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository
      */
     public function injectProjectRepository (ProjectRepository $projectRepository)
     {
         $this->projectRepository= $projectRepository;
+    }
+
+    /**
+     * @var \RKW\RkwAlerts\Domain\Repository\CategoryRepository
+     */
+    public function injectCategoryRepository (CategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository= $categoryRepository;
     }
 
 
@@ -184,6 +231,8 @@ class AlertManager
      * Gets the project of the given page-id and also checks if the page has a project set and
      * alerts are activated for that project
      *
+     * @deprecated Use getSubscribableCategoryByNewsUid instead
+     *
      * @param int $pid The page uid
      * @return \RKW\RkwAlerts\Domain\Model\Project|null
      */
@@ -208,7 +257,42 @@ class AlertManager
 
 
     /**
+     * Gets the category of the given news-id and also checks if the page has a category set and
+     * alerts are activated for that category
+     *
+     * @param int $pid The page uid
+     * @return \RKW\RkwAlerts\Domain\Model\Category|null
+     */
+    public function getSubscribableCategoryByNewsUid(int $pid):? Project
+    {
+        /**
+         * @var $news \RKW\RkwAlerts\Domain\Model\News
+         * @var $categoryTemp \RKW\RkwAlerts\Domain\Model\Category
+         * @var $category \RKW\RkwAlerts\Domain\Model\Category
+         */
+        $news = $this->newsRepository->findByIdentifier($pid);
+
+        if ($news instanceof News) {
+
+            /** @var \GeorgRinger\News\Domain\Model\Category $newsCategory */
+            foreach ($news->getCategories() as $newsCategory) {
+                /** @var \RKW\RkwAlerts\Domain\Model\Category $alertsCategory */
+                if (
+                    $alertsCategory = $this->categoryRepository->findByIdentifier($newsCategory->getUid())
+                    && $alertsCategory->getTxRkwAlertsEnableAlerts()
+                ) {
+                    return $alertsCategory;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    /**
      * Checks if frontend user has subscribed to the given project
+     *
+     * @deprecated Use Categories instead
      *
      * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @param \RKW\RkwAlerts\Domain\Model\Project $project
@@ -232,7 +316,33 @@ class AlertManager
 
 
     /**
+     * Checks if frontend user has subscribed to the given category
+     *
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwAlerts\Domain\Model\Category $category
+     * @return bool
+     */
+    public function hasFrontendUserSubscribedToCategory (
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser,
+        \RKW\RkwAlerts\Domain\Model\Category $category
+    ): bool {
+
+        if (
+            ($frontendUser->getUid())
+            && ($category->getUid())
+            && ($this->alertRepository->findOneByFrontendUserAndCategory($frontendUser, $category))
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
      * Checks if an email-address has subscribed to the given project
+     *
+     * @deprecated Use hasEmailSubscribedToCategory instead
      *
      * @param string $email
      * @param \RKW\RkwAlerts\Domain\Model\Project $project
@@ -259,13 +369,42 @@ class AlertManager
 
 
     /**
+     * Checks if an email-address has subscribed to the given category
+     *
+     * @param string $email
+     * @param \RKW\RkwAlerts\Domain\Model\Category $category
+     * @return bool
+     */
+    public function hasEmailSubscribedToCategory (
+        string $email,
+        \RKW\RkwAlerts\Domain\Model\Category $category
+    ): bool {
+
+        if (
+            ($category->getUid())
+            && (
+                ($frontendUser = $this->frontendUserRepository->findOneByEmail($email))
+                || ($frontendUser = $this->frontendUserRepository->findOneByUsername($email))
+            )
+            && ($this->alertRepository->findOneByFrontendUserAndProject($frontendUser, $category))
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
      * Gets the enabled alerts from the given list
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts
+     * @deprecated Use filterListBySubscribableCategory instead
+     *
+     * @param QueryResultInterface $alerts
      * @return array
      */
     public function filterListBySubscribableProjects (
-        \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts
+        QueryResultInterface $alerts
     ): array {
 
         $result = [];
@@ -276,6 +415,33 @@ class AlertManager
                 if (
                     ($project = $alert->getProject())
                     && ($project->getTxRkwAlertsEnableAlerts())
+                ){
+                    $result[] = $alert;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * Gets the enabled alerts from the given list
+     *
+     * @param QueryResultInterface $alerts
+     * @return array
+     */
+    public function filterListBySubscribableCategory(QueryResultInterface $alerts): array {
+
+        $result = [];
+        if ($alerts->count()) {
+
+            /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */
+            foreach ($alerts as $alert) {
+                /** @var \RKW\RkwAlerts\Domain\Model\Category $category */
+                if (
+                    ($category = $alert->getCategory())
+                    && ($category->getTxRkwAlertsEnableAlerts())
                 ){
                     $result[] = $alert;
                 }
@@ -319,7 +485,7 @@ class AlertManager
 
         // check if alert has subscribable project
         if (
-            (! $project = $alert->getProject())
+            (! $project = $alert->getCategory())
             || (! $project->getTxRkwalertsEnableAlerts())
         ){
             throw new Exception('alertManager.error.projectInvalid');
@@ -328,7 +494,7 @@ class AlertManager
         // check if subscription exists already based on email
         if (
             ($email)
-            && ($this->hasEmailSubscribedToProject($email, $alert->getProject()))
+            && ($this->hasEmailSubscribedToCategory($email, $alert->getCategory()))
         ){
             throw new Exception('alertManager.error.alreadySubscribed');
         }
@@ -342,7 +508,7 @@ class AlertManager
         ) {
 
             // check if subscription exists already
-            if ($this->hasFrontendUserSubscribedToProject($frontendUser, $alert->getProject())) {
+            if ($this->hasFrontendUserSubscribedToCategory($frontendUser, $alert->getCategory())) {
                 throw new Exception('alertManager.error.alreadySubscribed');
             }
 
@@ -468,14 +634,14 @@ class AlertManager
 
         // check if alert has subscribable project
         if (
-            (! $project = $alert->getProject())
-            || (! $project->getTxRkwalertsEnableAlerts())
+            (! $category = $alert->getCategory())
+            || (! $category->getTxRkwalertsEnableAlerts())
         ){
             throw new Exception('alertManager.error.projectInvalid');
         }
 
         // check if subscription exists already
-        if ($this->hasFrontendUserSubscribedToProject($frontendUser, $alert->getProject())) {
+        if ($this->hasFrontendUserSubscribedToCategory($frontendUser, $alert->getCategory())) {
             throw new Exception('alertManager.error.alreadySubscribed');
         }
 
@@ -638,13 +804,13 @@ class AlertManager
     /**
      * deleteAlerts
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts
+     * @param QueryResultInterface $alerts
      * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @param int $counter
      * @return bool
      */
     public function deleteAlerts (
-        \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts,
+        QueryResultInterface $alerts,
         \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser,
         int &$counter = 0
     ): bool {
@@ -703,7 +869,7 @@ class AlertManager
             $counter = 0;
 
             // delete all alerts of user
-            /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $alerts */
+            /** @var QueryResultInterface $alerts */
             $alerts = $this->alertRepository->findByFrontendUser($frontendUser);
             $this->deleteAlerts($alerts, $frontendUser, $counter);
 
@@ -748,6 +914,8 @@ class AlertManager
     /**
      * Gets an associative array with the projects to notify
      * and the pages to link to
+     *
+     * @deprecated Use News and Categories instead
      *
      * @param string $filterField
      * @param int $timeSinceCreation
@@ -794,6 +962,53 @@ class AlertManager
 
 
     /**
+     * Gets an associative array with the categories to notify
+     * and the news to link to
+     *
+     * @param string $filterField
+     * @param int $timeSinceCreation
+     * @return array
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     */
+    public function getNewsAndCategoriesToNotify(
+        string $filterField,
+        int $timeSinceCreation = 432000
+    ): array {
+
+        $result = [];
+
+        if ($newsList = $this->newsRepository->findAllToNotify($filterField, $timeSinceCreation)) {
+
+            /**  @var \RKW\RkwAlerts\Domain\Model\News $news */
+            foreach ($newsList as $news) {
+
+                foreach ($news->getCategories() as $category) {
+
+                    if (! isset($result[$category->getUid()])) {
+
+                        /** @var ObjectStorage $newsObjectStorage */
+                        $newsObjectStorage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectStorage::class);
+                        $newsObjectStorage->attach($news);
+
+                        $result[$category->getUid()] = [
+                            'category' => $category,
+                            'news' => $newsObjectStorage
+                        ];
+
+                    } else {
+                        if ($result[$category->getUid()]['news'] instanceof ObjectStorage) {
+                            $result[$category->getUid()]['news']->attach($news);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+
+    /**
      * Sends the notifications
      *
      * @param string $filterField
@@ -813,24 +1028,24 @@ class AlertManager
 
         // load projects to notify
         $recipientCountGlobal = 0;
-        if ($results = $this->getPagesAndProjectsToNotify($filterField, $timeSinceCreation)) {
+        if ($results = $this->getNewsAndCategoriesToNotify($filterField, $timeSinceCreation)) {
 
             // get configuration
             $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
             // build e-mails per project
-            foreach ($results as $projectId => $subArray) {
+            foreach ($results as $categoryUid => $subArray) {
 
                 // check of basic information!
-                /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
+                /** @var \RKW\RkwAlerts\Domain\Model\Category $category */
                 if (
-                    ($project = $subArray['project'])
-                    && ($pages = $subArray['pages'])
+                    ($category = $subArray['category'])
+                    && ($newsList = $subArray['news'])
                 ) {
 
-                    // find all alerts for project
-                    /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
-                    if ($alerts = $this->alertRepository->findByProject($project)) {
+                    // find all alerts for category
+                    /** @var \RKW\RkwAlerts\Domain\Model\Category $category */
+                    if ($alerts = $this->alertRepository->findByCategory($category)) {
 
                         try {
 
@@ -859,13 +1074,13 @@ class AlertManager
                                                 'alert'        => $alert,
                                                 'frontendUser' => $frontendUser,
                                                 'loginPid'     => intval($settings['settings']['loginPid']),
-                                                'pages'        => $pages
+                                                'news'        => $newsList
                                             ),
                                             'subject' => FrontendLocalizationUtility::translate(
                                                 'rkwMailService.sendAlert.subject',
                                                 'rkw_alerts',
-                                                [$project->getName()],
-                                                $frontendUser->getTxFeregisterLanguageKey() ? $frontendUser->getTxFeregisterLanguageKey() : 'default'
+                                                [$category->getTitle()],
+                                                $frontendUser->getTxFeregisterLanguageKey() ?: 'default'
                                             ),
                                         )
                                     );
@@ -877,8 +1092,8 @@ class AlertManager
                                 FrontendLocalizationUtility::translate(
                                     'rkwMailService.sendAlert.subjectDefault',
                                     'rkw_alerts',
-                                    [$project->getName()],
-                                    $settings['settings']['defaultLanguageKey'] ? $settings['settings']['defaultLanguageKey'] : 'default'
+                                    [$category->getTitle()],
+                                    $settings['settings']['defaultLanguageKey'] ?: 'default'
                                 )
                             );
 
@@ -897,7 +1112,7 @@ class AlertManager
                                     \TYPO3\CMS\Core\Log\LogLevel::INFO,
                                     sprintf(
                                         'Successfully sent alert notification for project with id %s with %s recipients.',
-                                        $projectId,
+                                        $categoryUid,
                                         $recipientCount
                                     )
                                 );
@@ -907,7 +1122,7 @@ class AlertManager
                                     \TYPO3\CMS\Core\Log\LogLevel::DEBUG,
                                     sprintf(
                                         'No valid recipients found for alert notification for project with id %s.',
-                                        $projectId
+                                        $categoryUid
                                     )
                                 );
                             }
@@ -919,7 +1134,7 @@ class AlertManager
                                 \TYPO3\CMS\Core\Log\LogLevel::ERROR,
                                 sprintf(
                                     'Error while trying to send an alert notification for project with uid %s: %s',
-                                    $projectId,
+                                    $categoryUid,
                                     $e->getMessage()
                                 )
                             );
@@ -937,10 +1152,10 @@ class AlertManager
 
                      // no matter what happens: mark pages as sent
                     } else {
-                        /** @var \RKW\RkwAlerts\Domain\Model\Page $page */
-                        foreach ($pages as $page) {
-                            $page->setTxRkwalertsSendStatus(1);
-                            $this->pageRepository->update($page);
+                        /** @var \RKW\RkwAlerts\Domain\Model\News $news */
+                        foreach ($newsList as $news) {
+                            $news->setTxRkwalertsSendStatus(1);
+                            $this->newsRepository->update($news);
                         }
 
                         // persist

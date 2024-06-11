@@ -16,13 +16,16 @@ namespace RKW\RkwAlerts\Controller;
 
 use Madj2k\FeRegister\Utility\FrontendUserUtility;
 use RKW\RkwAlerts\Alerts\AlertManager;
+use RKW\RkwAlerts\Domain\Model\Category;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
 use Madj2k\FeRegister\Domain\Model\FrontendUser;
 use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
 use Madj2k\FeRegister\Registration\FrontendUserRegistration;
 use Madj2k\FeRegister\Utility\FrontendUserSessionUtility;
+use RKW\RkwAlerts\Exception;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -121,7 +124,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
             // list all active alerts only!
             $this->view->assign(
                 'alerts',
-                $this->alertManager->filterListBySubscribableProjects($alerts)
+                $this->alertManager->filterListBySubscribableCategory($alerts)
             );
         }
     }
@@ -177,9 +180,15 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
         string $email = ''
     ): void {
 
-        /** @var \RKW\RkwAlerts\Domain\Model\Project $project */
-        $project = $this->alertManager->getSubscribableProjectByPageUid(intval($GLOBALS['TSFE']->id));
-        if ($project) {
+
+        // @toDo: Get Category by given TxNews-Item, or - if set - by flexform
+        // @toDo: Get Category by given TxNews-Item, or - if set - by flexform
+        // @toDo: Get Category by given TxNews-Item, or - if set - by flexform
+
+
+        /** @var \RKW\RkwAlerts\Domain\Model\Category $category */
+        $category = $this->alertManager->getSubscribableCategoryByNewsUid(intval($newsId));
+        if ($category instanceof Category) {
 
             // some basic parameters
             $frontendUser = $this->getFrontendUser();
@@ -196,7 +205,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
                 /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser */
                 if (
                     ($frontendUser)
-                    && ($this->alertManager->hasFrontendUserSubscribedToProject($frontendUser, $project))
+                    && ($this->alertManager->hasEmailSubscribedToCategory($frontendUser, $category))
                 ) {
                     $displayForm = false;
                 }
@@ -205,7 +214,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
                     [
                         'alert'             => $alert,
                         'frontendUser'      => $frontendUser,
-                        'project'           => $project,
+                        'category'          => $category,
                         'email'             => $email,
                         'displayForm'       => $displayForm,
                     ]
@@ -218,7 +227,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
                 $this->view->assignMultiple(
                     [
                         'alert'             => $alert,
-                        'project'           => $project,
+                        'category'          => $category,
                         'displayForm'       => $displayForm,
                     ]
                 );
@@ -269,12 +278,12 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
                         'rkw_alerts'
                     ),
                     '',
-                     \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                    AbstractMessage::ERROR
                 );
             }
 
 
-        } catch (\RKW\RkwAlerts\Exception $exception) {
+        } catch (Exception $exception) {
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
@@ -282,7 +291,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
                     'rkw_alerts'
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
 
             $this->forward('new', null, null,
@@ -351,7 +360,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
                     'alertController.error.create', 'rkw_alerts'
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
         }
 
@@ -404,7 +413,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
                 )
             );
 
-        } catch (\RKW\RkwAlerts\Exception $exception) {
+        } catch (Exception $exception) {
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
@@ -412,7 +421,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
                     'rkw_alerts'
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
         }
 

@@ -2,8 +2,7 @@
 
 namespace RKW\RkwAlerts\Domain\Repository;
 
-use RKW\RkwAlerts\Domain\Model\Page;
-use Madj2k\CoreExtended\Utility\QueryUtility;
+use \RKW\RkwAlerts\Domain\Model\Category;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -21,17 +20,16 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 
 /**
- * Class PageRepository
+ * Class NewsRepository
  *
- * @deprecated Use News instead
- *
- * @author Steffen Kroggel <developer@steffenkroggel.de>
+ * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class PageRepository extends AbstractRepository
+class NewsRepository extends \GeorgRinger\News\Domain\Repository\NewsRepository
 {
+
     /**
      * @var \TYPO3\CMS\Core\Log\Logger|null
      */
@@ -55,7 +53,7 @@ class PageRepository extends AbstractRepository
         $filterField = preg_replace('/[^a-z0-9_\-]+/i', '', $filterField);
         if (
             (!$filterField)
-            || (! $GLOBALS['TCA']['pages']['columns'][$filterField])
+            || (! $GLOBALS['TCA']['tx_news_domain_model_news']['columns'][$filterField])
         ) {
             $filterField = 'crdate';
         }
@@ -75,8 +73,8 @@ class PageRepository extends AbstractRepository
                 $query->equals('doktype', 1),
                 $query->equals('txRkwalertsSendStatus', 0),
                 $query->greaterThanOrEqual($filterField, (time() - intval($timeSinceCreation))),
-                $query->greaterThan('txRkwprojectsProjectUid', 0),
-                $query->equals('txRkwprojectsProjectUid.txRkwalertsEnableAlerts', 1)
+                $query->greaterThan('categories', 0),
+                $query->equals('categories.txRkwalertsEnableAlerts', 1)
             )
         );
 
@@ -97,4 +95,5 @@ class PageRepository extends AbstractRepository
 
         return $this->logger;
     }
+
 }

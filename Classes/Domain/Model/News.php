@@ -16,18 +16,15 @@ namespace RKW\RkwAlerts\Domain\Model;
  */
 
 /**
- * Class Page
+ * Class News
  *
- * @deprecated Use News instead
- *
- * @author Steffen Kroggel <developer@steffenkroggel.de>
+ * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Page extends \RKW\RkwProjects\Domain\Model\Pages
+class News extends \GeorgRinger\News\Domain\Model\News
 {
-
 
     /**
      * @var int
@@ -55,5 +52,4 @@ class Page extends \RKW\RkwProjects\Domain\Model\Pages
     {
         $this->txRkwalertsSendStatus = $txRkwalertsSendStatus;
     }
-
 }

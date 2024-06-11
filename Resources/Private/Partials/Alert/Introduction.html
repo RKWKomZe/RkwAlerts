@@ -31,7 +31,7 @@
 						<f:comment><!-- if user has already subscribed --></f:comment>
 						<f:else>
 							<f:format.raw>
-								<f:translate key="partials_alerts_introduction.text1_exists" arguments="{0 : project.name}" />
+								<f:translate key="partials_alerts_introduction.text1_exists" arguments="{0 : category.title}" />
 							</f:format.raw>
 							<f:link.page pageUid="{settings.listPid}" target="_blank">
 								<f:translate key="partials_alerts_introduction.text2_exists"/>

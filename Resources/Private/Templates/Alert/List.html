@@ -15,11 +15,11 @@
 			<f:then>
 				<table class="responsive-table responsive-table--background" >
 				<f:for each="{alerts}" as="alert" iteration="iterator">
-						<f:if condition="{alert.project}">
+						<f:if condition="{alert.category}">
 							<tr>
 								<td>
-									<h3 class="h4">{alert.project.shortName}</h3>
-									<p>{alert.project.name}</p>
+									<h3 class="h4">{alert.category.title}</h3>
+									<p>{alert.category.description}</p>
 									<div class="btn-list">
 										<f:link.action action="deleteconfirm" arguments="{alert : alert}" class="btn btn--primary">
 											<f:translate key="templates_alert_list.labelDelete" />

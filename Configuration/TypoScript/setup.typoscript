@@ -3,10 +3,11 @@
   * PLEASE ADD ANY CHANGES TO
   * EXT:extension/Configuration/Extbase/Persistence/Classes.php
   * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
-config.tx_extbase{
-    persistence{
-        classes{
+config.tx_extbase {
+    persistence {
+        classes {
 
+            /*
 			RKW\RkwProjects\Domain\Model\Projects {
 				subclasses {
 					Tx_RkwAlerts_Project = RKW\RkwAlerts\Domain\Model\Project
@@ -23,6 +24,10 @@ config.tx_extbase{
 					recordType =
                 }
             }
+
+            */
+
+            #===============================================
 
 			\RKW\RkwProjects\Domain\Model\Pages {
 				subclasses {
@@ -42,12 +47,30 @@ config.tx_extbase{
                 }
             }
 
+            #===============================================
+
+            RKW\RkwAlerts\Domain\Model\Category {
+                mapping {
+                    tableName = sys_category
+                }
+            }
+
+            TYPO3\CMS\Extbase\Domain\Model\Category {
+                subclasses {
+                    Tx_RkwAlerts_Category = RKW\RkwAlerts\Domain\Model\Category
+
+                }
+            }
+
+            #===============================================
+
             RKW\RkwAlerts\Domain\Model\Alert {
 
                 // storage for new records
                 newRecordStoragePid = {$plugin.tx_rkwalerts.persistence.newRecordStoragePid}
             }
-    	}
+
+        }
     }
 }
 
