@@ -17,11 +17,11 @@ return [
 		'enablecolumns' => [
 
 		],
-		'searchFields' => 'frontend_user,topic,',
+		'searchFields' => 'frontend_user,topic,category,',
 		'iconfile' => 'EXT:rkw_alerts/Resources/Public/Icons/tx_rkwalerts_domain_model_alert.gif'
 	],
 	'types' => [
-		'1' => ['showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, frontend_user, project, ']
+		'1' => ['showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, frontend_user, project, category,']
 	],
 	'palettes' => [
 		'1' => ['showitem' => '']

@@ -28,12 +28,8 @@ $EM_CONF[$_EXTKEY] = [
             'ajax_api' => '10.4.0-12.4.99',
             'fe_register' => '10.4.0-12.4.99',
             'tx_news' => '10.0.3-10.0.99',
-
             // remove?
             'postmaster' => '10.4.0-12.4.99',
-
-            // remove!
-            'rkw_projects' => '10.4.0-12.4.99',
 		],
 		'conflicts' => [
 		],

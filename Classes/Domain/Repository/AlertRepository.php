@@ -17,7 +17,6 @@ namespace RKW\RkwAlerts\Domain\Repository;
 
 use RKW\RkwAlerts\Domain\Model\Alert;
 use RKW\RkwAlerts\Domain\Model\Category;
-use RKW\RkwAlerts\Domain\Model\Project;
 use Madj2k\FeRegister\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -31,31 +30,6 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class AlertRepository extends AbstractRepository
 {
-
-    /**
-     * findOneByFrontendUserAndProject
-     * find one alert by frontendUser and project
-     *
-     * @deprecated use findOneByFrontendUserAndCategory instead
-     *
-     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwAlerts\Domain\Model\Project $project
-     * @return  \RKW\RkwAlerts\Domain\Model\Alert|null
-     */
-    public function findOneByFrontendUserAndProject(FrontendUser $frontendUser, Project $project):? Alert
-    {
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setRespectStoragePage(false);
-
-        $query->matching(
-            $query->logicalAnd(
-                $query->equals('frontendUser',$frontendUser->getUid()),
-                $query->equals('project', $project->getUid())
-            )
-        );
-        return $query->execute()->getFirst();
-    }
-
 
     /**
      * findOneByFrontendUserAndCategory
@@ -94,27 +68,6 @@ class AlertRepository extends AbstractRepository
 
         $query->matching(
             $query->equals('frontendUser', $frontendUser)
-        );
-
-        return $query->execute();
-    }
-
-
-    /**
-     * findByProject
-     *
-     * @deprecated Use findByCategory instead
-     *
-     * @param \RKW\RkwAlerts\Domain\Model\Project $project
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     */
-    public function findByProject(Project $project): QueryResultInterface
-    {
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setRespectStoragePage(false);
-
-        $query->matching(
-            $query->equals('project', $project)
         );
 
         return $query->execute();

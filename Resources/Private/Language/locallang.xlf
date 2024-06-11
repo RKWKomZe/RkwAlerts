@@ -10,18 +10,18 @@
                 <source>Frontend User</source>
             </trans-unit>
             <trans-unit id="tx_rkwalerts_domain_model_alert.topic">
-                <source>Project</source>
+                <source>Topic</source>
             </trans-unit>
 
             <!-- alertManager-->
             <trans-unit id="alertManager.error.invalidEmail">
                 <source>Something went wrong. Please enter a valid e-mail address.</source>
             </trans-unit>
-            <trans-unit id="alertManager.error.projectInvalid">
-                <source>Something went wrong. The selected project seems to be not (anymore) activated for RKW Alerts.</source>
+            <trans-unit id="alertManager.error.categoryInvalid">
+                <source>Something went wrong. The selected category seems to be not (anymore) activated for RKW Alerts.</source>
             </trans-unit>
             <trans-unit id="alertManager.error.alreadySubscribed">
-                <source>Something went wrong. Is it possible that you have already subscribed to RKW Alerts for this project?</source>
+                <source>Something went wrong. Is it possible that you have already subscribed to RKW Alerts for this topic?</source>
             </trans-unit>
             <trans-unit id="alertManager.error.frontendUserNotPersisted">
                 <source><![CDATA[Something went wrong. The user account passed doesn't seem to exist yet. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
@@ -131,10 +131,10 @@
                 <source>Stay tuned!</source>
             </trans-unit>
             <trans-unit id="partials_alerts_introduction.text1">
-                <source><![CDATA[Always be up-to-date with RKW Alerts for project "<strong>%s</strong>".]]></source>
+                <source><![CDATA[Always be up-to-date with RKW Alerts for topic "<strong>%s</strong>".]]></source>
             </trans-unit>
             <trans-unit id="partials_alerts_introduction.text1_exists">
-                <source><![CDATA[Alert for project "<strong>%s</strong>" is active.]]></source>
+                <source><![CDATA[Alert for topic "<strong>%s</strong>" is active.]]></source>
             </trans-unit>
             <trans-unit id="partials_alerts_introduction.text2">
                 <source>All you need is an E-mail-address and 10 seconds of time.</source>
@@ -164,16 +164,16 @@
                 <source>Confirmation for RKW Alerts</source>
             </trans-unit>
             <trans-unit id="rkwMailService.confirmAlertUser.subject">
-                <source>NRKW Alert for project "%s" activated</source>
+                <source>NRKW Alert for topic "%s" activated</source>
             </trans-unit>
             <trans-unit id="rkwMailService.cancelAllUser.subject">
                 <source>Your RKW Alerts have been canceled</source>
             </trans-unit>
             <trans-unit id="rkwMailService.sendAlert.subject">
-                <source>New RKW Alert for project %s</source>
+                <source>New RKW Alert for topic %s</source>
             </trans-unit>
             <trans-unit id="rkwMailService.sendAlert.subjectDefault">
-                <source>New RKW Alert for project "%s"</source>
+                <source>New RKW Alert for topic "%s"</source>
             </trans-unit>
 
 
@@ -183,7 +183,7 @@
                 <source>Hello,</source>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.text1">
-                <source>thank you for your interest in RKW Alerts for the project "%s".</source>
+                <source>thank you for your interest in RKW Alerts for the topic "%s".</source>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptIn">
                 <source>Click here to confirm your request:</source>
@@ -204,7 +204,7 @@
                 <source>Hello,</source>
             </trans-unit>
             <trans-unit id="templates_email_confirmAlertUser.text1">
-                <source>thank you for your interest in RKW Alerts for the project "%s".</source>
+                <source>thank you for your interest in RKW Alerts for the topic "%s".</source>
             </trans-unit>
             <trans-unit id="templates_email_confirmAlertUser.loginLinkLabel">
                 <source>Log in here to adjust settings or cancel alerts.</source>
@@ -228,13 +228,13 @@
                 <source>Hello,</source>
             </trans-unit>
             <trans-unit id="templates_email_alert.text1">
-                <source>there are new contents on the project "%s" available:</source>
+                <source>there are new contents on the topic "%s" available:</source>
             </trans-unit>
             <trans-unit id="templates_email_alert.linkLabel">
                 <source>Click here to see the contents</source>
             </trans-unit>
             <trans-unit id="templates_email_alert.text2">
-                <source>You get this E-mail because you activated alerts for this project.</source>
+                <source>You get this E-mail because you activated alerts for this topic.</source>
             </trans-unit>
             <trans-unit id="templates_email_alert.loginLinkLabel">
                 <source>Log in here to adjust settings or cancel alerts.</source>

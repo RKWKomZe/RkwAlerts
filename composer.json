@@ -1,7 +1,7 @@
 {
     "name": "rkw/rkw-alerts",
     "type": "typo3-cms-extension",
-    "description": "Sends e-mail-alerts for news in projects",
+    "description": "Sends e-mail-alerts for news in categories",
     "homepage": "https://www.rkw-kompetenzzentrum.de",
     "license": ["GPL-2.0+"],
     "keywords": ["TYPO3 CMS", "RKW", "Alerts"],

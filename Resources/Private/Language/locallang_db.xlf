@@ -18,7 +18,7 @@
                 <source>RKW Alerts</source>
             </trans-unit>
             <trans-unit id="tx_rkwalerts_domain_model_categories.tx_rkwalerts_enable_alerts.I.enable">
-                <source>Allow getting RKW Alerts for this project</source>
+                <source>Allow getting RKW Alerts for this topic</source>
             </trans-unit>
 
 

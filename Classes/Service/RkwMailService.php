@@ -128,7 +128,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                 FrontendLocalizationUtility::translate(
                     'rkwMailService.confirmAlertUser.subject',
                     'rkw_alerts',
-                    [$alert->getProject()->getName()],
+                    [$alert->getCategory()->getTitle()],
                     $frontendUser->getTxFeregisterLanguageKey()
                 )
             );

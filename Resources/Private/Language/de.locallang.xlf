@@ -13,8 +13,8 @@
                 <target>Frontend User</target>
 			</trans-unit>
 			<trans-unit id="tx_rkwalerts_domain_model_alert.topic">
-				<source>Project</source>
-                <target>Projekt</target>
+				<source>Topic</source>
+                <target>Thema</target>
 			</trans-unit>
 
 			<!-- alertManager-->
@@ -22,13 +22,13 @@
                 <source>Something went wrong. Please enter a valid e-mail address.</source>
                 <target>Da ist etwas schief gelaufen. Bitte geben Sie eine gültige E-Mailadresse ein.</target>
             </trans-unit>
-            <trans-unit id="alertManager.error.projectInvalid">
-                <source>Something went wrong. The selected project seems to be not (anymore) activated for RKW Alerts.</source>
-                <target>Da ist etwas schief gelaufen. Das gewählte Projekt scheint nicht (mehr) für RKW Alerts aktiviert zu sein.</target>
+            <trans-unit id="alertManager.error.categoryInvalid">
+                <source>Something went wrong. The selected category seems to be not (anymore) activated for RKW Alerts.</source>
+                <target>Da ist etwas schief gelaufen. Das gewählte Thema scheint nicht (mehr) für RKW Alerts aktiviert zu sein.</target>
             </trans-unit>
             <trans-unit id="alertManager.error.alreadySubscribed">
-                <source>Something went wrong. Is it possible that you have already subscribed to RKW Alerts for this project?</source>
-                <target>Da ist etwas schief gelaufen. Kann es sein, dass Sie RKW Alerts für dieses Projekt schon abonniert haben?</target>
+                <source>Something went wrong. Is it possible that you have already subscribed to RKW Alerts for this category?</source>
+                <target>Da ist etwas schief gelaufen. Kann es sein, dass Sie RKW Alerts für dieses Thema schon abonniert haben?</target>
             </trans-unit>
             <trans-unit id="alertManager.error.frontendUserNotPersisted">
                 <source><![CDATA[Something went wrong. The user account passed doesn't seem to exist yet. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
@@ -107,7 +107,7 @@
 			</trans-unit>
             <trans-unit id="alertController.message.alert_already_exists">
                 <source>Alert already exists.</source>
-                <target>Der RKW Alert existiert bereits. Das Projekt scheint also sehr interessant zu sein ;-)</target>
+                <target>Der RKW Alert existiert bereits. Das Thema scheint also sehr interessant zu sein ;-)</target>
             </trans-unit>
             <trans-unit id="alertController.message.alert_canceled">
                 <source>Alert creation was canceled.</source>
@@ -153,7 +153,7 @@
             </trans-unit>
             <trans-unit id="templates_alert_deleteConfirm.description">
                 <source>Do you really want to delete the Alert for topic "%s"?</source>
-                <target>Sind Sie sicher, dass Sie den RKW Alert zum Projekt "%s" löschen möchten?</target>
+                <target>Sind Sie sicher, dass Sie den RKW Alert zur Thema "%s" löschen möchten?</target>
             </trans-unit>
             <trans-unit id="templates_alert_deleteConfirm.labelYes">
                 <source>Yes, do it</source>
@@ -171,12 +171,12 @@
                 <target>Bleiben Sie auf dem Laufenden!</target>
             </trans-unit>
             <trans-unit id="partials_alerts_introduction.text1">
-                <source><![CDATA[Always be up-to-date with RKW Alerts for project "<strong>%s</strong>".]]></source>
-                <target><![CDATA[Mit unseren RKW Alerts bleiben Sie immer auf dem Laufenden. Wir informieren Sie automatisch und kostenlos, sobald es etwas Neues zum Projekt "<strong>%s</strong>" auf unserer Website gibt.]]></target>
+                <source><![CDATA[Always be up-to-date with RKW Alerts for topic "<strong>%s</strong>".]]></source>
+                <target><![CDATA[Mit unseren RKW Alerts bleiben Sie immer auf dem Laufenden. Wir informieren Sie automatisch und kostenlos, sobald es etwas Neues zum Thema "<strong>%s</strong>" auf unserer Website gibt.]]></target>
             </trans-unit>
             <trans-unit id="partials_alerts_introduction.text1_exists">
-                <source><![CDATA[Alert for project "<strong>%s</strong>" is active.]]></source>
-                <target><![CDATA[Sie haben bereits RKW Alerts für das Projekt "<strong>%s</strong>" aktiviert.]]></target>
+                <source><![CDATA[Alert for topic "<strong>%s</strong>" is active.]]></source>
+                <target><![CDATA[Sie haben bereits RKW Alerts für das Thema "<strong>%s</strong>" aktiviert.]]></target>
             </trans-unit>
             <trans-unit id="partials_alerts_introduction.text2">
                 <source>All you need is an E-mail-address and 10 seconds of time.</source>
@@ -213,20 +213,20 @@
                 <target>Bestätigungslink für RKW Alerts</target>
             </trans-unit>
             <trans-unit id="rkwMailService.confirmAlertUser.subject">
-                <source>NRKW Alert for project "%s" activated</source>
-                <target>RKW Alert zum Projekt "%s" erfolgreich angelegt</target>
+                <source>NRKW Alert for topic "%s" activated</source>
+                <target>RKW Alert zum Thema "%s" erfolgreich angelegt</target>
             </trans-unit>
             <trans-unit id="rkwMailService.cancelAllUser.subject">
                 <source>Your RKW Alerts have been canceled</source>
                 <target>Ihre RKW Alerts wurden deaktiviert</target>
             </trans-unit>
             <trans-unit id="rkwMailService.sendAlert.subject">
-                <source>New RKW Alert for project %s</source>
-                <target>RKW Alert zum Projekt "%s"</target>
+                <source>New RKW Alert for topic %s</source>
+                <target>RKW Alert zum Thema "%s"</target>
             </trans-unit>
             <trans-unit id="rkwMailService.sendAlert.subjectDefault">
-                <source>New RKW Alert for project "%s"</source>
-                <target>Neuer RKW Alert zum Projekt "%s"</target>
+                <source>New RKW Alert for topic "%s"</source>
+                <target>Neuer RKW Alert zum Thema "%s"</target>
             </trans-unit>
 
 
@@ -237,8 +237,8 @@
                 <target>Hallo,</target>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.text1">
-                <source>thank you for your interest in RKW Alerts for the project "%s".</source>
-                <target>wir freuen uns, dass Sie unsere RKW Alerts zum Projekt "%s" erhalten möchten.</target>
+                <source>thank you for your interest in RKW Alerts for the topic "%s".</source>
+                <target>wir freuen uns, dass Sie unsere RKW Alerts zum Thema "%s" erhalten möchten.</target>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptIn">
                 <source>Click here to confirm your request:</source>
@@ -246,7 +246,7 @@
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptInLinkLabel">
                 <source>Yes, send me alerts</source>
-                <target>Ja, ich möchte RKW Alerts zu diesem Projekt erhalten</target>
+                <target>Ja, ich möchte RKW Alerts zu diesem Thema erhalten</target>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptOut">
                 <source>Click here to cancel your request:</source>
@@ -254,7 +254,7 @@
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptOutLinkLabel">
                 <source>No, thank you</source>
-                <target>Nein, ich möchte keine RKW Alerts zu diesem Projekt erhalten</target>
+                <target>Nein, ich möchte keine RKW Alerts zu diesem Thema erhalten</target>
             </trans-unit>
 
 
@@ -264,8 +264,8 @@
                 <target>Hallo,</target>
             </trans-unit>
             <trans-unit id="templates_email_confirmAlertUser.text1">
-                <source>thank you for your interest in RKW Alerts for the project "%s". Shortly we will send you the first RKW Alert to this e-mail address.</source>
-                <target>wir freuen uns, dass Sie unsere RKW Alerts zum Projekt "%s" erhalten möchten. In Kürze werden wir Ihnen den ersten RKW Alert an diese E-Mailadresse senden.</target>
+                <source>thank you for your interest in RKW Alerts for the topic "%s". Shortly we will send you the first RKW Alert to this e-mail address.</source>
+                <target>wir freuen uns, dass Sie unsere RKW Alerts zum Thema "%s" erhalten möchten. In Kürze werden wir Ihnen den ersten RKW Alert an diese E-Mailadresse senden.</target>
             </trans-unit>
             <trans-unit id="templates_email_confirmAlertUser.loginLinkLabel">
                 <source>Log in here to adjust settings or cancel alerts.</source>
@@ -294,16 +294,16 @@
                 <target>Hallo,</target>
             </trans-unit>
             <trans-unit id="templates_email_alert.text1">
-                <source>there are new contents on the project "%s" available:</source>
-                <target>es gibt neue Inhalte zum Projekt "%s":</target>
+                <source>there are new contents on the topic "%s" available:</source>
+                <target>es gibt neue Inhalte zum Thema "%s":</target>
             </trans-unit>
             <trans-unit id="templates_email_alert.linkLabel">
                 <source>Click here to see the contents</source>
                 <target>Klicken Sie hier, um die Inhalte zu sehen</target>
             </trans-unit>
             <trans-unit id="templates_email_alert.text2">
-                <source>You get this E-mail because you activated alerts for this project.</source>
-                <target>Sie erhalten diese E-Mail, weil Sie RKW Alerts für dieses Projekt aktiviert haben.</target>
+                <source>You get this E-mail because you activated alerts for this topic.</source>
+                <target>Sie erhalten diese E-Mail, weil Sie RKW Alerts für dieses Thema aktiviert haben.</target>
             </trans-unit>
             <trans-unit id="templates_email_alert.loginLinkLabel">
                 <source>Log in here to adjust settings or cancel alerts.</source>

@@ -48,7 +48,7 @@ class DataHandler implements SingletonInterface
     ): void {
 
         if (
-            $table === 'pages'
+            $table === 'tx_news_domain_model_news'
             && $status === 'new'
             && $fieldArray['tx_rkwalerts_send_status']
         ) {

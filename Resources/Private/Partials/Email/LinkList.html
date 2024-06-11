@@ -7,7 +7,7 @@
         <postmaster:email.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}" isPlaintext="true">
             <f:for each="{newsList}" as="news">
                 --------------------------------------------------------------------------------------\n
-                <f:format.date format="d.m.Y">{page.crdate}</f:format.date>: {news.title}\n
+                <f:format.date format="d.m.Y">{news.crdate}</f:format.date>: {news.title}\n
                 --------------------------------------------------------------------------------------\n
                 <f:if condition="{news.teaser}">{news.teaser}\n\n</f:if>
                 <!-- @toDo: Hier fehlt noch ein System für die Detail PageUID -->
@@ -31,7 +31,7 @@
                                         <!-- @toDo: Hier fehlt noch ein System für die Detail PageUID -->
                                         <a href="{postmaster:email.uri.action(noCacheHash:'true', absolute:'true', pageUid:'{page.uid}')}"
                                            style="color: #E64415; font-size: 18px; line-height:22px; font-weight: 600; text-decoration: none;">
-                                            <f:format.date format="d.m.Y">{page.crdate}</f:format.date>: {news.title}
+                                            <f:format.date format="d.m.Y">{news.crdate}</f:format.date>: {news.title}
                                         </a>
                                     </td>
                                 </tr>

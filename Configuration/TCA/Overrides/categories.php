@@ -22,10 +22,10 @@ call_user_func(
         ];
 
         // Add TCA
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tx_rkwprojects_domain_model_projects', $tempColumns);
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_category', $tempColumns);
 
         // Add field
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tx_rkwprojects_domain_model_projects','tx_rkwalerts_enable_alerts', '', 'after:visibility');
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_category','tx_rkwalerts_enable_alerts', '', 'after:parent');
 
     },
     'rkw_alerts'

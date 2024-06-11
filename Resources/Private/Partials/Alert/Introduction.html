@@ -14,7 +14,7 @@
 					<f:if condition="{displayForm}">
 						<f:then>
 							<f:format.raw>
-								<f:translate key="partials_alerts_introduction.text1" arguments="{0 : project.name}" />
+								<f:translate key="partials_alerts_introduction.text1" arguments="{0 : category.title}" />
 
 								<f:comment><!-- Check if user is logged in --></f:comment>
 								<f:if condition="{frontendUser}">

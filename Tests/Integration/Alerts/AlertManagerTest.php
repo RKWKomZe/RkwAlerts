@@ -507,7 +507,7 @@ class AlertManagerTest extends FunctionalTestCase
         $request = $this->objectManager->get(Request::class);
 
         static::expectException(\RKW\RkwAlerts\Exception::class);
-        static::expectExceptionMessage('alertManager.error.projectInvalid');
+        static::expectExceptionMessage('alertManager.error.categoryInvalid');
 
         $this->subject->createAlert($request,$alert, null, 'valid@email.de');
     }
@@ -804,7 +804,7 @@ class AlertManagerTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByUid(140);
 
         static::expectException(\RKW\RkwAlerts\Exception::class);
-        static::expectExceptionMessage('alertManager.error.projectInvalid');
+        static::expectExceptionMessage('alertManager.error.categoryInvalid');
 
         $this->subject->saveAlert($alert, $frontendUser);
 
