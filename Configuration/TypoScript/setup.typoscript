@@ -7,47 +7,21 @@ config.tx_extbase {
     persistence {
         classes {
 
-            /*
-			RKW\RkwProjects\Domain\Model\Projects {
-				subclasses {
-					Tx_RkwAlerts_Project = RKW\RkwAlerts\Domain\Model\Project
-				}
-			}
-
-            RKW\RkwAlerts\Domain\Model\Project {
- 				mapping {
-                    tableName = tx_rkwprojects_domain_model_projects
-
-					# on pages tables it's the doktype
-					# if we set an value, we filter by it
-					# if we do not set anything, all pages are found
-					recordType =
-                }
-            }
-
-            */
-
-            #===============================================
-
-			\RKW\RkwProjects\Domain\Model\Pages {
-				subclasses {
-					Tx_RkwAlerts_Page = RKW\RkwAlerts\Domain\Model\Page
-
-				}
-			}
-
-            RKW\RkwAlerts\Domain\Model\Page {
+            RKW\RkwAlerts\Domain\Model\News {
                 mapping {
-                    tableName = pages
+                    tableName =  tx_news_domain_model_news
+                }
+            }
 
-					# on pages tables it's the doktype
-					# if we set an value, we filter by it
-					# if we do not set anything, all pages are found
-					recordType =
+            TYPO3\CMS\Extbase\Domain\Model\Category {
+                subclasses {
+                    Tx_RkwAlerts_News = RKW\RkwAlerts\Domain\Model\News
+
                 }
             }
 
             #===============================================
+
 
             RKW\RkwAlerts\Domain\Model\Category {
                 mapping {

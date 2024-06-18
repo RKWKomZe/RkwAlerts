@@ -7,6 +7,7 @@
 	</f:section>
 
 	<f:section name="Body">
+
 		<ajaxApi:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="1">
 			<div>
 				<p>
@@ -14,7 +15,7 @@
 					<f:if condition="{displayForm}">
 						<f:then>
 							<f:format.raw>
-								<f:translate key="partials_alerts_introduction.text1" arguments="{0 : category.title}" />
+								<f:translate key="partials_alerts_introduction.text1" />
 
 								<f:comment><!-- Check if user is logged in --></f:comment>
 								<f:if condition="{frontendUser}">

@@ -3,6 +3,8 @@
 namespace RKW\RkwAlerts\Domain\Repository;
 
 use RKW\RkwAlerts\Domain\Model\Category;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -52,6 +54,49 @@ class CategoryRepository extends AbstractRepository
     }
 
 
+
+    /**
+     * @param mixed $identifier
+     * @return object[]|QueryResultInterface
+     */
+    public function findEnabledByIdentifier($identifier)
+    {
+
+        $uid = $identifier instanceof AbstractEntity ? $identifier->getUid() : $identifier;
+
+        $query = $this->createQuery();
+        $query->matching(
+            $query->logicalAnd(
+                $query->equals('uid', $uid),
+                $query->equals('txRkwalertsEnableAlerts', true)
+            )
+        );
+
+        return $query->execute();
+    }
+
+
+
+    /**
+     * @param array $identifierList
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @throws InvalidQueryException
+     */
+    public function findEnabledByIdentifierMultiple(array $identifierList): QueryResultInterface
+    {
+        $query = $this->createQuery();
+        $query->matching(
+            $query->logicalAnd(
+                $query->in('uid', $identifierList),
+                $query->equals('txRkwalertsEnableAlerts', true)
+            )
+        );
+
+        return $query->execute();
+    }
+
+
+
     /**
      * Returns all categories of a given parent category
      *
@@ -65,6 +110,8 @@ class CategoryRepository extends AbstractRepository
         $constraints = array();
         $query = $this->createQuery();
 
+        $constraints[] = $query->equals('txRkwalertsEnableAlerts', true);
+
         $constraints[] = $query->equals('parent', $category);
         if (count($excludeCategories) > 0) {
             $constraints[] = $query->logicalNot($query->in('uid', $excludeCategories));
@@ -73,6 +120,7 @@ class CategoryRepository extends AbstractRepository
 
         return $query->execute();
     }
+
 
 
     /**

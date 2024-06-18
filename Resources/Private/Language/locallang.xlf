@@ -131,7 +131,7 @@
                 <source>Stay tuned!</source>
             </trans-unit>
             <trans-unit id="partials_alerts_introduction.text1">
-                <source><![CDATA[Always be up-to-date with RKW Alerts for topic "<strong>%s</strong>".]]></source>
+                <source>Always be up-to-date with RKW Alerts for topic.</source>
             </trans-unit>
             <trans-unit id="partials_alerts_introduction.text1_exists">
                 <source><![CDATA[Alert for topic "<strong>%s</strong>" is active.]]></source>
@@ -244,6 +244,13 @@
             <!-- Partials/Email/LinkList.html -->
             <trans-unit id="partials_email_linkList.readMore">
                 <source>read more</source>
+            </trans-unit>
+
+
+            <!-- Validator/CategoryValidator.html -->
+            <trans-unit id="categoryValidator.error.required">
+                <source>Please select at least one topic</source>
+                <target>Wählen Sie mindestens ein Thema aus, dass Sie interessiert.</target>
             </trans-unit>
 
 		</body>

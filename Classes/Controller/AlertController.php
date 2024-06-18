@@ -16,17 +16,24 @@ namespace RKW\RkwAlerts\Controller;
 
 use Madj2k\FeRegister\Utility\FrontendUserUtility;
 use RKW\RkwAlerts\Alerts\AlertManager;
+use RKW\RkwAlerts\Domain\Model\Alert;
 use RKW\RkwAlerts\Domain\Model\Category;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
 use Madj2k\FeRegister\Domain\Model\FrontendUser;
 use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
 use Madj2k\FeRegister\Registration\FrontendUserRegistration;
 use Madj2k\FeRegister\Utility\FrontendUserSessionUtility;
+use RKW\RkwAlerts\Domain\Repository\CategoryRepository;
 use RKW\RkwAlerts\Exception;
+use Solarium\Component\Debug;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -68,6 +75,15 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
 
 
     /**
+     * categoryRepository
+     *
+     * @var \RKW\RkwAlerts\Domain\Repository\CategoryRepository
+     * @TYPO3\CMS\Extbase\Annotation\Inject
+     */
+    protected ?CategoryRepository $categoryRepository = null;
+
+
+    /**
      * alertsManager
      *
      * @var \RKW\RkwAlerts\Alerts\AlertManager
@@ -87,7 +103,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      */
     public function injectFrontendUserRepository (FrontendUserRepository $frontendUserRepository)
     {
-        $this->frontendUserRepository= $frontendUserRepository;
+        $this->frontendUserRepository = $frontendUserRepository;
     }
 
 
@@ -96,7 +112,16 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      */
     public function injectAlertRepository (AlertRepository $alertRepository)
     {
-        $this->alertRepository= $alertRepository;
+        $this->alertRepository = $alertRepository;
+    }
+
+
+    /**
+     * @var \RKW\RkwAlerts\Domain\Repository\CategoryRepository
+     */
+    public function injectCategoryRepository (CategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
     }
 
 
@@ -143,6 +168,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
         \RKW\RkwAlerts\Domain\Model\Alert $alert = null,
         string $email = ''
     ): void {
+
         $this->newActionBase($alert, $email);
     }
 
@@ -170,10 +196,11 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * basic functions for action new
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert|null $alert
-     * @param string $email
+     * @param string                                 $email
      * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("alert")
      * @return void
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws InvalidQueryException
      */
     protected function newActionBase (
         \RKW\RkwAlerts\Domain\Model\Alert $alert = null,
@@ -181,18 +208,34 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
     ): void {
 
 
-        // @toDo: Get Category by given TxNews-Item, or - if set - by flexform
-        // @toDo: Get Category by given TxNews-Item, or - if set - by flexform
-        // @toDo: Get Category by given TxNews-Item, or - if set - by flexform
+        $formData = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('tx_news_pi1');
 
+        // @toDo: Get Category by given TxNews-Item, or - if set - by flexform
+        // @toDo: Get Category by given TxNews-Item, or - if set - by flexform
+        // @toDo: Get Category by given TxNews-Item, or - if set - by flexform
+        if (
+            key_exists('news', $formData)
+            && key_exists('action', $formData)
+            && $formData['action'] == 'detail'
+        ) {
+            // NEWS DETAIL PAGE
+
+            $categoryList = $this->alertManager->getSubscribableCategoryByNewsUid(intval($formData['news']));
+
+        }
+        elseif (!empty($this->settings['categoriesList'])) {
+            // FLEXFORM
+
+            $categoryList = $this->categoryRepository->findEnabledByIdentifierMultiple(
+                \Madj2k\CoreExtended\Utility\GeneralUtility::trimExplode(',', $this->settings['categoriesList'])
+            );
+        }
 
         /** @var \RKW\RkwAlerts\Domain\Model\Category $category */
-        $category = $this->alertManager->getSubscribableCategoryByNewsUid(intval($newsId));
-        if ($category instanceof Category) {
-
-            // some basic parameters
-            $frontendUser = $this->getFrontendUser();
-            $displayForm = true;
+        if (
+            is_countable($categoryList)
+            && count($categoryList)
+        ) {
 
             // Important security measure because of Varnish:
             // only set individual params if the form was submitted OR if it was loaded via AJAX!
@@ -201,22 +244,12 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
                 || ($this->ajaxHelper->getIsAjaxCall())
             ){
 
-                // check if alert already exists when user is logged in
-                /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser */
-                if (
-                    ($frontendUser)
-                    && ($this->alertManager->hasEmailSubscribedToCategory($frontendUser, $category))
-                ) {
-                    $displayForm = false;
-                }
-
                 $this->view->assignMultiple(
                     [
                         'alert'             => $alert,
-                        'frontendUser'      => $frontendUser,
-                        'category'          => $category,
+                        'frontendUser'      => $this->getFrontendUser(),
+                        'categoryList'      => $categoryList,
                         'email'             => $email,
-                        'displayForm'       => $displayForm,
                     ]
                 );
 
@@ -227,12 +260,15 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
                 $this->view->assignMultiple(
                     [
                         'alert'             => $alert,
-                        'category'          => $category,
-                        'displayForm'       => $displayForm,
+                        'categoryList'      => $categoryList,
+
+                        // just for development. Remove "displayForm" later
+                        'displayForm'       => true,
                     ]
                 );
             }
         }
+
     }
 
 
@@ -240,11 +276,13 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * action create
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
-     * @param string $email
+     * @param string                            $email
+     * @param array                             $newCategoryList
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws InvalidQueryException|Exception
+     * @TYPO3\CMS\Extbase\Annotation\Validate("RKW\RkwAlerts\Validation\CategoryValidator", param="newCategoryList")
      * @TYPO3\CMS\Extbase\Annotation\Validate("Madj2k\FeRegister\Validation\Consent\TermsValidator", param="alert")
      * @TYPO3\CMS\Extbase\Annotation\Validate("Madj2k\FeRegister\Validation\Consent\PrivacyValidator", param="alert")
      * @TYPO3\CMS\Extbase\Annotation\Validate("Madj2k\FeRegister\Validation\Consent\MarketingValidator", param="alert")
@@ -252,58 +290,48 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      */
     public function createAction(
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
-        string $email = ''
+        string $email = '',
+        array $newCategoryList = []
     ): void {
 
-        try {
+        $categoryList = $this->categoryRepository->findEnabledByIdentifierMultiple($newCategoryList);
 
-            $result = $this->alertManager->createAlert(
-                $this->request,
-                $alert,
-                $this->getFrontendUser(),
-                $email
-            );
+        /** @var Category $category */
+        foreach ($categoryList as $category) {
 
-            if ($result) {
-                $this->addFlashMessage(
-                    LocalizationUtility::translate(
-                        'alertController.message.create_' . $result,
-                        'rkw_alerts'
-                    )
+            $newAlert = GeneralUtility::makeInstance(Alert::class);
+            $newAlert->setCategory($category);
+
+            if ($this->getFrontendUser() instanceof FrontendUser) {
+
+                $flashMessage = $this->alertManager->createAlertLoggedUser(
+                    $this->request,
+                    $newAlert,
+                    $this->getFrontendUser()
                 );
+
             } else {
+
+                $flashMessage = $this->alertManager->createAlertByEmail(
+                    $this->request,
+                    $newAlert,
+                    $email
+                );
+
+            }
+
+            if ($flashMessage->getMessage()) {
                 $this->addFlashMessage(
-                    LocalizationUtility::translate(
-                        'alertController.error.create',
-                        'rkw_alerts'
-                    ),
-                    '',
-                    AbstractMessage::ERROR
+                    $flashMessage->getMessage(),
+                    $flashMessage->getTitle(),
+                    $flashMessage->getSeverity()
                 );
             }
 
-
-        } catch (Exception $exception) {
-
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    $exception->getMessage(),
-                    'rkw_alerts'
-                ),
-                '',
-                AbstractMessage::ERROR
-            );
-
-            $this->forward('new', null, null,
-                [
-                    'alert' => $alert,
-                    'email' => $email,
-                ]
-            );
         }
 
-        $this->redirect('newNonCached');
 
+        $this->redirect('newNonCached');
     }
 
 
@@ -337,6 +365,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
             ->setRequest($this->request)
             ->validateOptIn($token);
 
+
         if ($result >= 200 && $result < 300) {
 
             $this->addFlashMessage(
@@ -345,7 +374,11 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
                 )
             );
 
-        } elseif ($result >= 300 && $result < 400) {
+        } elseif (
+            $result >= 300
+            && $result < 400
+            && $result != 302
+        ) {
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(

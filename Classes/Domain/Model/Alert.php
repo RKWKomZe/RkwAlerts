@@ -35,7 +35,7 @@ class Alert extends AbstractCaptcha
     protected ?FrontendUser $frontendUser = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Domain\Model\Category|null
+     * @var \RKW\RkwAlerts\Domain\Model\Category|null
      */
     protected ?Category $category = null;
 
@@ -80,7 +80,7 @@ class Alert extends AbstractCaptcha
      * @param \RKW\RkwAlerts\Domain\Model\Category $category
      * @return void
      */
-    public function setCategory(\RKW\RkwAlerts\Domain\Model\Category $category): void
+    public function setCategory(\RKW\RkwAlerts\Domain\Model\Category $category = null): void
     {
         $this->category = $category;
     }

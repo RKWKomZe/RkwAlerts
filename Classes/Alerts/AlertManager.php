@@ -16,7 +16,6 @@ namespace RKW\RkwAlerts\Alerts;
 
 use Madj2k\FeRegister\Utility\FrontendUserSessionUtility;
 use Madj2k\Postmaster\Mail\MailMessage;
-use Madj2k\Postmaster\Tracking\ClickTracker;
 use RKW\RkwAlerts\Domain\Model\Category;
 use RKW\RkwAlerts\Domain\Model\News;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
@@ -24,15 +23,19 @@ use RKW\RkwAlerts\Domain\Repository\CategoryRepository;
 use RKW\RkwAlerts\Domain\Repository\NewsRepository;
 use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility as FrontendLocalizationUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use Madj2k\CoreExtended\Utility\GeneralUtility;
-use Madj2k\Postmaster\Mail\MailMassage;
 use Madj2k\FeRegister\Domain\Model\FrontendUser;
 use Madj2k\FeRegister\Registration\FrontendUserRegistration;
 use RKW\RkwAlerts\Exception;
@@ -123,11 +126,22 @@ class AlertManager
      */
     protected ?PersistenceManager $persistenceManager = null;
 
+    /**
+     * @var \TYPO3\CMS\Core\Messaging\FlashMessage|null
+     */
+    protected ?FlashMessage $flashMessage = null;
 
     /**
      * @var \TYPO3\CMS\Core\Log\Logger|null
      */
     protected ?Logger $logger = null;
+
+
+    public function __construct()
+    {
+        $this->flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FlashMessage::class, '');
+    }
+
 
 
     /**
@@ -187,31 +201,34 @@ class AlertManager
      * alerts are activated for that category
      *
      * @param int $newsUid The news uid
-     * @return \RKW\RkwAlerts\Domain\Model\Category|null
+     * @return array
      */
-    public function getSubscribableCategoryByNewsUid(int $newsUid):? Category
+    public function getSubscribableCategoryByNewsUid(int $newsUid):? array
     {
-        /**
-         * @var $news \RKW\RkwAlerts\Domain\Model\News
-         * @var $categoryTemp \RKW\RkwAlerts\Domain\Model\Category
-         * @var $category \RKW\RkwAlerts\Domain\Model\Category
-         */
+        $categoryList = [];
+
+        /** @var $news \RKW\RkwAlerts\Domain\Model\News */
         $news = $this->newsRepository->findByIdentifier($newsUid);
 
         if ($news instanceof News) {
 
             /** @var \GeorgRinger\News\Domain\Model\Category $newsCategory */
             foreach ($news->getCategories() as $newsCategory) {
+
+                $alertsCategory = $this->categoryRepository->findByIdentifier($newsCategory->getUid());
                 /** @var \RKW\RkwAlerts\Domain\Model\Category $alertsCategory */
                 if (
-                    $alertsCategory = $this->categoryRepository->findByIdentifier($newsCategory->getUid())
-                    && $alertsCategory->getTxRkwAlertsEnableAlerts()
+                    $alertsCategory instanceof Category
+                    && $alertsCategory->getTxRkwalertsEnableAlerts()
                 ) {
-                    return $alertsCategory;
+                    $categoryList[] = $alertsCategory;
                 }
             }
+
+            return $categoryList;
         }
-        return null;
+
+        return $categoryList;
     }
 
 
@@ -297,60 +314,38 @@ class AlertManager
      * Create Alert
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
-     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser|null $frontendUser
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @param \TYPO3\CMS\Extbase\Mvc\Request|null $request
-     * @param string $email
-     * @return int
+     * @return FlashMessage
      * @throws \RKW\RkwAlerts\Exception
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
-    public function createAlert (
+    public function createAlertLoggedUser (
         \TYPO3\CMS\Extbase\Mvc\Request $request,
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
-        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser = null,
-        string $email = ''
-    ) : int  {
-
-        // settings for logged-in users
-        if (
-            ($frontendUser)
-            && (! $frontendUser->_isNew())
-        ) {
-            $email = $frontendUser->getEmail();
-        }
-
-        // check given e-mail
-        if (! \Madj2k\FeRegister\Utility\FrontendUserUtility::isEmailValid($email)) {
-            throw new Exception('alertManager.error.invalidEmail');
-        }
-
-        // check if alert has subscribable category
-        if (
-            (! $category = $alert->getCategory())
-            || (! $category->getTxRkwalertsEnableAlerts())
-        ){
-            throw new Exception('alertManager.error.categoryInvalid');
-        }
-
-        // check if subscription exists already based on email
-        if (
-            ($email)
-            && ($this->hasEmailSubscribedToCategory($email, $alert->getCategory()))
-        ){
-            throw new Exception('alertManager.error.alreadySubscribed');
-        }
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
+    ) : FlashMessage  {
 
         //==========================================================
         // check if user is logged in
         if (
-            ($frontendUser)
-            && (! $frontendUser->_isNew())
-            && (FrontendUserSessionUtility::isUserLoggedIn($frontendUser))
+            ! $frontendUser->_isNew()
+            && FrontendUserSessionUtility::isUserLoggedIn($frontendUser)
         ) {
 
-            // check if subscription exists already
-            if ($this->hasFrontendUserSubscribedToCategory($frontendUser, $alert->getCategory())) {
-                throw new Exception('alertManager.error.alreadySubscribed');
+            // check if subscription exists already based on email
+            if (
+                ($frontendUser->getEmail())
+                && ($this->hasEmailSubscribedToCategory($frontendUser->getEmail(), $alert->getCategory()))
+            ){
+
+                $this->flashMessage->setSeverity(AbstractMessage::INFO);
+                $this->flashMessage->setMessage(LocalizationUtility::translate(
+                    'alertManager.error.alreadySubscribed',
+                    'rkw_alerts'
+                ));
+
+                return $this->flashMessage;
             }
 
             try {
@@ -368,21 +363,26 @@ class AlertManager
 
                     // log it
                     $this->getLogger()->log(
-                        \TYPO3\CMS\Core\Log\LogLevel::INFO,
+                        LogLevel::INFO,
                         sprintf(
                             'Successfully created alert for user with uid %s.',
                             $frontendUser->getUid()
                         )
                     );
 
-                    return 1;
+                    $this->flashMessage->setMessage(LocalizationUtility::translate(
+                        'alertController.message.create_1',
+                        'rkw_alerts'
+                    ));
+
+                    return $this->flashMessage;
                 }
 
             } catch (\Exception $e) {
 
                 // log error
                 $this->getLogger()->log(
-                    \TYPO3\CMS\Core\Log\LogLevel::ERROR,
+                    LogLevel::ERROR,
                     sprintf(
                         'Could not create alert for existing user with uid %s: %s',
                         $frontendUser->getUid(),
@@ -391,58 +391,106 @@ class AlertManager
                 );
             }
 
-        //==========================================================
-        // if user is NOT logged in, we send an opt-in mail
-        // this covers two cases:
-        // 1) user already exists
-        // 2) user does not exist and needs to be created
-        } else {
+        }
+
+        return $this->flashMessage;
+    }
+
+
+    /**
+     * Create Alert
+     *
+     * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser|null $frontendUser
+     * @param \TYPO3\CMS\Extbase\Mvc\Request|null $request
+     * @param string $email
+     * @return string
+     * @throws \RKW\RkwAlerts\Exception
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     */
+    public function createAlertByEmail (
+        \TYPO3\CMS\Extbase\Mvc\Request $request,
+        \RKW\RkwAlerts\Domain\Model\Alert $alert,
+        string $email = ''
+    ) : string  {
+
+        // check given e-mail
+        if (! \Madj2k\FeRegister\Utility\FrontendUserUtility::isEmailValid($email)) {
+
+            $this->flashMessage->setSeverity(AbstractMessage::WARNING);
+            $this->flashMessage->setMessage(LocalizationUtility::translate(
+                'alertManager.error.invalidEmail',
+                'rkw_alerts'
+            ));
+
+            return $this->flashMessage;
+
+        }
+
+
+
+        // check if subscription exists already based on email
+        /*
+        if (
+            ($email)
+            && ($this->hasEmailSubscribedToCategory($email, $alert->getCategory()))
+        ){
+            throw new Exception('alertManager.error.alreadySubscribed');
+        }
+        */
+
 
             // register new user or simply send opt-in to existing user
             // we also submit the email as additional data to register-function since a logged in user
             // may use a different email and we have to update it after(!!!) opt-in!
-            try {
+        try {
 
-                /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
-                $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FrontendUser::class);
-                $frontendUser->setEmail($email);
+            //    DebuggerUtility::var_dump($alert); exit;
 
-                /** @var \Madj2k\FeRegister\Registration\FrontendUserRegistration $registration */
-                $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-                $registration = $objectManager->get(FrontendUserRegistration::class);
-                $registration->setFrontendUser($frontendUser)
-                    ->setData($alert)
-                    ->setDataParent($alert->getCategory())
-                    ->setCategory('rkwAlerts')
-                    ->setRequest($request)
-                    ->startRegistration();
+            /** @var \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser */
+            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FrontendUser::class);
+            $frontendUser->setEmail($email);
 
-                // log it
-                $this->getLogger()->log(
-                    \TYPO3\CMS\Core\Log\LogLevel::INFO,
-                    sprintf(
-                        'Successfully created alert for user with email %s.',
-                        $email
-                    )
-                );
+            /** @var \Madj2k\FeRegister\Registration\FrontendUserRegistration $registration */
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+            $registration = $objectManager->get(FrontendUserRegistration::class);
+            $registration->setFrontendUser($frontendUser)
+                ->setData($alert)
+                ->setDataParent($alert->getCategory())
+                ->setCategory('rkwAlerts')
+                ->setRequest($request)
+                ->startRegistration();
 
-                return 2;
+            // log it
+            $this->getLogger()->log(
+                LogLevel::INFO,
+                sprintf(
+                    'Successfully created alert for user with email %s.',
+                    $email
+                )
+            );
 
-            } catch (\Exception $e) {
+            $this->flashMessage->setMessage(LocalizationUtility::translate(
+                'alertController.message.create_2',
+                'rkw_alerts'
+            ));
 
-                // log error
-                $this->getLogger()->log(
-                    \TYPO3\CMS\Core\Log\LogLevel::ERROR,
-                    sprintf(
-                        'Could not create alert for user with email %s: %s',
-                        $email,
-                        $e->getMessage()
-                    )
-                );
-            }
+            return $this->flashMessage;
+
+        } catch (\Exception $e) {
+
+            // log error
+            $this->getLogger()->log(
+                \TYPO3\CMS\Core\Log\LogLevel::ERROR,
+                sprintf(
+                    'Could not create alert for user with email %s: %s',
+                    $email,
+                    $e->getMessage()
+                )
+            );
         }
 
-        return 0;
+        return $this->flashMessage;
     }
 
 
@@ -504,7 +552,7 @@ class AlertManager
 
             // log
             $this->getLogger()->log(
-                \TYPO3\CMS\Core\Log\LogLevel::INFO,
+                LogLevel::INFO,
                 sprintf(
                     'Saved alert with uid %s of user with uid %s.',
                     $alert->getUid(),
@@ -518,7 +566,7 @@ class AlertManager
 
             // log error
             $this->getLogger()->log(
-                \TYPO3\CMS\Core\Log\LogLevel::ERROR,
+                LogLevel::ERROR,
                 sprintf(
                     'Could not create alert for user with uid %s: %s',
                     $frontendUser->getUid(),
@@ -614,7 +662,7 @@ class AlertManager
 
             // log
             $this->getLogger()->log(
-                \TYPO3\CMS\Core\Log\LogLevel::INFO,
+                LogLevel::INFO,
                 sprintf(
                     'Deleted alert with uid %s of user with uid %s.',
                     $alert->getUid(),
@@ -628,7 +676,7 @@ class AlertManager
 
             // log error
             $this->getLogger()->log(
-                \TYPO3\CMS\Core\Log\LogLevel::ERROR,
+                LogLevel::ERROR,
                 sprintf(
                     'Could not delete alert with uid %s of user with uid %s: %s',
                     $alert->getUid(),
@@ -675,7 +723,7 @@ class AlertManager
                     // log error and continue!
                     $status = false;
                     $this->getLogger()->log(
-                        \TYPO3\CMS\Core\Log\LogLevel::ERROR,
+                        LogLevel::ERROR,
                         sprintf(
                             'Error while trying to delete a list of alerts of user with uid %s: %s',
                             $frontendUser->getUid(),
@@ -728,7 +776,7 @@ class AlertManager
 
                 // log
                 $this->getLogger()->log(
-                    \TYPO3\CMS\Core\Log\LogLevel::INFO,
+                    LogLevel::INFO,
                     sprintf(
                         'Deleted all alerts of user with uid %s.',
                         $frontendUser->getUid()
@@ -741,7 +789,7 @@ class AlertManager
 
             // log error
             $this->getLogger()->log(
-                \TYPO3\CMS\Core\Log\LogLevel::ERROR,
+                LogLevel::ERROR,
                 sprintf(
                     'Error while trying to delete all alerts of user with uid %s: %s',
                     $frontendUser->getUid(),
@@ -783,7 +831,7 @@ class AlertManager
 
                         $result[$category->getUid()] = [
                             'category' => $category,
-                            'news' => $newsObjectStorage
+                            'news' => $newsObjectStorage,
                         ];
 
                     } else {
@@ -865,7 +913,7 @@ class AlertManager
                                                 'alert'        => $alert,
                                                 'frontendUser' => $frontendUser,
                                                 'loginPid'     => intval($settings['settings']['loginPid']),
-                                                'news'        => $newsList
+                                                'news'        => $newsList,
                                             ),
                                             'subject' => FrontendLocalizationUtility::translate(
                                                 'rkwMailService.sendAlert.subject',
@@ -900,7 +948,7 @@ class AlertManager
                                 $recipientCountGlobal += $recipientCount;
                                 $mailService->send();
                                 $this->getLogger()->log(
-                                    \TYPO3\CMS\Core\Log\LogLevel::INFO,
+                                    LogLevel::INFO,
                                     sprintf(
                                         'Successfully sent alert notification for category with id %s with %s recipients.',
                                         $categoryUid,
@@ -910,7 +958,7 @@ class AlertManager
 
                             } else {
                                 $this->getLogger()->log(
-                                    \TYPO3\CMS\Core\Log\LogLevel::DEBUG,
+                                    LogLevel::DEBUG,
                                     sprintf(
                                         'No valid recipients found for alert notification for category with id %s.',
                                         $categoryUid
@@ -922,7 +970,7 @@ class AlertManager
 
                             // log error
                             $this->getLogger()->log(
-                                \TYPO3\CMS\Core\Log\LogLevel::ERROR,
+                                LogLevel::ERROR,
                                 sprintf(
                                     'Error while trying to send an alert notification for category with uid %s: %s',
                                     $categoryUid,
@@ -934,7 +982,7 @@ class AlertManager
 
                     if ($debugMail) {
                         $this->getLogger()->log(
-                            \TYPO3\CMS\Core\Log\LogLevel::WARNING,
+                            LogLevel::WARNING,
                             sprintf(
                                 'You are running this script in debug-mode. All e-mails are sent to %s. News will not be marked as sent.',
                                 $debugMail
@@ -956,7 +1004,7 @@ class AlertManager
             }
 
             $this->getLogger()->log(
-                \TYPO3\CMS\Core\Log\LogLevel::INFO,
+                LogLevel::INFO,
                 sprintf(
                     'Found %s categories for alert notifications.',
                     count($results)
@@ -965,7 +1013,7 @@ class AlertManager
 
         } else {
             $this->getLogger()->log(
-                \TYPO3\CMS\Core\Log\LogLevel::INFO,
+                LogLevel::INFO,
                 sprintf('No categories found for alert notifications.')
             );
         }

@@ -171,8 +171,8 @@
                 <target>Bleiben Sie auf dem Laufenden!</target>
             </trans-unit>
             <trans-unit id="partials_alerts_introduction.text1">
-                <source><![CDATA[Always be up-to-date with RKW Alerts for topic "<strong>%s</strong>".]]></source>
-                <target><![CDATA[Mit unseren RKW Alerts bleiben Sie immer auf dem Laufenden. Wir informieren Sie automatisch und kostenlos, sobald es etwas Neues zum Thema "<strong>%s</strong>" auf unserer Website gibt.]]></target>
+                <source>Always be up-to-date with RKW Alerts for topic.</source>
+                <target>Mit unseren RKW Alerts bleiben Sie immer auf dem Laufenden. Wir informieren Sie automatisch und kostenlos, sobald es etwas Neues zum Thema auf unserer Website gibt.</target>
             </trans-unit>
             <trans-unit id="partials_alerts_introduction.text1_exists">
                 <source><![CDATA[Alert for topic "<strong>%s</strong>" is active.]]></source>
@@ -315,6 +315,13 @@
             <trans-unit id="partials_email_linkList.readMore">
                 <source>read more</source>
                 <target>mehr lesen</target>
+            </trans-unit>
+
+
+            <!-- Validator/CategoryValidator.html -->
+            <trans-unit id="categoryValidator.error.required">
+                <source>Please select at least one topic</source>
+                <target>Wählen Sie mindestens ein Thema aus, für das Sie sich interessieren.</target>
             </trans-unit>
 
         </body>

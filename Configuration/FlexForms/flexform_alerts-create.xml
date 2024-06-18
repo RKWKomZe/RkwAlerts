@@ -10,11 +10,12 @@
                             <label>LLL:EXT:rkw_alerts/Resources/Private/Language/locallang_db.xlf:flexform.alerts.sheetTitle</label>
                             <config>
                                 <type>select</type>
+                                <renderMode>tree</renderMode>
+                                <renderType>selectTree</renderType>
                                 <autoSizeMax>50</autoSizeMax>
                                 <foreign_table>sys_category</foreign_table>
                                 <foreign_table_where> AND sys_category.sys_language_uid IN (-1, 0) ORDER BY sys_category.title ASC</foreign_table_where>
                                 <maxitems>9999</maxitems>
-                                <minitems>1</minitems>
                                 <renderMode>tree</renderMode>
                                 <size>10</size>
                                 <treeConfig>

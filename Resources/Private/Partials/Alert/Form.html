@@ -8,45 +8,47 @@
 
 		<ajaxApi:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="2">
 
-			<f:comment><!-- Check if form is to be displayed --></f:comment>
-			<f:if condition="{displayForm}">
-				<div class="flex-container">
-					<div class="flex-basis-8 full-width-medium">
-						<div class="form">
-							<f:if condition="{frontendUser}">
-								<f:else>
-									<div class="form__field width50">
-										<label for="email"><f:translate key="partials_alerts_form.labelEmail" /></label>
-										<f:form.textfield type="email" name="email" id="email" value="{email}" additionalAttributes="{autocomplete: 'email', aria-required: 'true'}" />
-									</div>
-								</f:else>
-							</f:if>
+            <div class="flex-container">
+                <div class="flex-basis-8 full-width-medium">
+                    <div class="form">
 
-							<div class="form__approval">
-								<f:if condition="{frontendUser}">
-									<f:then>
-                                        <feRegister:consent  type="privacy" key="defaultAlternative" />
-                                        <feRegister:consent type="marketing" />
-                                    </f:then>
-									<f:else>
-                                        <feRegister:consent type="terms" />
-                                        <feRegister:consent type="privacy" key="default" />
-                                        <feRegister:consent type="marketing" />
-									</f:else>
-								</f:if>
 
-                                <f:render partial="CaptchaElement" />
-                                
-                                <div class="form__field flex space-start full-width-narrow">
-									<button class="btn btn--primary full-width-narrow" name="alerts-submit">
-										<f:translate key="partials_alerts_form.labelCreateNew" />
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</f:if>
+                        <f:comment><!-- category list --></f:comment>
+                        <f:render partial="Alert/Form/Category" arguments="{_all}" />
+
+                        <f:if condition="{frontendUser}">
+                            <f:else>
+                                <div class="form__field width50">
+                                    <label for="email"><f:translate key="partials_alerts_form.labelEmail" /></label>
+                                    <f:form.textfield type="email" name="email" id="email" value="{email}" additionalAttributes="{autocomplete: 'email', aria-required: 'true'}" />
+                                </div>
+                            </f:else>
+                        </f:if>
+
+                        <div class="form__approval">
+                            <f:if condition="{frontendUser}">
+                                <f:then>
+                                    <feRegister:consent type="privacy" key="defaultAlternative" />
+                                    <feRegister:consent type="marketing" />
+                                </f:then>
+                                <f:else>
+                                    <feRegister:consent type="terms" />
+                                    <feRegister:consent type="privacy" key="default" />
+                                    <feRegister:consent type="marketing" />
+                                </f:else>
+                            </f:if>
+
+                            <f:render partial="CaptchaElement" />
+
+                            <div class="form__field flex space-start full-width-narrow">
+                                <button class="btn btn--primary full-width-narrow" name="alerts-submit">
+                                    <f:translate key="partials_alerts_form.labelCreateNew" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 		</ajaxApi:ajaxWrapper>
 	</f:form>
 </html>
