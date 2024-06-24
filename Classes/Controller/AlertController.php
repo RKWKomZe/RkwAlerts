@@ -320,7 +320,10 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
 
             }
 
-            if ($flashMessage->getMessage()) {
+            if (
+
+                $flashMessage->getMessage()
+            ) {
                 $this->addFlashMessage(
                     $flashMessage->getMessage(),
                     $flashMessage->getTitle(),

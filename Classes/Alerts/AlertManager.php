@@ -404,7 +404,7 @@ class AlertManager
      * @param \Madj2k\FeRegister\Domain\Model\FrontendUser|null $frontendUser
      * @param \TYPO3\CMS\Extbase\Mvc\Request|null $request
      * @param string $email
-     * @return string
+     * @return FlashMessage
      * @throws \RKW\RkwAlerts\Exception
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
@@ -412,7 +412,7 @@ class AlertManager
         \TYPO3\CMS\Extbase\Mvc\Request $request,
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
         string $email = ''
-    ) : string  {
+    ) : FlashMessage  {
 
         // check given e-mail
         if (! \Madj2k\FeRegister\Utility\FrontendUserUtility::isEmailValid($email)) {
