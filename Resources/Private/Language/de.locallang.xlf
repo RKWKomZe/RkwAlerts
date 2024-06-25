@@ -67,7 +67,7 @@
             </trans-unit>
             <trans-unit id="alertController.message.create_1">
                 <source>Woohoo! Alert successfully created.</source>
-                <target>Woohoo! Der RKW Alert wurde angelegt.</target>
+                <target>Woohoo! Deine RKW Alert-Themen wurden erfolgreich aktualisiert.</target>
             </trans-unit>
             <trans-unit id="alertController.message.create_2">
                 <source>An e-mail has been send to you. Please click the link in the e-mail to confirm your request.</source>
@@ -213,8 +213,8 @@
                 <target>Bestätigungslink für RKW Alerts</target>
             </trans-unit>
             <trans-unit id="rkwMailService.confirmAlertUser.subject">
-                <source>NRKW Alert for topic "%s" activated</source>
-                <target>RKW Alert zum Thema "%s" erfolgreich angelegt</target>
+                <source>RKW Alert activated</source>
+                <target>RKW Alert erfolgreich angelegt</target>
             </trans-unit>
             <trans-unit id="rkwMailService.cancelAllUser.subject">
                 <source>Your RKW Alerts have been canceled</source>
@@ -237,8 +237,8 @@
                 <target>Hallo,</target>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.text1">
-                <source>thank you for your interest in RKW Alerts for the topic "%s".</source>
-                <target>wir freuen uns, dass Sie unsere RKW Alerts zum Thema "%s" erhalten möchten.</target>
+                <source>thank you for your interest in RKW Alerts for the following topics:</source>
+                <target>wir freuen uns, dass Sie unsere RKW Alerts zu folgenden Themen erhalten möchten:</target>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptIn">
                 <source>Click here to confirm your request:</source>
@@ -246,7 +246,7 @@
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptInLinkLabel">
                 <source>Yes, send me alerts</source>
-                <target>Ja, ich möchte RKW Alerts zu diesem Thema erhalten</target>
+                <target>Ja, ich möchte RKW Alerts zu diesem Thema / diesen Themen erhalten</target>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptOut">
                 <source>Click here to cancel your request:</source>
@@ -254,7 +254,7 @@
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptOutLinkLabel">
                 <source>No, thank you</source>
-                <target>Nein, ich möchte keine RKW Alerts zu diesem Thema erhalten</target>
+                <target>Nein, ich möchte keine RKW Alerts zu diesem Thema / diesen Themen erhalten</target>
             </trans-unit>
 
 
@@ -264,8 +264,8 @@
                 <target>Hallo,</target>
             </trans-unit>
             <trans-unit id="templates_email_confirmAlertUser.text1">
-                <source>thank you for your interest in RKW Alerts for the topic "%s". Shortly we will send you the first RKW Alert to this e-mail address.</source>
-                <target>wir freuen uns, dass Sie unsere RKW Alerts zum Thema "%s" erhalten möchten. In Kürze werden wir Ihnen den ersten RKW Alert an diese E-Mailadresse senden.</target>
+                <source>thank you for your interest in RKW Alerts. Shortly we will send you the first RKW Alert to this e-mail address:</source>
+                <target>wir freuen uns, dass Sie unsere RKW Alerts erhalten möchten. In Kürze werden wir Ihnen den ersten RKW Alert an diese E-Mailadresse mit folgenden Themen senden:</target>
             </trans-unit>
             <trans-unit id="templates_email_confirmAlertUser.loginLinkLabel">
                 <source>Log in here to adjust settings or cancel alerts.</source>

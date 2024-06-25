@@ -183,7 +183,7 @@
                 <source>Hello,</source>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.text1">
-                <source>thank you for your interest in RKW Alerts for the topic "%s".</source>
+                <source>thank you for your interest in RKW Alerts for the following topics:</source>
             </trans-unit>
             <trans-unit id="templates_email_optInAlertUser.textOptIn">
                 <source>Click here to confirm your request:</source>

@@ -29,6 +29,7 @@ use Solarium\Component\Debug;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
@@ -208,19 +209,15 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
     ): void {
 
 
-        $formData = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('tx_news_pi1');
+        $newsDetailPageData = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('tx_news_pi1');
 
-        // @toDo: Get Category by given TxNews-Item, or - if set - by flexform
-        // @toDo: Get Category by given TxNews-Item, or - if set - by flexform
-        // @toDo: Get Category by given TxNews-Item, or - if set - by flexform
         if (
-            key_exists('news', $formData)
-            && key_exists('action', $formData)
-            && $formData['action'] == 'detail'
+            key_exists('news', $newsDetailPageData)
+            && key_exists('action', $newsDetailPageData)
+            && $newsDetailPageData['action'] == 'detail'
         ) {
             // NEWS DETAIL PAGE
-
-            $categoryList = $this->alertManager->getSubscribableCategoryByNewsUid(intval($formData['news']));
+            $categoryList = $this->alertManager->getSubscribableCategoryByNewsUid(intval($newsDetailPageData['news']));
 
         }
         elseif (!empty($this->settings['categoriesList'])) {
@@ -296,43 +293,48 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
 
         $categoryList = $this->categoryRepository->findEnabledByIdentifierMultiple($newCategoryList);
 
+        // create categoryList
+        $newAlertsArray = [];
         /** @var Category $category */
         foreach ($categoryList as $category) {
 
             $newAlert = GeneralUtility::makeInstance(Alert::class);
             $newAlert->setCategory($category);
 
-            if ($this->getFrontendUser() instanceof FrontendUser) {
+            $newAlertsArray[] = $newAlert;
+        }
 
-                $flashMessage = $this->alertManager->createAlertLoggedUser(
-                    $this->request,
-                    $newAlert,
-                    $this->getFrontendUser()
-                );
 
-            } else {
+        // register alerts
+        if ($this->getFrontendUser() instanceof FrontendUser) {
 
-                $flashMessage = $this->alertManager->createAlertByEmail(
-                    $this->request,
-                    $newAlert,
-                    $email
-                );
+            // logged user
+            $this->alertManager->createAlertLoggedUser(
+                $this->request,
+                $newAlertsArray,
+                $this->getFrontendUser()
+            );
 
-            }
+        } else {
 
-            if (
-
-                $flashMessage->getMessage()
-            ) {
-                $this->addFlashMessage(
-                    $flashMessage->getMessage(),
-                    $flashMessage->getTitle(),
-                    $flashMessage->getSeverity()
-                );
-            }
+            // by email
+            $this->alertManager->createAlertByEmail(
+                $this->request,
+                $alert,
+                $email,
+                $newAlertsArray
+            );
 
         }
 
+        // transform AlertMessages to ControllerMessages
+        foreach ($this->alertManager->getFlashMessages() as $flashMessage) {
+            $this->addFlashMessage(
+                $flashMessage->getMessage(),
+                $flashMessage->getTitle(),
+                $flashMessage->getSeverity()
+            );
+        }
 
         $this->redirect('newNonCached');
     }

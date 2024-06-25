@@ -8,7 +8,8 @@
 	<f:section name="Plaintext"><postmaster:email.plaintextLineBreaks>
 	<postmaster:email.translate key="templates_email_confirmAlertUser.headline" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" />\n\n
 
-	<postmaster:email.translate key="templates_email_confirmAlertUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : alert.category.title}" />\n\n
+	<postmaster:email.translate key="templates_email_confirmAlertUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" />\n
+    <f:for each="{alertList}" as="alert" iteration="iter">{alert.category.title}<f:if condition="!{iter.isLast}">, </f:if></f:for>\n\n
 
 	<postmaster:email.translate key="templates_email_confirmAlertUser.loginLinkLabel" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts"/>:\n
 	<postmaster:email.uri.action absolute="true" pageUid="{loginPid}" noCacheHash="true" />
@@ -17,7 +18,12 @@
 	<!-- HTML -->
 	<f:section name="Html">
 		<h1><postmaster:email.translate key="templates_email_confirmAlertUser.headline" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" /></h1>
-		<p><postmaster:email.translate key="templates_email_confirmAlertUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : alert.category.title}"/></p>
+		<p><postmaster:email.translate key="templates_email_confirmAlertUser.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" /></p>
+        <p>
+            <f:for each="{alertList}" as="alert" iteration="iter">
+                <strong>{alert.category.title}</strong><f:if condition="!{iter.isLast}">, </f:if>
+            </f:for>
+        </p>
 		<p>
 			<a href="{postmaster:email.uri.action(absolute:'true', pageUid:'{loginPid}', noCacheHash:'true')}">
 				<postmaster:email.translate key="templates_email_confirmAlertUser.loginLinkLabel" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts"/>

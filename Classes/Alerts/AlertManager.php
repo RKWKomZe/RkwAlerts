@@ -16,6 +16,7 @@ namespace RKW\RkwAlerts\Alerts;
 
 use Madj2k\FeRegister\Utility\FrontendUserSessionUtility;
 use Madj2k\Postmaster\Mail\MailMessage;
+use phpDocumentor\Reflection\Types\Void_;
 use RKW\RkwAlerts\Domain\Model\Category;
 use RKW\RkwAlerts\Domain\Model\News;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
@@ -127,22 +128,14 @@ class AlertManager
     protected ?PersistenceManager $persistenceManager = null;
 
     /**
-     * @var \TYPO3\CMS\Core\Messaging\FlashMessage|null
+     * @var array
      */
-    protected ?FlashMessage $flashMessage = null;
+    protected array $flashMessageContainer = [];
 
     /**
      * @var \TYPO3\CMS\Core\Log\Logger|null
      */
     protected ?Logger $logger = null;
-
-
-    public function __construct()
-    {
-        $this->flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FlashMessage::class, '');
-    }
-
-
 
     /**
      * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
@@ -313,97 +306,97 @@ class AlertManager
     /**
      * Create Alert
      *
-     * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
-     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @param \TYPO3\CMS\Extbase\Mvc\Request|null $request
-     * @return FlashMessage
+     * @param array $newAlertsArray
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
+     * @return array
      * @throws \RKW\RkwAlerts\Exception
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public function createAlertLoggedUser (
         \TYPO3\CMS\Extbase\Mvc\Request $request,
-        \RKW\RkwAlerts\Domain\Model\Alert $alert,
+        array $newAlertsArray,
         \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
-    ) : FlashMessage  {
+    ) : array  {
 
-        //==========================================================
         // check if user is logged in
         if (
             ! $frontendUser->_isNew()
             && FrontendUserSessionUtility::isUserLoggedIn($frontendUser)
         ) {
 
-            // check if subscription exists already based on email
-            if (
-                ($frontendUser->getEmail())
-                && ($this->hasEmailSubscribedToCategory($frontendUser->getEmail(), $alert->getCategory()))
-            ){
+            foreach ($newAlertsArray as $alert) {
 
-                $this->flashMessage->setSeverity(AbstractMessage::INFO);
-                $this->flashMessage->setMessage(LocalizationUtility::translate(
-                    'alertManager.error.alreadySubscribed',
-                    'rkw_alerts'
-                ));
 
-                return $this->flashMessage;
-            }
+                // check if subscription exists already based on email
+                if (
+                    ($frontendUser->getEmail())
+                    && ($this->hasEmailSubscribedToCategory($frontendUser->getEmail(), $alert->getCategory()))
+                ){
 
-            try {
-
-                // save alert
-                if ($this->saveAlert($alert, $frontendUser)) {
-
-                    // add privacy info
-                    \Madj2k\FeRegister\DataProtection\ConsentHandler::add(
-                        $request,
-                        $frontendUser,
-                        $alert,
-                        'new alert'
+                    $this->createFlashMessage(
+                        LocalizationUtility::translate('alertManager.error.alreadySubscribed', 'rkw_alerts'),
+                        '',
+                        FlashMessage::INFO
                     );
 
-                    // log it
-                    $this->getLogger()->log(
-                        LogLevel::INFO,
-                        sprintf(
-                            'Successfully created alert for user with uid %s.',
-                            $frontendUser->getUid()
-                        )
-                    );
-
-                    $this->flashMessage->setMessage(LocalizationUtility::translate(
-                        'alertController.message.create_1',
-                        'rkw_alerts'
-                    ));
-
-                    return $this->flashMessage;
+                    // do not handle that alert
+                    continue;
                 }
 
-            } catch (\Exception $e) {
+                try {
 
-                // log error
-                $this->getLogger()->log(
-                    LogLevel::ERROR,
-                    sprintf(
-                        'Could not create alert for existing user with uid %s: %s',
-                        $frontendUser->getUid(),
-                        $e->getMessage()
-                    )
-                );
+                    // save alert
+                    if ($this->saveAlert($alert, $frontendUser, false)) {
+
+                        // add privacy info
+                        \Madj2k\FeRegister\DataProtection\ConsentHandler::add(
+                            $request,
+                            $frontendUser,
+                            $alert,
+                            'new alert'
+                        );
+
+                        // log it
+                        $this->getLogger()->log(
+                            LogLevel::INFO,
+                            sprintf(
+                                'Successfully created alert for user with uid %s.',
+                                $frontendUser->getUid()
+                            )
+                        );
+
+                        $this->createFlashMessage(
+                            LocalizationUtility::translate('alertController.message.create_1', 'rkw_alerts'),
+                        );
+                    }
+
+                } catch (\Exception $e) {
+
+                    // log error
+                    $this->getLogger()->log(
+                        LogLevel::ERROR,
+                        sprintf(
+                            'Could not create alert for existing user with uid %s: %s',
+                            $frontendUser->getUid(),
+                            $e->getMessage()
+                        )
+                    );
+                }
             }
-
         }
 
-        return $this->flashMessage;
+        return $this->getFlashMessages();
     }
 
 
     /**
      * Create Alert
      *
-     * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
-     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser|null $frontendUser
      * @param \TYPO3\CMS\Extbase\Mvc\Request|null $request
+     * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
      * @param string $email
+     * @param array $newAlertsArray
      * @return FlashMessage
      * @throws \RKW\RkwAlerts\Exception
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
@@ -411,24 +404,24 @@ class AlertManager
     public function createAlertByEmail (
         \TYPO3\CMS\Extbase\Mvc\Request $request,
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
-        string $email = ''
-    ) : FlashMessage  {
+        string $email,
+        array $newAlertsArray
+    ) : array  {
 
         // check given e-mail
         if (! \Madj2k\FeRegister\Utility\FrontendUserUtility::isEmailValid($email)) {
 
-            $this->flashMessage->setSeverity(AbstractMessage::WARNING);
-            $this->flashMessage->setMessage(LocalizationUtility::translate(
-                'alertManager.error.invalidEmail',
-                'rkw_alerts'
-            ));
-
-            return $this->flashMessage;
-
+            $this->createFlashMessage(
+                LocalizationUtility::translate('alertManager.error.invalidEmail', 'rkw_alerts'),
+                '',
+                FlashMessage::WARNING
+            );
+            return $this->getFlashMessages();
         }
 
 
 
+        // @toDo: I think: Do not show a message for the user. We would show to public which categories are already subscribed
         // check if subscription exists already based on email
         /*
         if (
@@ -440,9 +433,9 @@ class AlertManager
         */
 
 
-            // register new user or simply send opt-in to existing user
-            // we also submit the email as additional data to register-function since a logged in user
-            // may use a different email and we have to update it after(!!!) opt-in!
+        // register new user or simply send opt-in to existing user
+        // we also submit the email as additional data to register-function since a logged in user
+        // may use a different email and we have to update it after(!!!) opt-in!
         try {
 
             //    DebuggerUtility::var_dump($alert); exit;
@@ -455,7 +448,7 @@ class AlertManager
             $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
             $registration = $objectManager->get(FrontendUserRegistration::class);
             $registration->setFrontendUser($frontendUser)
-                ->setData($alert)
+                ->setData($newAlertsArray)
                 ->setDataParent($alert->getCategory())
                 ->setCategory('rkwAlerts')
                 ->setRequest($request)
@@ -470,12 +463,10 @@ class AlertManager
                 )
             );
 
-            $this->flashMessage->setMessage(LocalizationUtility::translate(
-                'alertController.message.create_2',
-                'rkw_alerts'
-            ));
-
-            return $this->flashMessage;
+            $this->createFlashMessage(
+                LocalizationUtility::translate('alertController.message.create_2', 'rkw_alerts'),
+            );
+            return $this->getFlashMessages();
 
         } catch (\Exception $e) {
 
@@ -490,7 +481,46 @@ class AlertManager
             );
         }
 
-        return $this->flashMessage;
+        return $this->getFlashMessages();
+    }
+
+
+    /**
+     * saveAlert
+     *
+     * @param array $alertList
+     * @param \Madj2k\FeRegister\Domain\Model\FrontendUser|null $frontendUser
+     * @return bool
+     * @throws \RKW\RkwAlerts\Exception
+     */
+    public function saveAlertList (
+        array $alertList,
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser = null
+    ): bool {
+
+        foreach ($alertList as $alert) {
+            // @toDo: Do something with the return values?
+            $this->saveAlert($alert, $frontendUser, false);
+
+            // log
+            $this->getLogger()->log(
+                LogLevel::INFO,
+                sprintf(
+                    'Saved alert with uid %s of user with uid %s.',
+                    $alert->getUid(),
+                    $frontendUser->getUid()
+                )
+            );
+        }
+
+        // trigger signal slot
+        $this->signalSlotDispatcher->dispatch(
+            __CLASS__,
+            self::SIGNAL_AFTER_ALERT_CREATED,
+            array($frontendUser, $alertList)
+        );
+
+        return true;
     }
 
 
@@ -499,42 +529,53 @@ class AlertManager
      *
      * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
      * @param \Madj2k\FeRegister\Domain\Model\FrontendUser|null $frontendUser
+     * @param bool $sendSuccessEmailForEverySingleAlert Needed for summery emails. Solve that thing a better way?
      * @return bool
      * @throws \RKW\RkwAlerts\Exception
      */
     public function saveAlert (
         \RKW\RkwAlerts\Domain\Model\Alert $alert,
-        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser = null
+        \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser = null,
+        bool $sendSuccessEmailForEverySingleAlert = true
     ): bool {
 
-        // check frontendUser
-        if (! $frontendUser) {
-            throw new Exception('alertManager.error.frontendUserMissing');
-        }
-
-        if ($frontendUser->_isNew()) {
-            throw new Exception('alertManager.error.frontendUserNotPersisted');
-        }
-
-        // check alert
-        if (! $alert->_isNew()) {
-            throw new Exception('alertManager.error.alertAlreadyPersisted');
-        }
-
-        // check if alert has subscribable category
-        if (
-            (! $category = $alert->getCategory())
-            || (! $category->getTxRkwalertsEnableAlerts())
-        ){
-            throw new Exception('alertManager.error.categoryInvalid');
-        }
-
-        // check if subscription exists already
-        if ($this->hasFrontendUserSubscribedToCategory($frontendUser, $alert->getCategory())) {
-            throw new Exception('alertManager.error.alreadySubscribed');
-        }
-
         try {
+
+            // #######################################################################
+            // ### START: Basic system checks. Throw error if something went wrong ###
+            // check frontendUser
+            if (! $frontendUser) {
+                throw new Exception('alertManager.error.frontendUserMissing');
+            }
+            if ($frontendUser->_isNew()) {
+                throw new Exception('alertManager.error.frontendUserNotPersisted');
+            }
+            // check alert
+            if (! $alert->_isNew()) {
+                throw new Exception('alertManager.error.alertAlreadyPersisted');
+            }
+            // check if alert has subscribable category
+            if (
+                (! $category = $alert->getCategory())
+                || (! $category->getTxRkwalertsEnableAlerts())
+            ){
+                throw new Exception('alertManager.error.categoryInvalid');
+            }
+            // ### END: Basic system checks.                                       ###
+            // #######################################################################
+
+
+            // check if subscription exists already
+            if ($this->hasFrontendUserSubscribedToCategory($frontendUser, $alert->getCategory())) {
+                //throw new Exception('alertManager.error.alreadySubscribed');
+                $this->createFlashMessage(
+                    LocalizationUtility::translate('alertManager.error.alreadySubscribed', 'rkw_alerts'),
+                    '',
+                    FlashMessage::WARNING
+                );
+
+                return false;
+            }
 
             // add frontendUser to alert
             $alert->setFrontendUser($frontendUser);
@@ -544,11 +585,14 @@ class AlertManager
             $this->persistenceManager->persistAll();
 
             // trigger signal slot
-            $this->signalSlotDispatcher->dispatch(
-                __CLASS__,
-                self::SIGNAL_AFTER_ALERT_CREATED,
-                array($frontendUser, $alert)
-            );
+            if ($sendSuccessEmailForEverySingleAlert) {
+                $this->signalSlotDispatcher->dispatch(
+                    __CLASS__,
+                    self::SIGNAL_AFTER_ALERT_CREATED,
+                    array($frontendUser, [$alert])
+                );
+            }
+
 
             // log
             $this->getLogger()->log(
@@ -593,17 +637,18 @@ class AlertManager
         \Madj2k\FeRegister\Domain\Model\OptIn $optIn
     ) {
 
-        if (
-            ($alert = $optIn->getData())
-            && ($alert instanceof \RKW\RkwAlerts\Domain\Model\Alert)
-        ) {
+        /** @var array $alertArray */
+        $alertArray = $optIn->getData();
 
+        if (is_countable($alertArray)) {
             try {
-                $this->saveAlert($alert, $frontendUser);
+                $this->saveAlertList($alertArray, $frontendUser);
             } catch (\RKW\RkwAlerts\Exception $exception) {
                 // do nothing here
             }
         }
+
+
     }
 
 
@@ -653,6 +698,7 @@ class AlertManager
             $this->alertRepository->remove($alert);
             $this->persistenceManager->persistAll();
 
+            // @toDo: Hint: This SignalSlot is currently not connected!
             // trigger signal slot
             $this->signalSlotDispatcher->dispatch(
                 __CLASS__,
@@ -1019,6 +1065,45 @@ class AlertManager
         }
 
         return $recipientCountGlobal;
+    }
+
+    /**
+     * @param string $message
+     * @param string $title
+     * @param int    $severity
+     * @param bool   $storeInSession
+     * @return void
+     */
+    protected function createFlashMessage (
+        string $message,
+        string $title = '',
+        int $severity = AbstractMessage::OK,
+        bool $storeInSession = false
+    ) {
+        $flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            FlashMessage::class,
+            $message, $title, $severity, $storeInSession
+        );
+        $this->addFlashMessage($flashMessage);
+    }
+
+
+    /**
+     * @param FlashMessage $flashMessage
+     * @return void
+     */
+    protected function addFlashMessage (FlashMessage $flashMessage): void {
+        $this->flashMessageContainer[] = $flashMessage;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFlashMessages (): array {
+        $returnArray = $this->flashMessageContainer;
+        // clear
+        //$this->flashMessageContainer = [];
+        return $returnArray;
     }
 
 

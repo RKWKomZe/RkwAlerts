@@ -92,7 +92,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * Handles confirmation
      *
      * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
+     * @param array $alertList
      * @return void
      * @throws \Madj2k\Postmaster\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
@@ -102,7 +102,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function confirmAlertUser(
         \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser,
-        \RKW\RkwAlerts\Domain\Model\Alert $alert
+        array $alertList
     ): void  {
 
         // get settings
@@ -118,7 +118,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService->setTo($frontendUser, array(
                 'marker' => array(
                     'frontendUser' => $frontendUser,
-                    'alert'        => $alert,
+                    'alertList'    => $alertList,
                     'pageUid'      => intval($GLOBALS['TSFE']->id),
                     'loginPid'     => intval($settingsDefault['loginPid']),
                 ),
@@ -128,7 +128,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                 FrontendLocalizationUtility::translate(
                     'rkwMailService.confirmAlertUser.subject',
                     'rkw_alerts',
-                    [$alert->getCategory()->getTitle()],
+                    [],
                     $frontendUser->getTxFeregisterLanguageKey()
                 )
             );
