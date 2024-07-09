@@ -164,7 +164,7 @@
                 <source>Confirmation for RKW Alerts</source>
             </trans-unit>
             <trans-unit id="rkwMailService.confirmAlertUser.subject">
-                <source>NRKW Alert for topic "%s" activated</source>
+                <source>NRKW Alert for topic activated</source>
             </trans-unit>
             <trans-unit id="rkwMailService.cancelAllUser.subject">
                 <source>Your RKW Alerts have been canceled</source>

@@ -9,4 +9,8 @@ return [
     \RKW\RkwAlerts\Domain\Model\News::class => [
         'tableName' => 'tx_news_domain_model_news',
     ],
+
+    \RKW\RkwAlerts\Domain\Model\FrontendUser::class => [
+        'tableName' => 'fe_users',
+    ],
 ];

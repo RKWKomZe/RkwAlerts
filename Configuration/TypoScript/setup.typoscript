@@ -44,6 +44,22 @@ config.tx_extbase {
                 newRecordStoragePid = {$plugin.tx_rkwalerts.persistence.newRecordStoragePid}
             }
 
+
+            #===============================================
+
+            RKW\RkwAlerts\Domain\Model\FrontendUser {
+                mapping {
+                    tableName = fe_users
+                    recordType =
+                }
+            }
+
+            Madj2k\CoreExtended\Domain\Model\FrontendUser {
+                subclasses {
+                    Tx_RkwAlerts_FrontendUser = RKW\RkwAlerts\Domain\Model\FrontendUser
+                }
+            }
+
         }
     }
 }

@@ -10,8 +10,7 @@
                 <f:format.date format="d.m.Y">{news.crdate}</f:format.date>: {news.title}\n
                 --------------------------------------------------------------------------------------\n
                 <f:if condition="{news.teaser}">{news.teaser}\n\n</f:if>
-                <!-- @toDo: Hier fehlt noch ein System für die Detail PageUID -->
-                <postmaster:email.uri.action noCacheHash="true" absolute="true" pageUid="{page.uid}" />
+                <postmaster:email.uri.action noCacheHash="true" absolute="true" pageUid="{listPid}" />
                 \n\n
             </f:for>
         </postmaster:email.replace.redirectLinks>
@@ -28,8 +27,7 @@
                             <table cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                     <td>
-                                        <!-- @toDo: Hier fehlt noch ein System für die Detail PageUID -->
-                                        <a href="{postmaster:email.uri.action(noCacheHash:'true', absolute:'true', pageUid:'{page.uid}')}"
+                                        <a href="{postmaster:email.uri.action(noCacheHash:'true', absolute:'true', pageUid:'{listPid}')}"
                                            style="color: #E64415; font-size: 18px; line-height:22px; font-weight: 600; text-decoration: none;">
                                             <f:format.date format="d.m.Y">{news.crdate}</f:format.date>: {news.title}
                                         </a>
@@ -56,7 +54,7 @@
                                             {news.teaser}<br><br>
                                         </f:if>
                                         <!-- @toDo: Hier fehlt noch ein System für die Detail PageUID -->
-                                        <a href="{postmaster:email.uri.action(noCacheHash:'true', absolute:'true', pageUid:'{page.uid}')}">
+                                        <a href="{postmaster:email.uri.action(noCacheHash:'true', absolute:'true', pageUid:'{listPid}')}">
                                             <postmaster:email.translate
                                                 key="partials_email_linkList.readMore"
                                                 languageKey="{queueRecipient.languageCode}"

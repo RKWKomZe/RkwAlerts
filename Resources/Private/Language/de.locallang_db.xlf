@@ -68,6 +68,17 @@
                 <target>Themenliste anzeigen</target>
             </trans-unit>
 
+
+            <!-- tx_rkwalerts_domain_model_frontenduser -->
+            <trans-unit id="fe_users.tab.tx_rkwalerts">
+                <source>Alerts</source>
+                <target>Alerts</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwalerts_domain_model_frontenduser.tx_rkwalerts_alerts">
+                <source>Alerts of user</source>
+                <target>Eingetragene Alerts</target>
+            </trans-unit>
+
         </body>
 	</file>
 </xliff>

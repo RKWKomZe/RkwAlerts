@@ -56,6 +56,13 @@
             </trans-unit>
 
 
+            <!-- tx_rkwalerts_domain_model_frontenduser -->
+            <trans-unit id="fe_users.tab.tx_rkwalerts">
+                <source>Alerts</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwalerts_domain_model_frontenduser.tx_rkwalerts_alerts">
+                <source>Alerts of user</source>
+            </trans-unit>
 
 		</body>
 	</file>

@@ -5,6 +5,7 @@ namespace RKW\RkwAlerts\Domain\Repository;
 use \RKW\RkwAlerts\Domain\Model\Category;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -70,9 +71,8 @@ class NewsRepository extends \GeorgRinger\News\Domain\Repository\NewsRepository
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->matching(
             $query->logicalAnd(
-                $query->equals('doktype', 1),
                 $query->equals('txRkwalertsSendStatus', 0),
-                $query->greaterThanOrEqual($filterField, (time() - intval($timeSinceCreation))),
+                //$query->greaterThanOrEqual($filterField, (time() - intval($timeSinceCreation))),
                 $query->greaterThan('categories', 0),
                 $query->equals('categories.txRkwalertsEnableAlerts', 1)
             )

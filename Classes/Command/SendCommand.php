@@ -15,7 +15,7 @@ namespace RKW\RkwAlerts\Command;
  */
 
 use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
-use RKW\RkwAlerts\Alerts\AlertManager;
+use RKW\RkwAlerts\Alerts\AlertsNotify;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * class SendCommand
@@ -41,9 +42,9 @@ class SendCommand extends Command
 {
 
     /**
-     * @var \RKW\RkwAlerts\Alerts\AlertManager|null
+     * @var \RKW\RkwAlerts\Alerts\AlertsNotify|null
      */
-    protected ?AlertManager $alertManager = null;
+    protected ?AlertsNotify $alertsNotify = null;
 
 
     /**
@@ -104,12 +105,14 @@ class SendCommand extends Command
     {
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->alertManager = $objectManager->get(AlertManager::class);
+        $this->alertsNotify = $objectManager->get(AlertsNotify::class);
     }
 
 
     /**
      * Executes the command for showing sys_log entries
+     *
+     * Edit to News: Use "datetime" instead of pages "lastUpdated"?
      *
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
@@ -137,17 +140,18 @@ class SendCommand extends Command
         $io->newLine();
 
         $result = 0;
-        try {
+    //    try {
 
             // simulate frontend
             FrontendSimulatorUtility::simulateFrontendEnvironment($settingsPid);
 
             // send alerts
-            $this->alertManager->sendNotification($filterField, $timeSinceCreation, $debugMail);
+       //     $this->alertsNotify->sendNotification($filterField, $timeSinceCreation, $debugMail);
+            $this->alertsNotify->sendNotification('datetime', $timeSinceCreation, $debugMail);
 
             // reset frontend
             FrontendSimulatorUtility::resetFrontendEnvironment();
-
+/*
         } catch (\Exception $e) {
 
             $message = sprintf('An unexpected error occurred while trying to update the statistics of e-mails: %s',
@@ -159,7 +163,7 @@ class SendCommand extends Command
             $this->getLogger()->log(LogLevel::ERROR, $message);
             $result = 1;
         }
-
+*/
         $io->writeln('Done');
         return $result;
 

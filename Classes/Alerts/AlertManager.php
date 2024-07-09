@@ -22,7 +22,7 @@ use RKW\RkwAlerts\Domain\Model\News;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
 use RKW\RkwAlerts\Domain\Repository\CategoryRepository;
 use RKW\RkwAlerts\Domain\Repository\NewsRepository;
-use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
+use RKW\RkwAlerts\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
@@ -49,7 +49,7 @@ use RKW\RkwAlerts\Exception;
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AlertManager
+class AlertManager extends AbstractManager
 {
 
     /**
@@ -75,57 +75,11 @@ class AlertManager
      */
     const SIGNAL_AFTER_ALERT_DELETED_ALL = 'afterAlertDeletedAll';
 
-
-    /**
-     * alertRepository
-     *
-     * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected ?AlertRepository $alertRepository = null;
-
-
-    /**
-     * newsRepository
-     *
-     * @var \RKW\RkwAlerts\Domain\Repository\NewsRepository
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected ?NewsRepository $newsRepository = null;
-
-
-    /**
-     * categoryRepository
-     *
-     * @var \RKW\RkwAlerts\Domain\Repository\CategoryRepository
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected ?CategoryRepository $categoryRepository = null;
-
-
-    /**
-     * frontendUserRepository
-     *
-     * @var \Madj2k\FeRegister\Domain\Repository\FrontendUserRepository
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected ?FrontendUserRepository $frontendUserRepository = null;
-
-
     /**
      * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected ?Dispatcher $signalSlotDispatcher = null;
-
-
-    /**
-     * Persistence Manager
-     *
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected ?PersistenceManager $persistenceManager = null;
 
     /**
      * @var array
@@ -133,59 +87,11 @@ class AlertManager
     protected array $flashMessageContainer = [];
 
     /**
-     * @var \TYPO3\CMS\Core\Log\Logger|null
-     */
-    protected ?Logger $logger = null;
-
-    /**
-     * @var \RKW\RkwAlerts\Domain\Repository\AlertRepository
-     */
-    public function injectAlertRepository (AlertRepository $alertRepository)
-    {
-        $this->alertRepository= $alertRepository;
-    }
-
-    /**
-     * @var \RKW\RkwAlerts\Domain\Repository\NewsRepository
-     */
-    public function injectNewsRepository (NewsRepository $newsRepository)
-    {
-        $this->newsRepository= $newsRepository;
-    }
-
-    /**
-     * @var \RKW\RkwAlerts\Domain\Repository\CategoryRepository
-     */
-    public function injectCategoryRepository (CategoryRepository $categoryRepository)
-    {
-        $this->categoryRepository= $categoryRepository;
-    }
-
-
-    /**
-     * @var \Madj2k\FeRegister\Domain\Repository\FrontendUserRepository
-     */
-    public function injectFrontendUserRepository (FrontendUserRepository $frontendUserRepository)
-    {
-        $this->frontendUserRepository= $frontendUserRepository;
-    }
-
-
-    /**
      * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
      */
     public function injectDispatcher (Dispatcher $signalSlotDispatcher)
     {
         $this->signalSlotDispatcher = $signalSlotDispatcher;
-    }
-
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     */
-    public function injectPersistenceManager (PersistenceManager $persistenceManager)
-    {
-        $this->persistenceManager = $persistenceManager;
     }
 
 
@@ -208,8 +114,8 @@ class AlertManager
             /** @var \GeorgRinger\News\Domain\Model\Category $newsCategory */
             foreach ($news->getCategories() as $newsCategory) {
 
-                $alertsCategory = $this->categoryRepository->findByIdentifier($newsCategory->getUid());
                 /** @var \RKW\RkwAlerts\Domain\Model\Category $alertsCategory */
+                $alertsCategory = $this->categoryRepository->findByIdentifier($newsCategory->getUid());
                 if (
                     $alertsCategory instanceof Category
                     && $alertsCategory->getTxRkwalertsEnableAlerts()
@@ -850,6 +756,8 @@ class AlertManager
      * Gets an associative array with the categories to notify
      * and the news to link to
      *
+     * @deprecated See \AlertsNotify->getNewsAndCategoriesToNotify
+     *
      * @param string $filterField
      * @param int $timeSinceCreation
      * @return array
@@ -861,6 +769,9 @@ class AlertManager
     ): array {
 
         $result = [];
+
+        // @toDo: Quickfix for testing (the $filterField is part of the cron-record; but it does not change the value)
+        $filterField = 'datetime';
 
         if ($newsList = $this->newsRepository->findAllToNotify($filterField, $timeSinceCreation)) {
 
@@ -896,6 +807,8 @@ class AlertManager
     /**
      * Sends the notifications
      *
+     * @deprecated See \AlertsNotify->sendNotification
+     *
      * @param string $filterField
      * @param int $timeSinceCreation
      * @param string $debugMail
@@ -911,9 +824,14 @@ class AlertManager
         string $debugMail = ''
     ): int {
 
+        $frontendUserList = $this->frontendUserRepository->findAll();
+        DebuggerUtility::var_dump($frontendUserList); exit;
+
         // load categories to notify
         $recipientCountGlobal = 0;
         if ($results = $this->getNewsAndCategoriesToNotify($filterField, $timeSinceCreation)) {
+
+            DebuggerUtility::var_dump($results); exit;
 
             // get configuration
             $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -928,11 +846,15 @@ class AlertManager
                     && ($newsList = $subArray['news'])
                 ) {
 
-                    // find all alerts for category
-                    /** @var \RKW\RkwAlerts\Domain\Model\Category $category */
-                    if ($alerts = $this->alertRepository->findByCategory($category)) {
+                    // convert News-Category to Alerts-Category
+                    /** @var \RKW\RkwAlerts\Domain\Model\Category $alertsCategory */
+                    $alertsCategory = $this->categoryRepository->findByIdentifier($category->getUid());
 
-                        try {
+                    // find all alerts for category
+                    if ($alerts = $this->alertRepository->findByCategory($alertsCategory)) {
+
+                    //    try {
+
 
                             /** @var \Madj2k\Postmaster\Mail\MailMessage $mailService */
                             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailMessage::class);
@@ -959,6 +881,7 @@ class AlertManager
                                                 'alert'        => $alert,
                                                 'frontendUser' => $frontendUser,
                                                 'loginPid'     => intval($settings['settings']['loginPid']),
+                                                'listPid'     => intval($settings['settings']['listPid']),
                                                 'news'        => $newsList,
                                             ),
                                             'subject' => FrontendLocalizationUtility::translate(
@@ -1011,7 +934,7 @@ class AlertManager
                                     )
                                 );
                             }
-
+/*
                         } catch (\Exception $e) {
 
                             // log error
@@ -1024,6 +947,7 @@ class AlertManager
                                 )
                             );
                         }
+*/
                     }
 
                     if ($debugMail) {
@@ -1104,35 +1028,6 @@ class AlertManager
         // clear
         //$this->flashMessageContainer = [];
         return $returnArray;
-    }
-
-
-    /**
-     * Returns logger instance
-     *
-     * @return \TYPO3\CMS\Core\Log\Logger
-     */
-    protected function getLogger(): Logger
-    {
-
-        if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {
-            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-        }
-
-        return $this->logger;
-    }
-
-
-    /**
-     * Returns TYPO3 settings
-     *
-     * @param string $which Which type of settings will be loaded
-     * @return array
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
-    {
-        return GeneralUtility::getTypoScriptConfiguration('Rkwalerts', $which);
     }
 
 }
