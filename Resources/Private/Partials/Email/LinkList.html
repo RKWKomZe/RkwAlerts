@@ -5,14 +5,12 @@
     <!-- PLAINTEXT -->
     <f:section name="Plaintext">
         <postmaster:email.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}" isPlaintext="true">
-            <f:for each="{newsList}" as="news">
-                --------------------------------------------------------------------------------------\n
-                <f:format.date format="d.m.Y">{news.crdate}</f:format.date>: {news.title}\n
-                --------------------------------------------------------------------------------------\n
-                <f:if condition="{news.teaser}">{news.teaser}\n\n</f:if>
-                <postmaster:email.uri.action noCacheHash="true" absolute="true" pageUid="{listPid}" />
-                \n\n
-            </f:for>
+            --------------------------------------------------------------------------------------\n
+            <f:format.date format="d.m.Y">{news.crdate}</f:format.date>: {news.title}\n
+            --------------------------------------------------------------------------------------\n
+            <f:if condition="{news.teaser}">{news.teaser}\n\n</f:if>
+            <postmaster:email.uri.action noCacheHash="true" absolute="true" pageUid="{listPid}" />
+            \n\n
         </postmaster:email.replace.redirectLinks>
     </f:section>
 
@@ -21,51 +19,49 @@
     <f:section name="Html">
         <postmaster:email.replace.redirectLinks queueRecipient="{queueRecipient}" queueMail="{queueMail}">
             <table cellpadding="0" cellspacing="0" border="0" style="background-color:#eaeaea; margin-top:16px;">
-                <f:for each="{newsList}" as="news">
-                    <tr>
-                        <td style="padding:16px; border-bottom:16px solid #ffffff;">
-                            <table cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td>
-                                        <a href="{postmaster:email.uri.action(noCacheHash:'true', absolute:'true', pageUid:'{listPid}')}"
-                                           style="color: #E64415; font-size: 18px; line-height:22px; font-weight: 600; text-decoration: none;">
-                                            <f:format.date format="d.m.Y">{news.crdate}</f:format.date>: {news.title}
-                                        </a>
-                                    </td>
-                                </tr>
-                                <f:comment>
-                                    <f:if condition="{page.txCoreextendedPreviewImage}">
-                                        <tr>
-                                            <td style="padding-top:16px;">
-                                                <postmaster:email.image image="{page.txCoreextendedPreviewImage}"
-                                                    treatIdAsReference="true"
-                                                    absolute="false"
-                                                    alt="{page.title}"
-                                                    width="538"
-                                                    height="200c"
-                                                    style="border:1px solid #D3D3D3; display: block; width: 100%; height: auto" />
-                                            </td>
-                                        </tr>
+                <tr>
+                    <td style="padding:16px; border-bottom:16px solid #ffffff;">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td>
+                                    <a href="{postmaster:email.uri.action(noCacheHash:'true', absolute:'true', pageUid:'{listPid}')}"
+                                       style="color: #E64415; font-size: 18px; line-height:22px; font-weight: 600; text-decoration: none;">
+                                        <f:format.date format="d.m.Y">{news.crdate}</f:format.date>: {news.title}
+                                    </a>
+                                </td>
+                            </tr>
+                            <f:comment>
+                                <f:if condition="{page.txCoreextendedPreviewImage}">
+                                    <tr>
+                                        <td style="padding-top:16px;">
+                                            <postmaster:email.image image="{page.txCoreextendedPreviewImage}"
+                                                treatIdAsReference="true"
+                                                absolute="false"
+                                                alt="{page.title}"
+                                                width="538"
+                                                height="200c"
+                                                style="border:1px solid #D3D3D3; display: block; width: 100%; height: auto" />
+                                        </td>
+                                    </tr>
+                                </f:if>
+                            </f:comment>
+                            <tr>
+                                <td style="padding-top:16px; line-height: 22px">
+                                    <f:if condition="{news.teaser}">
+                                        {news.teaser}<br><br>
                                     </f:if>
-                                </f:comment>
-                                <tr>
-                                    <td style="padding-top:16px; line-height: 22px">
-                                        <f:if condition="{news.teaser}">
-                                            {news.teaser}<br><br>
-                                        </f:if>
-                                        <!-- @toDo: Hier fehlt noch ein System für die Detail PageUID -->
-                                        <a href="{postmaster:email.uri.action(noCacheHash:'true', absolute:'true', pageUid:'{listPid}')}">
-                                            <postmaster:email.translate
-                                                key="partials_email_linkList.readMore"
-                                                languageKey="{queueRecipient.languageCode}"
-                                                extensionName="rkwAlerts" />
-                                        </a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </f:for>
+                                    <!-- @toDo: Hier fehlt noch ein System für die Detail PageUID -->
+                                    <a href="{postmaster:email.uri.action(noCacheHash:'true', absolute:'true', pageUid:'{listPid}')}">
+                                        <postmaster:email.translate
+                                            key="partials_email_linkList.readMore"
+                                            languageKey="{queueRecipient.languageCode}"
+                                            extensionName="rkwAlerts" />
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
             </table>
         </postmaster:email.replace.redirectLinks>
     </f:section>

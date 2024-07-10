@@ -59,9 +59,9 @@ class AlertsNotify extends AbstractManager
     protected array $categoryContainer = [];
 
     /**
-     * @var array
+     * @var \RKW\RkwAlerts\Domain\Model\News
      */
-    protected array $newsContainer = [];
+    protected ?News $newsToNotify = null;
 
     /**
      * Gets an associative array with the categories to notify
@@ -72,23 +72,19 @@ class AlertsNotify extends AbstractManager
      * @return void
      * @throws InvalidQueryException
      */
-    public function getNewsAndCategoriesToNotify(
+    public function getSingleNewsAndCategoriesToNotify(
         string $filterField = 'datetime',
         int $timeSinceCreation = 432000
     ): void {
 
-        $this->newsContainer = $this->newsRepository->findAllToNotify($filterField, $timeSinceCreation)->toArray();
+        $this->newsToNotify = $this->newsRepository->findOneToNotify($filterField, $timeSinceCreation);
 
-        if (count($this->newsContainer)) {
+        if ($this->newsToNotify instanceof News) {
 
-            /**  @var \RKW\RkwAlerts\Domain\Model\News $news */
-            foreach ($this->newsContainer as $news) {
+            foreach ($this->newsToNotify->getCategories() as $category) {
 
-                foreach ($news->getCategories() as $category) {
-
-                    if (! isset($this->categoryContainer[$category->getUid()])) {
-                        $this->categoryContainer[$category->getUid()] = $category;
-                    }
+                if (! isset($this->categoryContainer[$category->getUid()])) {
+                    $this->categoryContainer[$category->getUid()] = $category;
                 }
             }
         }
@@ -114,156 +110,156 @@ class AlertsNotify extends AbstractManager
     ): int {
 
         // fill categoryContainer and newsContainer
-        $this->getNewsAndCategoriesToNotify($filterField, $timeSinceCreation);
+        // 1. Get news to notify
+        // 2. Get related categories of news
+        $this->getSingleNewsAndCategoriesToNotify($filterField, $timeSinceCreation);
 
+        // 3. Get userList filtered by alerts categories
         $frontendUserList = $this->frontendUserRepository->findByAlertCategories($this->categoryContainer);
 
         // load categories to notify
         $recipientCountGlobal = 0;
-        if ($frontendUserList->count()) {
 
-            DebuggerUtility::var_dump($frontendUserList); exit;
+
+
+        if ($this->newsToNotify instanceof News) {
 
             // get configuration
             $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
+            /** @var \Madj2k\Postmaster\Mail\MailMessage $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailMessage::class);
+
+            //    try {
+
             // build e-mails per project
-            foreach ($results as $categoryUid => $subArray) {
-
-                // check of basic information!
-                /** @var \RKW\RkwAlerts\Domain\Model\Category $category */
-                if (
-                    ($category = $subArray['category'])
-                    && ($newsList = $subArray['news'])
-                ) {
-
-                    // convert News-Category to Alerts-Category
-                    /** @var \RKW\RkwAlerts\Domain\Model\Category $alertsCategory */
-                    $alertsCategory = $this->categoryRepository->findByIdentifier($category->getUid());
-
-                    // find all alerts for category
-                    if ($alerts = $this->alertRepository->findByCategory($alertsCategory)) {
-
-                    //    try {
+            /** @var \RKW\RkwAlerts\Domain\Model\FrontendUser $frontendUser */
+            foreach ($frontendUserList as $frontendUser) {
 
 
-                            /** @var \Madj2k\Postmaster\Mail\MailMessage $mailService */
-                            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailMessage::class);
-
-                            // set recipients
-                            /** @var \RKW\RkwAlerts\Domain\Model\Alert $alert */
-                            foreach ($alerts as $alert) {
-
-                                // check if FE-User exists
-                                if (
-                                    ($frontendUser = $alert->getFrontendUser())
-                                    && ($frontendUser instanceof \Madj2k\FeRegister\Domain\Model\FrontendUser)
-                                ) {
-
-                                    $recipient = $frontendUser;
-                                    if ($debugMail) {
-                                        $recipient = ['email' => $debugMail];
-                                    }
-
-                                    $mailService->setTo(
-                                        $recipient,
-                                        array(
-                                            'marker'  => array(
-                                                'alert'        => $alert,
-                                                'frontendUser' => $frontendUser,
-                                                'loginPid'     => intval($settings['settings']['loginPid']),
-                                                'listPid'     => intval($settings['settings']['listPid']),
-                                                'news'        => $newsList,
-                                            ),
-                                            'subject' => LocalizationUtility::translate(
-                                                'rkwMailService.sendAlert.subject',
-                                                'rkw_alerts',
-                                                [$category->getTitle()],
-                                                $frontendUser->getTxFeregisterLanguageKey() ?: 'default'
-                                            ),
-                                        )
-                                    );
-                                }
-                            }
-
-                            // set default subject
-                            $mailService->getQueueMail()->setSubject(
-                                LocalizationUtility::translate(
-                                    'rkwMailService.sendAlert.subjectDefault',
-                                    'rkw_alerts',
-                                    [$category->getTitle()],
-                                    $settings['settings']['defaultLanguageKey'] ?: 'default'
-                                )
-                            );
-
-                            // send mail
-                            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
-                            $mailService->getQueueMail()->addPartialPaths($settings['view']['partialRootPaths']);
-                            $mailService->getQueueMail()->setPlaintextTemplate('Email/Alert');
-                            $mailService->getQueueMail()->setHtmlTemplate('Email/Alert');
-                            $mailService->getQueueMail()->setType(2);
-
-                            if ($recipientCount = count($mailService->getTo())) {
-
-                                $recipientCountGlobal += $recipientCount;
-                                $mailService->send();
-                                $this->getLogger()->log(
-                                    LogLevel::INFO,
-                                    sprintf(
-                                        'Successfully sent alert notification for category with id %s with %s recipients.',
-                                        $categoryUid,
-                                        $recipientCount
-                                    )
-                                );
-
-                            } else {
-                                $this->getLogger()->log(
-                                    LogLevel::DEBUG,
-                                    sprintf(
-                                        'No valid recipients found for alert notification for category with id %s.',
-                                        $categoryUid
-                                    )
-                                );
-                            }
-/*
-                        } catch (\Exception $e) {
-
-                            // log error
-                            $this->getLogger()->log(
-                                LogLevel::ERROR,
-                                sprintf(
-                                    'Error while trying to send an alert notification for category with uid %s: %s',
-                                    $categoryUid,
-                                    $e->getMessage()
-                                )
-                            );
+                // 4. Collect FrontendUser alerts category list which are matching with the alerted news
+                $frontendUserCategoryList = [];
+                $frontendUserCategoryTitleArray = [];
+                foreach ($frontendUser->getTxRkwalertsAlerts() as $frontendUserAlert) {
+                    foreach ($this->newsToNotify->getCategories() as $category) {
+                        if ($category->getUid() == $frontendUserAlert->getCategory()->getUid()) {
+                            $frontendUserCategoryList[] = $frontendUserAlert->getCategory();
+                            $frontendUserCategoryTitleArray[] = $frontendUserAlert->getCategory()->getTitle();
                         }
-*/
                     }
+                }
+                $frontendUserCategoryTitleString = implode(', ', $frontendUserCategoryTitleArray);
 
+                // check if FE-User exists
+                if ($frontendUser instanceof \Madj2k\FeRegister\Domain\Model\FrontendUser) {
+
+                    $recipient = $frontendUser;
                     if ($debugMail) {
-                        $this->getLogger()->log(
-                            LogLevel::WARNING,
-                            sprintf(
-                                'You are running this script in debug-mode. All e-mails are sent to %s. News will not be marked as sent.',
-                                $debugMail
-                            )
-                        );
-
-                     // no matter what happens: mark pages as sent
-                    } else {
-                        /** @var \RKW\RkwAlerts\Domain\Model\News $news */
-                        foreach ($newsList as $news) {
-                            $news->setTxRkwalertsSendStatus(1);
-                            $this->newsRepository->update($news);
-                        }
-
-                        // persist
-                        $this->persistenceManager->persistAll();
+                        $recipient = ['email' => $debugMail];
                     }
+
+                    $mailService->setTo(
+                        $recipient,
+                        array(
+                            'marker'  => array(
+                                'frontendUser'             => $frontendUser,
+                                'categoryList'             => $frontendUserCategoryList,
+                                'loginPid'                 => intval($settings['settings']['loginPid']),
+                                'listPid'                  => intval($settings['settings']['listPid']),
+                                'news'                     => $this->newsToNotify,
+                                'categoryTitleListString'  => $frontendUserCategoryTitleString,
+                            ),
+                            'subject' => LocalizationUtility::translate(
+                                'rkwMailService.sendAlert.subject',
+                                'rkw_alerts',
+                                [$frontendUserCategoryTitleString],
+                                $frontendUser->getTxFeregisterLanguageKey() ?: 'default'
+                            ),
+                        )
+                    );
                 }
             }
 
+            // set default subject
+            $mailService->getQueueMail()->setSubject(
+                LocalizationUtility::translate(
+                    'rkwMailService.sendAlert.subjectDefault',
+                    'rkw_alerts',
+                    [],
+                    $settings['settings']['defaultLanguageKey'] ?: 'default'
+                )
+            );
+
+            // send mail
+            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
+            $mailService->getQueueMail()->addPartialPaths($settings['view']['partialRootPaths']);
+            $mailService->getQueueMail()->setPlaintextTemplate('Email/Alert');
+            $mailService->getQueueMail()->setHtmlTemplate('Email/Alert');
+            $mailService->getQueueMail()->setType(2);
+
+            //https://mein.ddev.site/weiterleitung/postmaster/redirect/14/7/?no_cache=1&tx_postmaster_tracking%5Burl%5D=https%3A%2F%2F
+            //rkw-kompetenzzentrum.ddev.site%3A8443%2Fmein-rkw%2Fmeine-rkw-alerts%2F%3Ftx__%255B
+            //action%255D%3D%26tx__%255B
+            //controller%255D%3D%26cHash%3De161f975b843800f93eefce6239bd462&cHash=3ce246b6bb2c41b343604b479adab8be
+
+            if ($recipientCount = count($mailService->getTo())) {
+
+                $recipientCountGlobal += $recipientCount;
+                $mailService->send();
+                $this->getLogger()->log(
+                    LogLevel::INFO,
+                    sprintf(
+                        'Successfully sent alert notification for news with id %s with %s recipients.',
+                        $this->newsToNotify->getUid(),
+                        $recipientCount
+                    )
+                );
+
+            } else {
+                $this->getLogger()->log(
+                    LogLevel::DEBUG,
+                    sprintf(
+                        'No valid recipients found for alert notification for news with id %s.',
+                        $this->newsToNotify->getUid()
+                    )
+                );
+            }
+/*
+            } catch (\Exception $e) {
+
+                // log error
+                $this->getLogger()->log(
+                    LogLevel::ERROR,
+                    sprintf(
+                        'Error while trying to send an alert notification for category with uid %s: %s',
+                        $categoryUid,
+                        $e->getMessage()
+                    )
+                );
+            }
+*/
+
+
+            if ($debugMail) {
+                $this->getLogger()->log(
+                    LogLevel::WARNING,
+                    sprintf(
+                        'You are running this script in debug-mode. All e-mails are sent to %s. News will not be marked as sent.',
+                        $debugMail
+                    )
+                );
+
+             // no matter what happens: mark pages as sent
+            } else {
+                $this->newsToNotify->setTxRkwalertsSendStatus(1);
+                $this->newsRepository->update($this->newsToNotify);
+
+                // persist
+                $this->persistenceManager->persistAll();
+            }
+
+
+            /*
             $this->getLogger()->log(
                 LogLevel::INFO,
                 sprintf(
@@ -271,11 +267,12 @@ class AlertsNotify extends AbstractManager
                     count($results)
                 )
             );
+            */
 
         } else {
             $this->getLogger()->log(
                 LogLevel::INFO,
-                sprintf('No categories found for alert notifications.')
+                sprintf('No news found for alert notifications.')
             );
         }
 

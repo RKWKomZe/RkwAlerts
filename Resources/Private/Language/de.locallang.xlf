@@ -225,8 +225,8 @@
                 <target>RKW Alert zum Thema "%s"</target>
             </trans-unit>
             <trans-unit id="rkwMailService.sendAlert.subjectDefault">
-                <source>New RKW Alert for topic "%s"</source>
-                <target>Neuer RKW Alert zum Thema "%s"</target>
+                <source>New RKW Alert for a selected topic</source>
+                <target>Neuer RKW Alert zu Ihren Lieblingsthemen</target>
             </trans-unit>
 
 

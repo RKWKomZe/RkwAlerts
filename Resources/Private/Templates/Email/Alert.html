@@ -8,11 +8,11 @@
 	<f:section name="Plaintext"><postmaster:email.plaintextLineBreaks>
 		<postmaster:email.translate key="templates_email_alert.headline" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" />
 		\n\n
-		<postmaster:email.translate key="templates_email_alert.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : alert.category.title}" />
+		<postmaster:email.translate key="templates_email_alert.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : categoryTitleListString}" />
 		\n\n
 		<f:render partial="Email/LinkList" section="Plaintext" arguments="{_all}"/>
 		\n\n
-		<postmaster:email.translate key="templates_email_alert.text2" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : alert.category.title}" />
+		<postmaster:email.translate key="templates_email_alert.text2" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : categoryTitleListString}" />
 		\n\n
 		<postmaster:email.translate key="templates_email_alert.loginLinkLabel" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts"/>:\n
 		<postmaster:email.uri.action absolute="true" pageUid="{loginPid}" noCacheHash="true" />
@@ -21,12 +21,12 @@
 	<!-- HTML -->
 	<f:section name="Html">
 		<h1><postmaster:email.translate key="templates_email_alert.headline" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}" /></h1>
-		<p><postmaster:email.translate key="templates_email_alert.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : alert.category.title}"/></p>
+		<p><postmaster:email.translate key="templates_email_alert.text1" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : categoryTitleListString}"/></p>
 
 		<f:render partial="Email/LinkList" section="Html" arguments="{_all}"/>
 
 		<p class="footer">
-			<postmaster:email.translate key="templates_email_alert.text2" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : alert.category.title}"/><br>
+			<postmaster:email.translate key="templates_email_alert.text2" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts" arguments="{0 : categoryTitleListString}"/><br>
             <a href="{postmaster:email.uri.action(absolute:'true', pageUid:'{loginPid}', noCacheHash:'true')}">
 				<postmaster:email.translate key="templates_email_alert.loginLinkLabel" languageKey="{queueRecipient.languageCode}" extensionName="rkwAlerts"/>
 			</a>

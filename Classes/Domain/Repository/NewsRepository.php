@@ -38,16 +38,16 @@ class NewsRepository extends \GeorgRinger\News\Domain\Repository\NewsRepository
 
 
     /**
-     * findAllToNotify
+     * findOneToNotify
      *
-     * finds all pages to notify
+     * find a news to notify
      *
      * @param string $filterField
      * @param int $timeSinceCreation
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return object
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findAllToNotify(string $filterField, int $timeSinceCreation = 432000): QueryResultInterface
+    public function findOneToNotify(string $filterField, int $timeSinceCreation = 432000): object
     {
 
         # Clean filter field and check it against TCA
@@ -77,8 +77,9 @@ class NewsRepository extends \GeorgRinger\News\Domain\Repository\NewsRepository
                 $query->equals('categories.txRkwalertsEnableAlerts', 1)
             )
         );
+        $query->setLimit(1);
 
-        return $query->execute();
+        return $query->execute()->getFirst();
     }
 
 
