@@ -25,7 +25,7 @@ use Madj2k\CoreExtended\Domain\Repository\StoragePidAwareAbstractRepository;
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AbstractRepository  extends StoragePidAwareAbstractRepository
+class AbstractRepository extends StoragePidAwareAbstractRepository
 {
 
 

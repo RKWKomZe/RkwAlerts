@@ -109,7 +109,7 @@ call_user_func(
         // Register Hook
         //=================================================================
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \RKW\RkwAlerts\Hooks\DataHandler::class;
-
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][\TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList::class]['modifyQuery'][1721378547] = \RKW\RkwAlerts\Hooks\DataHandler::class;
         //=================================================================
         // Register Logger
         //=================================================================
