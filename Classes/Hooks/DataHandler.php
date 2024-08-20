@@ -16,14 +16,16 @@ namespace RKW\RkwAlerts\Hooks;
  */
 
 use Madj2k\CoreExtended\Utility\GeneralUtility;
-use Madj2k\FeRegister\Domain\Model\FrontendUser;
-use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
+use RKW\RkwAlerts\Domain\Model\FrontendUser;
+use RKW\RkwAlerts\Domain\Repository\FrontendUserRepository;
 use Madj2k\FeRegister\Utility\FrontendUserUtility;
 use RKW\RkwAlerts\Domain\Model\Project;
 use RKW\RkwAlerts\Domain\Repository\ProjectRepository;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
@@ -75,6 +77,7 @@ class DataHandler implements SingletonInterface
      * @param array        $fieldList
      * @param QueryBuilder $queryBuilder
      * @return void
+     * @throws InvalidQueryException
      */
     public function modifyQuery(
         array        $parameters,
@@ -84,7 +87,6 @@ class DataHandler implements SingletonInterface
         array        $fieldList,
         QueryBuilder $queryBuilder
     ) {
-
 
         // check if we want to modify the query -> check for table, route, module
         if (
@@ -97,45 +99,48 @@ class DataHandler implements SingletonInterface
 
             $searchField = strtolower(GeneralUtility::_GP(('search_field')));
 
-            // Either: check if term is email
-            if (FrontendUserUtility::isEmailValid($searchField)) {
+            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
 
-                /** @var \Madj2k\FeRegister\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-                $frontendUserRepository = GeneralUtility::makeInstance(FrontendUserRepository::class);
+            // @toDo: Issue by any reason: Too few arguments to function TYPO3\CMS\Extbase\Persistence\Repository::__construct(), 0 passed in /var/www/html/public/typo3/sysext/core/Classes/Utility/GeneralUtility.php on line 3492 and exactly 1 expected
+            /** @var \RKW\RkwAlerts\Domain\Repository\FrontendUserRepository $frontendUserRepository */
+            //$frontendUserRepository = GeneralUtility::makeInstance(FrontendUserRepository::class);
+            $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
 
-                $frontendUser = $frontendUserRepository->findByEmail($searchField)->getFirst();
+            /** @var QueryResultInterface $frontendUserList */
+            $frontendUserList = $frontendUserRepository->findByFirstNameOrLastNameOrEmail($searchField);
 
-                if ($frontendUser instanceof FrontendUser) {
+            if ($frontendUserList->count()) {
 
-                    //search for elements that have a relation to this category
-                    $queryBuilder->resetQueryPart('where');
-                    $queryBuilder->andWhere($queryBuilder->expr()->in('frontend_user', [$frontendUser->getUid()]));
+                $frontendUserUidList = [];
+                foreach ($frontendUserList as $frontendUser) {
+                    $frontendUserUidList[] = $frontendUser->getUid();
                 }
 
-            } else if (!empty($searchField)) {
-                // Or: Check is given term is a project name
-
-                // @toDo: Issue by any reason: Too few arguments to function TYPO3\CMS\Extbase\Persistence\Repository::__construct(), 0 passed in /var/www/html/public/typo3/sysext/core/Classes/Utility/GeneralUtility.php on line 3492 and exactly 1 expected
-                /** @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository $projectRepository */
-           //     $projectRepository = GeneralUtility::makeInstance(ProjectRepository::class);
-
-
-                /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-                $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-                /** @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository $projectRepository */
-                $projectRepository = $objectManager->get(ProjectRepository::class);
-
-                $project = $projectRepository->findOneByNameOrShortName($searchField);
-
-                if ($project instanceof Project) {
-
-                    //search for elements that have a relation to this category
-                    $queryBuilder->resetQueryPart('where');
-                    $queryBuilder->andWhere($queryBuilder->expr()->in('project', [$project->getUid()]));
-                }
-
+                //search for elements that have a relation to this category
+                $queryBuilder->resetQueryPart('where');
+                $queryBuilder->andWhere($queryBuilder->expr()->in('frontend_user', $frontendUserUidList));
             }
 
+
+            // @toDo: Issue by any reason: Too few arguments to function TYPO3\CMS\Extbase\Persistence\Repository::__construct(), 0 passed in /var/www/html/public/typo3/sysext/core/Classes/Utility/GeneralUtility.php on line 3492 and exactly 1 expected
+            /** @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository $projectRepository */
+            $projectRepository = $objectManager->get(ProjectRepository::class);
+
+            /** @var QueryResultInterface $projectList */
+            $projectList = $projectRepository->findByNameOrShortName($searchField);
+
+            if ($projectList->count()) {
+
+                $projectUidList = [];
+                foreach ($projectList as $project) {
+                    $projectUidList[] = $project->getUid();
+                }
+
+                //search for elements that have a relation to this category
+                $queryBuilder->resetQueryPart('where');
+                $queryBuilder->andWhere($queryBuilder->expr()->in('project', $projectUidList));
+            }
 
         }
 
