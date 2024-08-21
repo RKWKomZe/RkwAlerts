@@ -21,7 +21,7 @@ use RKW\RkwAlerts\Domain\Model\Project;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
 use RKW\RkwAlerts\Domain\Repository\PageRepository;
 use RKW\RkwAlerts\Domain\Repository\ProjectRepository;
-use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
+use RKW\RkwAlerts\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
@@ -31,7 +31,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use Madj2k\CoreExtended\Utility\GeneralUtility;
 use Madj2k\Postmaster\Mail\MailMassage;
-use Madj2k\FeRegister\Domain\Model\FrontendUser;
+use RKW\RkwAlerts\Domain\Model\FrontendUser;
 use Madj2k\FeRegister\Registration\FrontendUserRegistration;
 use RKW\RkwAlerts\Exception;
 

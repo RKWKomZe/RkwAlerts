@@ -52,7 +52,7 @@ class AlertController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
      * @var \Madj2k\FeRegister\Domain\Repository\FrontendUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected ?FrontendUserRepository $frontendUserRepository  = null;
+    protected ?FrontendUserRepository $frontendUserRepository = null;
 
 
     /**

@@ -15,42 +15,46 @@ namespace RKW\RkwAlerts\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwAlerts\Domain\Model\Project;
-use RKW\RkwProjects\Domain\Repository\ProjectsRepository;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
+
 /**
- * Class ProjectRepository
+ * Class FrontendUserRepository
  *
- * @author Steffen Kroggel <developer@steffenkroggel.de>
+ * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ProjectRepository extends ProjectsRepository
+class FrontendUserRepository extends AbstractRepository
 {
 
     /**
-     * findByNameOrShortName
+     * findByFirstNameOrLastNameOrEmail
+     *
+     * using "LIKE"
      *
      * @param string $string
      * @return QueryResultInterface
      * @throws InvalidQueryException
      */
-    public function findByNameOrShortName(string $string):? QueryResultInterface
+    public function findByFirstNameOrLastNameOrEmail(string $string):? QueryResultInterface
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
 
         $query->matching(
             $query->logicalOr(
-                $query->like('name', '%' . $string . '%'),
-                $query->like('shortName', '%' . $string . '%'),
+                $query->logicalOr(
+                    $query->like('username', '%' . $string . '%'),
+                    $query->like('email', '%' . $string . '%'),
+                ),
+                $query->like('firstName', '%' . $string . '%'),
+                $query->like('lastName', '%' . $string . '%'),
             )
         );
 
         return $query->execute();
     }
-
 }
