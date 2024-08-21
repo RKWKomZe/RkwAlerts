@@ -46,7 +46,10 @@ class FrontendUserRepository extends AbstractRepository
 
         $query->matching(
             $query->logicalOr(
-                $query->like('username', '%' . $string . '%'),
+                $query->logicalOr(
+                    $query->like('username', '%' . $string . '%'),
+                    $query->like('email', '%' . $string . '%'),
+                ),
                 $query->like('firstName', '%' . $string . '%'),
                 $query->like('lastName', '%' . $string . '%'),
             )

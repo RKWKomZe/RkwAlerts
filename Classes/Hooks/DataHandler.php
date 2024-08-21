@@ -99,13 +99,8 @@ class DataHandler implements SingletonInterface
 
             $searchField = strtolower(GeneralUtility::_GP(('search_field')));
 
-            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-
-            // @toDo: Issue by any reason: Too few arguments to function TYPO3\CMS\Extbase\Persistence\Repository::__construct(), 0 passed in /var/www/html/public/typo3/sysext/core/Classes/Utility/GeneralUtility.php on line 3492 and exactly 1 expected
             /** @var \RKW\RkwAlerts\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-            //$frontendUserRepository = GeneralUtility::makeInstance(FrontendUserRepository::class);
-            $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
+            $frontendUserRepository = GeneralUtility::makeInstance(FrontendUserRepository::class);
 
             /** @var QueryResultInterface $frontendUserList */
             $frontendUserList = $frontendUserRepository->findByFirstNameOrLastNameOrEmail($searchField);
@@ -119,13 +114,12 @@ class DataHandler implements SingletonInterface
 
                 //search for elements that have a relation to this category
                 $queryBuilder->resetQueryPart('where');
-                $queryBuilder->andWhere($queryBuilder->expr()->in('frontend_user', $frontendUserUidList));
+                $queryBuilder->orWhere($queryBuilder->expr()->in('frontend_user', $frontendUserUidList));
             }
 
 
-            // @toDo: Issue by any reason: Too few arguments to function TYPO3\CMS\Extbase\Persistence\Repository::__construct(), 0 passed in /var/www/html/public/typo3/sysext/core/Classes/Utility/GeneralUtility.php on line 3492 and exactly 1 expected
             /** @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository $projectRepository */
-            $projectRepository = $objectManager->get(ProjectRepository::class);
+            $projectRepository = GeneralUtility::makeInstance(ProjectRepository::class);
 
             /** @var QueryResultInterface $projectList */
             $projectList = $projectRepository->findByNameOrShortName($searchField);
@@ -139,7 +133,7 @@ class DataHandler implements SingletonInterface
 
                 //search for elements that have a relation to this category
                 $queryBuilder->resetQueryPart('where');
-                $queryBuilder->andWhere($queryBuilder->expr()->in('project', $projectUidList));
+                $queryBuilder->orWhere($queryBuilder->expr()->in('project', $projectUidList));
             }
 
         }
