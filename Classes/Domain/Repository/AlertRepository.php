@@ -37,7 +37,7 @@ class AlertRepository extends AbstractRepository
      *
      * @param \Madj2k\FeRegister\Domain\Model\FrontendUser $frontendUser
      * @param \RKW\RkwAlerts\Domain\Model\Project $project
-     * @return  \RKW\RkwAlerts\Domain\Model\Alert|null
+     * @return \RKW\RkwAlerts\Domain\Model\Alert|null
      */
     public function findOneByFrontendUserAndProject(FrontendUser $frontendUser, Project $project):? Alert
     {

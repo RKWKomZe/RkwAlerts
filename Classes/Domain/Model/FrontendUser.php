@@ -1,6 +1,6 @@
 <?php
 
-namespace RKW\RkwAlerts\Domain\Repository;
+namespace RKW\RkwAlerts\Domain\Model;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -15,18 +15,18 @@ namespace RKW\RkwAlerts\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Madj2k\CoreExtended\Domain\Repository\StoragePidAwareAbstractRepository;
 
 /**
- * AbstractRepository
+ * Class FrontendUser
  *
- * @author Steffen Kroggel <developer@steffenkroggel.de>
+ * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwAlerts
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AbstractRepository extends StoragePidAwareAbstractRepository
+class FrontendUser extends \Madj2k\FeRegister\Domain\Model\FrontendUser
 {
+
 
 
 }

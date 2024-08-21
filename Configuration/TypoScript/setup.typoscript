@@ -24,6 +24,8 @@ config.tx_extbase{
                 }
             }
 
+            #===============================================
+
 			\RKW\RkwProjects\Domain\Model\Pages {
 				subclasses {
 					Tx_RkwAlerts_Page = RKW\RkwAlerts\Domain\Model\Page
@@ -42,10 +44,21 @@ config.tx_extbase{
                 }
             }
 
+            #===============================================
+
             RKW\RkwAlerts\Domain\Model\Alert {
 
                 // storage for new records
                 newRecordStoragePid = {$plugin.tx_rkwalerts.persistence.newRecordStoragePid}
+            }
+
+            #===============================================
+
+            RKW\RkwAlerts\Domain\Model\FrontendUser {
+                mapping {
+                    tableName = fe_users
+                    recordType =
+                }
             }
     	}
     }
