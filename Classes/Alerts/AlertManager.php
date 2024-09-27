@@ -14,26 +14,25 @@ namespace RKW\RkwAlerts\Alerts;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Madj2k\CoreExtended\Utility\GeneralUtility;
+use Madj2k\FeRegister\Domain\Model\FrontendUser;
+use Madj2k\FeRegister\Domain\Repository\FrontendUserRepository;
+use Madj2k\FeRegister\Registration\FrontendUserRegistration;
 use Madj2k\FeRegister\Utility\FrontendUserSessionUtility;
 use Madj2k\Postmaster\Mail\MailMessage;
-use Madj2k\Postmaster\Tracking\ClickTracker;
 use RKW\RkwAlerts\Domain\Model\Project;
 use RKW\RkwAlerts\Domain\Repository\AlertRepository;
 use RKW\RkwAlerts\Domain\Repository\PageRepository;
 use RKW\RkwAlerts\Domain\Repository\ProjectRepository;
-use RKW\RkwAlerts\Domain\Repository\FrontendUserRepository;
+use RKW\RkwAlerts\Exception;
 use TYPO3\CMS\Core\Log\Logger;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility as FrontendLocalizationUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use Madj2k\CoreExtended\Utility\GeneralUtility;
-use Madj2k\Postmaster\Mail\MailMassage;
-use RKW\RkwAlerts\Domain\Model\FrontendUser;
-use Madj2k\FeRegister\Registration\FrontendUserRegistration;
-use RKW\RkwAlerts\Exception;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility as FrontendLocalizationUtility;
+
 
 /**
  * Class AlertManager
@@ -133,7 +132,7 @@ class AlertManager
      */
     public function injectAlertRepository (AlertRepository $alertRepository)
     {
-        $this->alertRepository= $alertRepository;
+        $this->alertRepository = $alertRepository;
     }
 
     /**
@@ -141,7 +140,7 @@ class AlertManager
      */
     public function injectPageRepository (PageRepository $pageRepository)
     {
-        $this->pageRepository= $pageRepository;
+        $this->pageRepository = $pageRepository;
     }
 
     /**
@@ -149,7 +148,7 @@ class AlertManager
      */
     public function injectProjectRepository (ProjectRepository $projectRepository)
     {
-        $this->projectRepository= $projectRepository;
+        $this->projectRepository = $projectRepository;
     }
 
 
@@ -158,7 +157,7 @@ class AlertManager
      */
     public function injectFrontendUserRepository (FrontendUserRepository $frontendUserRepository)
     {
-        $this->frontendUserRepository= $frontendUserRepository;
+        $this->frontendUserRepository = $frontendUserRepository;
     }
 
 
