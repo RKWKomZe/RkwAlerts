@@ -91,11 +91,10 @@ class DataHandler implements SingletonInterface
         // check if we want to modify the query -> check for table, route, module
         if (
             !is_null(GeneralUtility::_GP('route'))
-            && GeneralUtility::_GP('route') == '/module/web/list'
+            && GeneralUtility::_GP('route') === '/module/web/list'
             && !is_null(GeneralUtility::_GP('search_field'))
-            && !is_null(GeneralUtility::_GP('table'))
-            && GeneralUtility::_GP('table') == 'tx_rkwalerts_domain_model_alert')
-        {
+            && $table === 'tx_rkwalerts_domain_model_alert'
+        ) {
 
             $searchField = strtolower(GeneralUtility::_GP(('search_field')));
 
@@ -116,7 +115,6 @@ class DataHandler implements SingletonInterface
                 $queryBuilder->resetQueryPart('where');
                 $queryBuilder->orWhere($queryBuilder->expr()->in('frontend_user', $frontendUserUidList));
             }
-
 
             /** @var \RKW\RkwAlerts\Domain\Repository\ProjectRepository $projectRepository */
             $projectRepository = GeneralUtility::makeInstance(ProjectRepository::class);
@@ -139,7 +137,5 @@ class DataHandler implements SingletonInterface
         }
 
     }
-
-
 
 }
